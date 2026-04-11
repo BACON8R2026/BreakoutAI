@@ -3,1251 +3,2096 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Breakout AI Solutions — Live Demo</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Breakout AI Solutions — Client Demo</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg: #07090f;
-  --surface: #0d1117;
-  --card: #111827;
-  --border: #1e2d3d;
-  --accent: #00d4ff;
-  --accent2: #7c3aed;
-  --accent3: #10b981;
-  --gold: #f59e0b;
-  --red: #ef4444;
-  --text: #cbd5e1;
-  --muted: #475569;
-  --bright: #f1f5f9;
+  --bg: #060810;
+  --surface: #0b0f1a;
+  --card: #0f1521;
+  --glass: rgba(15,21,33,0.85);
+  --border: #1a2640;
+  --border-bright: #243550;
+  --blue: #00b8f0;
+  --blue-dim: rgba(0,184,240,0.15);
+  --blue-glow: rgba(0,184,240,0.3);
+  --green: #00e5a0;
+  --green-dim: rgba(0,229,160,0.12);
+  --green-glow: rgba(0,229,160,0.25);
+  --gold: #f0b400;
+  --text: #c8d8e8;
+  --muted: #4a6080;
+  --bright: #f0f6ff;
+  --danger: #ff4560;
 }
 
-- { box-sizing: border-box; margin: 0; padding: 0; }
+- { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
-body {
+html, body {
+width: 100%; height: 100%;
+overflow: hidden;
 background: var(–bg);
 color: var(–text);
-font-family: ‘Inter’, sans-serif;
-min-height: 100vh;
-overflow-x: hidden;
+font-family: ‘DM Sans’, sans-serif;
 }
 
-body::before {
-content: ‘’;
+/* ═══════════════════════════════
+ANIMATED BACKGROUND
+═══════════════════════════════ */
+.bg-canvas {
 position: fixed;
 inset: 0;
-background-image:
-linear-gradient(rgba(0,212,255,0.025) 1px, transparent 1px),
-linear-gradient(90deg, rgba(0,212,255,0.025) 1px, transparent 1px);
-background-size: 48px 48px;
-pointer-events: none;
 z-index: 0;
+overflow: hidden;
 }
 
-/* –– SCREENS –– */
+.bg-grid {
+position: absolute;
+inset: 0;
+background-image:
+linear-gradient(rgba(0,184,240,0.04) 1px, transparent 1px),
+linear-gradient(90deg, rgba(0,184,240,0.04) 1px, transparent 1px);
+background-size: 44px 44px;
+}
+
+.bg-orb {
+position: absolute;
+border-radius: 50%;
+filter: blur(80px);
+animation: orb-drift 12s ease-in-out infinite alternate;
+}
+
+.bg-orb-1 {
+width: 500px; height: 500px;
+background: radial-gradient(circle, rgba(0,184,240,0.06) 0%, transparent 70%);
+top: -100px; left: -100px;
+animation-delay: 0s;
+}
+
+.bg-orb-2 {
+width: 400px; height: 400px;
+background: radial-gradient(circle, rgba(0,229,160,0.05) 0%, transparent 70%);
+bottom: -80px; right: -80px;
+animation-delay: -6s;
+}
+
+@keyframes orb-drift {
+from { transform: translate(0, 0); }
+to { transform: translate(40px, 30px); }
+}
+
+/* ═══════════════════════════════
+SCREENS
+═══════════════════════════════ */
 .screen {
 display: none;
-position: relative;
+position: fixed;
+inset: 0;
 z-index: 1;
-min-height: 100vh;
+opacity: 0;
+transition: opacity 0.4s ease;
 }
-.screen.active { display: flex; }
 
-/* –– SPLASH –– */
-#splash {
+.screen.active {
+display: flex;
+opacity: 1;
+}
+
+.screen.fade-in {
+animation: fadeScreen 0.4s ease forwards;
+}
+
+@keyframes fadeScreen {
+from { opacity: 0; }
+to { opacity: 1; }
+}
+
+/* ═══════════════════════════════
+SETUP SCREEN
+═══════════════════════════════ */
+#setup {
 flex-direction: column;
 align-items: center;
 justify-content: center;
 text-align: center;
-padding: 40px 24px;
+padding: 40px;
 }
 
-.splash-glow {
-position: absolute;
-width: 600px; height: 600px;
-background: radial-gradient(circle, rgba(0,212,255,0.08) 0%, transparent 70%);
-top: 50%; left: 50%;
-transform: translate(-50%, -50%);
-pointer-events: none;
-}
-
-.brand-tag {
-font-family: ‘IBM Plex Mono’, monospace;
-font-size: 11px;
-letter-spacing: 4px;
-color: var(–accent);
+.setup-logo {
+font-family: ‘Rajdhani’, sans-serif;
+font-size: 13px;
+font-weight: 600;
+letter-spacing: 5px;
+color: var(–blue);
 text-transform: uppercase;
-margin-bottom: 24px;
-opacity: 0.8;
+margin-bottom: 32px;
+opacity: 0.7;
 }
 
-.splash h1 {
-font-family: ‘Syne’, sans-serif;
-font-size: clamp(36px, 6vw, 72px);
-font-weight: 800;
+.setup-title {
+font-family: ‘Rajdhani’, sans-serif;
+font-size: 48px;
+font-weight: 700;
 color: var(–bright);
 line-height: 1.05;
 margin-bottom: 8px;
 }
 
-.splash h1 em {
-font-style: normal;
-color: var(–accent);
-}
+.setup-title span { color: var(–blue); }
 
-.splash .tagline {
-font-size: clamp(16px, 2.5vw, 22px);
+.setup-sub {
+font-size: 16px;
 color: var(–muted);
+margin-bottom: 52px;
 font-weight: 300;
-margin-bottom: 48px;
-max-width: 560px;
 }
 
-.splash .client-pill {
-display: inline-flex;
-align-items: center;
-gap: 10px;
-background: rgba(255,255,255,0.04);
-border: 1px solid var(–border);
-border-radius: 100px;
-padding: 10px 24px;
-margin-bottom: 56px;
-font-size: 14px;
-color: var(–text);
+.setup-form {
+background: var(–glass);
+border: 1px solid var(–border-bright);
+border-radius: 20px;
+padding: 36px 40px;
+width: 100%;
+max-width: 540px;
+backdrop-filter: blur(20px);
+-webkit-backdrop-filter: blur(20px);
 }
 
-.splash .client-pill .dot {
-width: 8px; height: 8px;
-border-radius: 50%;
-background: var(–accent3);
-box-shadow: 0 0 8px var(–accent3);
-animation: blink 2s infinite;
+.form-group {
+margin-bottom: 24px;
+text-align: left;
 }
 
-@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
-
-.splash .stat-row {
-display: flex;
-gap: 40px;
-margin-bottom: 56px;
-flex-wrap: wrap;
-justify-content: center;
-}
-
-.splash-stat { text-align: center; }
-.splash-stat .num {
-font-family: ‘Syne’, sans-serif;
-font-size: 36px;
-font-weight: 800;
-color: var(–accent);
+.form-label {
+font-family: ‘DM Mono’, monospace;
+font-size: 11px;
+letter-spacing: 3px;
+color: var(–blue);
+text-transform: uppercase;
+margin-bottom: 10px;
 display: block;
 }
-.splash-stat .lbl {
-font-size: 12px;
-color: var(–muted);
-font-family: ‘IBM Plex Mono’, monospace;
-letter-spacing: 1px;
+
+.form-input {
+width: 100%;
+background: rgba(0,0,0,0.3);
+border: 1px solid var(–border-bright);
+border-radius: 10px;
+padding: 16px 18px;
+font-family: ‘Rajdhani’, sans-serif;
+font-size: 20px;
+font-weight: 600;
+color: var(–bright);
+outline: none;
+transition: border-color 0.2s, box-shadow 0.2s;
+-webkit-appearance: none;
 }
 
-.btn-primary {
-display: inline-flex;
-align-items: center;
-gap: 10px;
-background: var(–accent);
-color: var(–bg);
-border: none;
+.form-input:focus {
+border-color: var(–blue);
+box-shadow: 0 0 0 3px var(–blue-dim);
+}
+
+.form-select {
+width: 100%;
+background: rgba(0,0,0,0.3);
+border: 1px solid var(–border-bright);
 border-radius: 10px;
-padding: 16px 36px;
-font-family: ‘Syne’, sans-serif;
+padding: 16px 18px;
+font-family: ‘DM Sans’, sans-serif;
 font-size: 16px;
+font-weight: 500;
+color: var(–bright);
+outline: none;
+transition: border-color 0.2s;
+-webkit-appearance: none;
+cursor: pointer;
+}
+
+.form-select:focus { border-color: var(–blue); }
+.form-select option { background: #0f1521; color: var(–bright); }
+
+.launch-btn {
+width: 100%;
+background: linear-gradient(135deg, var(–blue), #0088cc);
+border: none;
+border-radius: 12px;
+padding: 18px;
+font-family: ‘Rajdhani’, sans-serif;
+font-size: 20px;
 font-weight: 700;
+color: var(–bg);
+letter-spacing: 2px;
 cursor: pointer;
 transition: all 0.2s;
-letter-spacing: 0.5px;
-}
-.btn-primary:hover { background: #33ddff; transform: translateY(-1px); box-shadow: 0 8px 30px rgba(0,212,255,0.3); }
-
-.powered-by {
-position: absolute;
-bottom: 24px;
-right: 24px;
-font-family: ‘IBM Plex Mono’, monospace;
-font-size: 10px;
-color: var(–muted);
-opacity: 0.5;
-letter-spacing: 2px;
+margin-top: 8px;
 }
 
-/* –– STATION SCREEN –– */
-#station-screen {
+.launch-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 30px var(–blue-glow); }
+.launch-btn:active { transform: translateY(0); }
+
+/* ═══════════════════════════════
+DASHBOARD SCREEN
+═══════════════════════════════ */
+#dashboard {
 flex-direction: column;
-padding: 0;
 }
 
-.top-bar {
-background: var(–surface);
+/* Dashboard Header */
+.dash-header {
+background: var(–glass);
 border-bottom: 1px solid var(–border);
-padding: 14px 32px;
+backdrop-filter: blur(20px);
+-webkit-backdrop-filter: blur(20px);
+padding: 0 28px;
+height: 64px;
 display: flex;
 align-items: center;
 justify-content: space-between;
-position: sticky;
-top: 0;
-z-index: 100;
+flex-shrink: 0;
+position: relative;
+z-index: 10;
 }
 
-.top-bar .tbl {
-font-family: ‘IBM Plex Mono’, monospace;
-font-size: 11px;
-color: var(–muted);
-letter-spacing: 2px;
-}
-
-.top-bar .tbl span { color: var(–accent); }
-
-.progress-wrap {
-flex: 1;
-max-width: 400px;
-margin: 0 40px;
-}
-
-.progress-track {
-height: 3px;
-background: var(–border);
-border-radius: 2px;
-overflow: hidden;
-}
-
-.progress-fill {
-height: 100%;
-background: linear-gradient(90deg, var(–accent), var(–accent2));
-border-radius: 2px;
-transition: width 0.5s ease;
-}
-
-.progress-label {
-font-family: ‘IBM Plex Mono’, monospace;
-font-size: 10px;
-color: var(–muted);
-text-align: right;
-margin-top: 4px;
-}
-
-.tally-pill {
-display: flex;
-gap: 16px;
-}
-
-.tally-item {
-text-align: center;
-}
-
-.tally-item .tv {
-font-family: ‘Syne’, sans-serif;
-font-size: 14px;
-font-weight: 700;
-color: var(–accent3);
-display: block;
-}
-
-.tally-item .tl {
-font-family: ‘IBM Plex Mono’, monospace;
-font-size: 9px;
-color: var(–muted);
-letter-spacing: 1px;
-}
-
-/* –– STATION CONTENT –– */
-.station-content {
-flex: 1;
-padding: 48px 32px;
-max-width: 900px;
-margin: 0 auto;
-width: 100%;
-}
-
-.station-eyebrow {
+.dash-left {
 display: flex;
 align-items: center;
-gap: 12px;
-margin-bottom: 20px;
+gap: 20px;
 }
 
-.station-num-badge {
-font-family: ‘IBM Plex Mono’, monospace;
-font-size: 11px;
+.dash-brand {
+font-family: ‘DM Mono’, monospace;
+font-size: 10px;
 letter-spacing: 3px;
 color: var(–muted);
-background: var(–surface);
-border: 1px solid var(–border);
-padding: 4px 10px;
-border-radius: 4px;
-}
-
-.station-category {
-font-family: ‘IBM Plex Mono’, monospace;
-font-size: 11px;
-letter-spacing: 2px;
-padding: 4px 10px;
-border-radius: 4px;
 text-transform: uppercase;
 }
 
-.station-main-title {
-font-family: ‘Syne’, sans-serif;
-font-size: clamp(26px, 4vw, 42px);
-font-weight: 800;
-color: var(–bright);
-line-height: 1.1;
-margin-bottom: 16px;
+.dash-divider {
+width: 1px;
+height: 24px;
+background: var(–border-bright);
 }
 
-.station-main-title em {
-font-style: normal;
-}
-
-.station-hook {
-font-size: 17px;
-color: var(–text);
-line-height: 1.65;
-margin-bottom: 32px;
-max-width: 680px;
-font-weight: 300;
-}
-
-/* Before/After */
-.bva {
-display: grid;
-grid-template-columns: 1fr 1fr;
-gap: 16px;
-margin-bottom: 32px;
-}
-
-.bva-card {
-border-radius: 10px;
-padding: 18px 20px;
-}
-
-.bva-card.before {
-background: rgba(239,68,68,0.07);
-border: 1px solid rgba(239,68,68,0.2);
-}
-
-.bva-card.after {
-background: rgba(16,185,129,0.07);
-border: 1px solid rgba(16,185,129,0.2);
-}
-
-.bva-label {
-font-family: ‘IBM Plex Mono’, monospace;
-font-size: 10px;
-letter-spacing: 2px;
-margin-bottom: 8px;
-text-transform: uppercase;
-}
-
-.bva-card.before .bva-label { color: var(–red); }
-.bva-card.after .bva-label { color: var(–accent3); }
-
-.bva-text {
-font-size: 14px;
-line-height: 1.6;
-color: var(–text);
-}
-
-/* Questions */
-.questions-block {
-background: var(–surface);
-border: 1px solid var(–border);
-border-radius: 12px;
-padding: 24px;
-margin-bottom: 28px;
-}
-
-.questions-block .qb-title {
-font-family: ‘IBM Plex Mono’, monospace;
-font-size: 11px;
-letter-spacing: 3px;
-color: var(–accent);
-text-transform: uppercase;
-margin-bottom: 20px;
-}
-
-.q-item {
-margin-bottom: 20px;
-}
-
-.q-item:last-child { margin-bottom: 0; }
-
-.q-label {
-font-size: 14px;
-color: var(–text);
-margin-bottom: 8px;
-line-height: 1.4;
-font-weight: 500;
-}
-
-.q-input {
+.dash-client {
 display: flex;
-align-items: center;
-gap: 10px;
+flex-direction: column;
 }
 
-.q-input input {
-background: var(–card);
-border: 1px solid var(–border);
-border-radius: 8px;
-padding: 10px 14px;
-font-family: ‘IBM Plex Mono’, monospace;
-font-size: 15px;
-color: var(–bright);
-width: 100px;
-text-align: center;
-transition: border-color 0.2s;
-}
-
-.q-input input:focus {
-outline: none;
-border-color: var(–accent);
-}
-
-.q-input .unit {
-font-size: 13px;
-color: var(–muted);
-}
-
-/* Run demo button */
-.run-demo-btn {
-display: inline-flex;
-align-items: center;
-gap: 10px;
-background: linear-gradient(135deg, var(–accent), #0088cc);
-color: var(–bg);
-border: none;
-border-radius: 10px;
-padding: 14px 28px;
-font-family: ‘Syne’, sans-serif;
-font-size: 15px;
+.dash-client-name {
+font-family: ‘Rajdhani’, sans-serif;
+font-size: 20px;
 font-weight: 700;
-cursor: pointer;
-transition: all 0.2s;
-margin-bottom: 28px;
+color: var(–bright);
+line-height: 1;
 }
 
-.run-demo-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 24px rgba(0,212,255,0.3); }
-.run-demo-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
-
-/* Output */
-.output-panel {
-display: none;
-background: rgba(0,0,0,0.5);
-border: 1px solid var(–border);
-border-radius: 12px;
-overflow: hidden;
-margin-bottom: 28px;
+.dash-client-vertical {
+font-size: 11px;
+color: var(–muted);
+margin-top: 1px;
 }
 
-.output-panel.visible { display: block; }
-
-.output-header {
-background: var(–surface);
-border-bottom: 1px solid var(–border);
-padding: 10px 18px;
+.dash-center {
+position: absolute;
+left: 50%;
+transform: translateX(-50%);
 display: flex;
 align-items: center;
 gap: 8px;
 }
 
-.output-header .dot {
-width: 8px; height: 8px;
+.dash-status-dot {
+width: 7px; height: 7px;
 border-radius: 50%;
+background: var(–green);
+box-shadow: 0 0 8px var(–green);
+animation: pulse-dot 2s infinite;
 }
 
-.output-header .dot.g { background: #10b981; }
-.output-header .dot.y { background: #f59e0b; }
-.output-header .dot.r { background: #ef4444; }
+@keyframes pulse-dot {
+0%,100%{opacity:1;box-shadow:0 0 8px var(–green);}
+50%{opacity:0.5;box-shadow:0 0 3px var(–green);}
+}
 
-.output-header .oht {
-font-family: ‘IBM Plex Mono’, monospace;
+.dash-status-text {
+font-family: ‘DM Mono’, monospace;
+font-size: 10px;
+letter-spacing: 2px;
+color: var(–green);
+text-transform: uppercase;
+}
+
+.dash-right {
+display: flex;
+align-items: center;
+gap: 24px;
+}
+
+.dash-tally {
+text-align: right;
+}
+
+.dash-tally-val {
+font-family: ‘Rajdhani’, sans-serif;
+font-size: 18px;
+font-weight: 700;
+color: var(–green);
+display: block;
+line-height: 1;
+transition: all 0.5s;
+}
+
+.dash-tally-lbl {
+font-family: ‘DM Mono’, monospace;
+font-size: 9px;
+letter-spacing: 2px;
+color: var(–muted);
+text-transform: uppercase;
+}
+
+/* Progress bar */
+.dash-progress {
+height: 2px;
+background: var(–border);
+flex-shrink: 0;
+position: relative;
+z-index: 10;
+}
+
+.dash-progress-fill {
+height: 100%;
+background: linear-gradient(90deg, var(–blue), var(–green));
+transition: width 0.6s ease;
+width: 0%;
+}
+
+/* Dashboard Body */
+.dash-body {
+flex: 1;
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+padding: 24px 28px;
+gap: 16px;
+}
+
+.dash-intro {
+text-align: center;
+margin-bottom: 4px;
+}
+
+.dash-intro-title {
+font-family: ‘Rajdhani’, sans-serif;
+font-size: 15px;
+font-weight: 600;
+color: var(–muted);
+letter-spacing: 3px;
+text-transform: uppercase;
+}
+
+/* Tool Grid */
+.tool-grid {
+display: grid;
+grid-template-columns: repeat(6, 1fr);
+gap: 14px;
+width: 100%;
+max-width: 1040px;
+}
+
+/* Tool Button */
+.tool-btn {
+background: var(–glass);
+border: 1px solid var(–border-bright);
+border-radius: 16px;
+padding: 18px 12px 16px;
+display: flex;
+flex-direction: column;
+align-items: center;
+gap: 10px;
+cursor: pointer;
+transition: all 0.3s ease;
+backdrop-filter: blur(12px);
+-webkit-backdrop-filter: blur(12px);
+position: relative;
+overflow: hidden;
+min-height: 110px;
+justify-content: center;
+-webkit-tap-highlight-color: transparent;
+}
+
+.tool-btn::before {
+content: ‘’;
+position: absolute;
+inset: 0;
+background: linear-gradient(135deg, rgba(0,184,240,0.05), transparent);
+opacity: 0;
+transition: opacity 0.3s;
+}
+
+.tool-btn:hover::before { opacity: 1; }
+.tool-btn:hover {
+border-color: var(–blue);
+transform: translateY(-2px);
+box-shadow: 0 8px 24px rgba(0,0,0,0.3), 0 0 0 1px var(–blue-dim);
+}
+
+.tool-btn:active { transform: translateY(0); }
+
+.tool-btn.active {
+border-color: var(–green);
+background: linear-gradient(135deg, rgba(0,229,160,0.08), rgba(15,21,33,0.9));
+box-shadow: 0 0 20px var(–green-glow), inset 0 0 20px rgba(0,229,160,0.03);
+}
+
+.tool-btn.active::before {
+background: linear-gradient(135deg, rgba(0,229,160,0.08), transparent);
+opacity: 1;
+}
+
+.tool-icon {
+font-size: 28px;
+line-height: 1;
+transition: transform 0.2s;
+}
+
+.tool-btn:hover .tool-icon { transform: scale(1.1); }
+
+.tool-name {
+font-family: ‘Rajdhani’, sans-serif;
+font-size: 13px;
+font-weight: 600;
+color: var(–text);
+text-align: center;
+letter-spacing: 0.3px;
+line-height: 1.2;
+transition: color 0.3s;
+}
+
+.tool-btn.active .tool-name { color: var(–green); }
+
+.tool-check {
+position: absolute;
+top: 8px;
+right: 8px;
+width: 18px; height: 18px;
+border-radius: 50%;
+background: var(–green);
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 10px;
+color: var(–bg);
+opacity: 0;
+transform: scale(0);
+transition: all 0.3s ease;
+font-weight: 700;
+}
+
+.tool-btn.active .tool-check {
+opacity: 1;
+transform: scale(1);
+}
+
+/* See Results button */
+.results-btn-wrap {
+text-align: center;
+}
+
+.see-results-btn {
+display: inline-flex;
+align-items: center;
+gap: 10px;
+background: linear-gradient(135deg, var(–green), #00bb80);
+border: none;
+border-radius: 12px;
+padding: 16px 36px;
+font-family: ‘Rajdhani’, sans-serif;
+font-size: 18px;
+font-weight: 700;
+color: var(–bg);
+letter-spacing: 1px;
+cursor: pointer;
+transition: all 0.2s;
+opacity: 0;
+pointer-events: none;
+transform: translateY(8px);
+}
+
+.see-results-btn.visible {
+opacity: 1;
+pointer-events: all;
+transform: translateY(0);
+transition: all 0.4s ease;
+}
+
+.see-results-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 30px var(–green-glow); }
+
+/* ═══════════════════════════════
+MODAL OVERLAY
+═══════════════════════════════ */
+.modal-overlay {
+display: none;
+position: fixed;
+inset: 0;
+background: rgba(4,6,12,0.92);
+z-index: 100;
+align-items: center;
+justify-content: center;
+backdrop-filter: blur(8px);
+-webkit-backdrop-filter: blur(8px);
+padding: 16px;
+}
+
+.modal-overlay.open { display: flex; }
+
+.modal {
+background: var(–card);
+border: 1px solid var(–border-bright);
+border-radius: 20px;
+width: 100%;
+max-width: 820px;
+max-height: calc(100vh - 32px);
+display: flex;
+flex-direction: column;
+overflow: hidden;
+animation: modal-in 0.3s ease forwards;
+position: relative;
+}
+
+@keyframes modal-in {
+from { opacity: 0; transform: scale(0.96) translateY(12px); }
+to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* Modal top color bar */
+.modal-bar {
+height: 3px;
+width: 100%;
+flex-shrink: 0;
+}
+
+.modal-header {
+padding: 20px 24px 16px;
+border-bottom: 1px solid var(–border);
+display: flex;
+align-items: flex-start;
+justify-content: space-between;
+flex-shrink: 0;
+}
+
+.modal-title-block {}
+
+.modal-eyebrow {
+font-family: ‘DM Mono’, monospace;
+font-size: 10px;
+letter-spacing: 3px;
+color: var(–blue);
+text-transform: uppercase;
+margin-bottom: 4px;
+}
+
+.modal-title {
+font-family: ‘Rajdhani’, sans-serif;
+font-size: 26px;
+font-weight: 700;
+color: var(–bright);
+line-height: 1.1;
+}
+
+.modal-close {
+background: rgba(255,255,255,0.06);
+border: 1px solid var(–border-bright);
+border-radius: 8px;
+width: 38px; height: 38px;
+color: var(–muted);
+font-size: 18px;
+cursor: pointer;
+display: flex;
+align-items: center;
+justify-content: center;
+flex-shrink: 0;
+transition: all 0.2s;
+}
+
+.modal-close:hover { background: rgba(255,255,255,0.1); color: var(–bright); }
+
+.modal-body {
+flex: 1;
+overflow-y: auto;
+padding: 20px 24px;
+-webkit-overflow-scrolling: touch;
+}
+
+.modal-body::-webkit-scrollbar { width: 3px; }
+.modal-body::-webkit-scrollbar-track { background: transparent; }
+.modal-body::-webkit-scrollbar-thumb { background: var(–border-bright); border-radius: 2px; }
+
+/* Before / After */
+.bva {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 12px;
+margin-bottom: 18px;
+}
+
+.bva-card {
+border-radius: 10px;
+padding: 14px 16px;
+}
+
+.bva-before {
+background: rgba(255,69,96,0.07);
+border: 1px solid rgba(255,69,96,0.2);
+}
+
+.bva-after {
+background: var(–green-dim);
+border: 1px solid rgba(0,229,160,0.25);
+}
+
+.bva-label {
+font-family: ‘DM Mono’, monospace;
+font-size: 9px;
+letter-spacing: 2px;
+text-transform: uppercase;
+margin-bottom: 8px;
+display: block;
+}
+
+.bva-before .bva-label { color: var(–danger); }
+.bva-after .bva-label { color: var(–green); }
+
+.bva-bullets {
+list-style: none;
+padding: 0;
+}
+
+.bva-bullets li {
+font-size: 13px;
+color: var(–text);
+line-height: 1.5;
+padding: 2px 0;
+padding-left: 14px;
+position: relative;
+}
+
+.bva-before .bva-bullets li::before { content: ‘✗’; position: absolute; left: 0; color: var(–danger); font-size: 10px; top: 3px; }
+.bva-after .bva-bullets li::before { content: ‘✓’; position: absolute; left: 0; color: var(–green); font-size: 10px; top: 3px; }
+
+/* Questions */
+.q-block {
+background: rgba(0,0,0,0.3);
+border: 1px solid var(–border-bright);
+border-radius: 12px;
+padding: 16px 18px;
+margin-bottom: 16px;
+}
+
+.q-block-title {
+font-family: ‘DM Mono’, monospace;
+font-size: 10px;
+letter-spacing: 3px;
+color: var(–blue);
+text-transform: uppercase;
+margin-bottom: 14px;
+}
+
+.q-row {
+display: flex;
+align-items: center;
+justify-content: space-between;
+gap: 16px;
+margin-bottom: 12px;
+}
+
+.q-row:last-child { margin-bottom: 0; }
+
+.q-text {
+font-size: 13px;
+color: var(–text);
+line-height: 1.4;
+flex: 1;
+}
+
+.q-input-wrap {
+display: flex;
+align-items: center;
+gap: 6px;
+flex-shrink: 0;
+}
+
+.q-num {
+background: rgba(0,0,0,0.4);
+border: 1px solid var(–border-bright);
+border-radius: 8px;
+padding: 8px 10px;
+font-family: ‘DM Mono’, monospace;
+font-size: 16px;
+color: var(–bright);
+width: 80px;
+text-align: center;
+outline: none;
+transition: border-color 0.2s;
+}
+
+.q-num:focus { border-color: var(–blue); }
+
+.q-unit {
 font-size: 11px;
+color: var(–muted);
+white-space: nowrap;
+}
+
+/* Run button */
+.run-btn {
+display: flex;
+align-items: center;
+justify-content: center;
+gap: 10px;
+width: 100%;
+background: linear-gradient(135deg, var(–blue), #006fa8);
+border: none;
+border-radius: 10px;
+padding: 14px;
+font-family: ‘Rajdhani’, sans-serif;
+font-size: 17px;
+font-weight: 700;
+color: var(–bg);
+letter-spacing: 1px;
+cursor: pointer;
+transition: all 0.2s;
+margin-bottom: 16px;
+}
+
+.run-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px var(–blue-glow); }
+.run-btn:active { transform: translateY(0); }
+.run-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+/* Output panel */
+.output-panel {
+display: none;
+background: rgba(0,0,0,0.5);
+border: 1px solid var(–border-bright);
+border-radius: 10px;
+overflow: hidden;
+margin-bottom: 14px;
+}
+
+.output-panel.show { display: block; }
+
+.output-top {
+background: rgba(0,0,0,0.3);
+border-bottom: 1px solid var(–border);
+padding: 8px 14px;
+display: flex;
+align-items: center;
+gap: 6px;
+}
+
+.dot { width: 8px; height: 8px; border-radius: 50%; }
+.dot-g { background: #10b981; }
+.dot-y { background: #f59e0b; }
+.dot-r { background: #ef4444; }
+
+.output-label {
+font-family: ‘DM Mono’, monospace;
+font-size: 10px;
 color: var(–muted);
 margin-left: 6px;
 letter-spacing: 1px;
 }
 
-.output-body {
-padding: 20px;
-font-family: ‘IBM Plex Mono’, monospace;
-font-size: 13px;
+.output-text {
+padding: 14px 16px;
+font-family: ‘DM Mono’, monospace;
+font-size: 12px;
 line-height: 1.8;
 color: var(–text);
 white-space: pre-wrap;
 word-break: break-word;
+max-height: 220px;
+overflow-y: auto;
+}
+
+.output-text .line {
+display: block;
+opacity: 0;
+animation: line-fade 0.3s ease forwards;
+}
+
+@keyframes line-fade {
+from { opacity: 0; transform: translateY(4px); }
+to { opacity: 1; transform: translateY(0); }
 }
 
 /* Savings card */
 .savings-card {
 display: none;
-background: linear-gradient(135deg, rgba(16,185,129,0.1), rgba(0,212,255,0.1));
-border: 1px solid rgba(16,185,129,0.3);
-border-radius: 12px;
-padding: 24px;
-margin-bottom: 28px;
+border-radius: 10px;
+padding: 16px;
+border: 1px solid rgba(0,229,160,0.25);
+background: var(–green-dim);
 }
 
-.savings-card.visible { display: block; }
+.savings-card.show { display: block; }
 
-.savings-card .sc-title {
-font-family: ‘IBM Plex Mono’, monospace;
-font-size: 11px;
+.savings-title {
+font-family: ‘DM Mono’, monospace;
+font-size: 10px;
 letter-spacing: 3px;
-color: var(–accent3);
+color: var(–green);
 text-transform: uppercase;
-margin-bottom: 16px;
+margin-bottom: 12px;
 }
 
-.savings-grid {
+.savings-row {
 display: grid;
 grid-template-columns: repeat(3, 1fr);
-gap: 16px;
+gap: 12px;
+margin-bottom: 10px;
 }
 
-.saving-stat .sv {
-font-family: ‘Syne’, sans-serif;
-font-size: 28px;
-font-weight: 800;
-color: var(–accent3);
+.saving-item .sv {
+font-family: ‘Rajdhani’, sans-serif;
+font-size: 26px;
+font-weight: 700;
+color: var(–green);
 display: block;
+line-height: 1;
 }
 
-.saving-stat .sl {
-font-size: 12px;
-color: var(–muted);
-margin-top: 2px;
-}
-
-/* Bottom nav */
-.bottom-nav {
-background: var(–surface);
-border-top: 1px solid var(–border);
-padding: 16px 32px;
-display: flex;
-align-items: center;
-justify-content: space-between;
-position: sticky;
-bottom: 0;
-z-index: 100;
-}
-
-.nav-hint {
-font-family: ‘IBM Plex Mono’, monospace;
+.saving-item .sl {
 font-size: 11px;
 color: var(–muted);
-letter-spacing: 1px;
+margin-top: 3px;
 }
 
-.btn-next {
-display: inline-flex;
+.savings-note {
+font-size: 12px;
+color: var(–text);
+line-height: 1.5;
+opacity: 0.8;
+border-top: 1px solid rgba(0,229,160,0.15);
+padding-top: 10px;
+margin-top: 4px;
+}
+
+/* Modal footer */
+.modal-footer {
+padding: 14px 24px;
+border-top: 1px solid var(–border);
+display: flex;
+justify-content: space-between;
+align-items: center;
+flex-shrink: 0;
+}
+
+.modal-footer-note {
+font-size: 12px;
+color: var(–muted);
+}
+
+.done-btn {
+display: flex;
 align-items: center;
 gap: 8px;
-background: var(–accent);
-color: var(–bg);
+background: var(–green);
 border: none;
 border-radius: 8px;
-padding: 12px 28px;
-font-family: ‘Syne’, sans-serif;
-font-size: 15px;
+padding: 12px 24px;
+font-family: ‘Rajdhani’, sans-serif;
+font-size: 16px;
 font-weight: 700;
+color: var(–bg);
+letter-spacing: 1px;
 cursor: pointer;
 transition: all 0.2s;
+opacity: 0.3;
+pointer-events: none;
 }
-.btn-next:hover { background: #33ddff; }
 
-.btn-back {
-display: inline-flex;
-align-items: center;
-gap: 8px;
-background: transparent;
-color: var(–muted);
-border: 1px solid var(–border);
-border-radius: 8px;
-padding: 12px 20px;
-font-family: ‘Syne’, sans-serif;
-font-size: 14px;
-font-weight: 600;
-cursor: pointer;
-transition: all 0.2s;
-}
-.btn-back:hover { color: var(–text); border-color: var(–text); }
+.done-btn.ready { opacity: 1; pointer-events: all; }
+.done-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px var(–green-glow); }
 
-.nav-btns { display: flex; gap: 10px; }
-
-/* –– CLOSING SCREEN –– */
-#closing-screen {
+/* ═══════════════════════════════
+CLOSING SCREEN
+═══════════════════════════════ */
+#closing {
 flex-direction: column;
 align-items: center;
 justify-content: center;
 text-align: center;
-padding: 40px 24px;
+padding: 40px;
+position: relative;
 }
 
-.closing-glow {
+.closing-spotlight {
 position: absolute;
-width: 700px; height: 700px;
-background: radial-gradient(circle, rgba(16,185,129,0.08) 0%, transparent 70%);
+width: 800px; height: 800px;
+background: radial-gradient(circle, rgba(0,229,160,0.06) 0%, transparent 65%);
 top: 50%; left: 50%;
 transform: translate(-50%, -50%);
 pointer-events: none;
 }
 
 .closing-eyebrow {
-font-family: ‘IBM Plex Mono’, monospace;
+font-family: ‘DM Mono’, monospace;
 font-size: 11px;
 letter-spacing: 4px;
-color: var(–accent3);
+color: var(–green);
 text-transform: uppercase;
-margin-bottom: 20px;
+margin-bottom: 16px;
+opacity: 0.8;
 }
 
-.closing h2 {
-font-family: ‘Syne’, sans-serif;
-font-size: clamp(32px, 5vw, 58px);
-font-weight: 800;
+.closing-title {
+font-family: ‘Rajdhani’, sans-serif;
+font-size: 44px;
+font-weight: 700;
 color: var(–bright);
 line-height: 1.1;
-margin-bottom: 16px;
+margin-bottom: 8px;
 }
 
-.closing .sub {
-font-size: 18px;
+.closing-company {
+color: var(–blue);
+}
+
+.closing-sub {
+font-size: 16px;
 color: var(–muted);
-margin-bottom: 48px;
+margin-bottom: 40px;
 font-weight: 300;
 }
 
-.grand-totals {
+.grand-grid {
 display: flex;
 gap: 0;
-margin-bottom: 48px;
-background: var(–surface);
-border: 1px solid var(–border);
-border-radius: 16px;
+background: var(–glass);
+border: 1px solid var(–border-bright);
+border-radius: 18px;
 overflow: hidden;
+backdrop-filter: blur(20px);
+-webkit-backdrop-filter: blur(20px);
+margin-bottom: 36px;
+width: 100%;
+max-width: 700px;
 }
 
-.gt-item {
+.grand-item {
 flex: 1;
-padding: 32px 24px;
+padding: 28px 20px;
 border-right: 1px solid var(–border);
 }
 
-.gt-item:last-child { border-right: none; }
+.grand-item:last-child { border-right: none; }
 
-.gt-item .gv {
-font-family: ‘Syne’, sans-serif;
-font-size: clamp(32px, 5vw, 52px);
-font-weight: 800;
+.grand-val {
+font-family: ‘Rajdhani’, sans-serif;
+font-size: 48px;
+font-weight: 700;
 display: block;
+line-height: 1;
 margin-bottom: 6px;
 }
 
-.gt-item:nth-child(1) .gv { color: var(–accent); }
-.gt-item:nth-child(2) .gv { color: var(–accent3); }
-.gt-item:nth-child(3) .gv { color: var(–gold); }
+.grand-item:nth-child(1) .grand-val { color: var(–blue); }
+.grand-item:nth-child(2) .grand-val { color: var(–green); }
+.grand-item:nth-child(3) .grand-val { color: var(–gold); }
 
-.gt-item .gl {
+.grand-lbl {
 font-size: 13px;
 color: var(–muted);
 line-height: 1.4;
 }
 
-.closing-cta {
-margin-bottom: 32px;
-}
-
-.closing-cta p {
+.closing-msg {
 font-size: 16px;
 color: var(–text);
-margin-bottom: 24px;
 max-width: 520px;
-margin-left: auto;
-margin-right: auto;
-line-height: 1.6;
+line-height: 1.65;
+margin-bottom: 28px;
+font-weight: 300;
 }
 
-.cta-btns { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+.closing-btns {
+display: flex;
+gap: 14px;
+justify-content: center;
+flex-wrap: wrap;
+margin-bottom: 20px;
+}
 
-.btn-cta-main {
+.cta-main {
 display: inline-flex;
 align-items: center;
 gap: 10px;
-background: var(–accent3);
-color: var(–bg);
+background: var(–green);
 border: none;
-border-radius: 10px;
-padding: 16px 36px;
-font-family: ‘Syne’, sans-serif;
-font-size: 16px;
+border-radius: 12px;
+padding: 16px 32px;
+font-family: ‘Rajdhani’, sans-serif;
+font-size: 18px;
 font-weight: 700;
+color: var(–bg);
+letter-spacing: 1px;
 cursor: pointer;
 transition: all 0.2s;
+text-decoration: none;
 }
-.btn-cta-main:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(16,185,129,0.3); }
 
-.btn-cta-sec {
+.cta-main:hover { transform: translateY(-2px); box-shadow: 0 8px 30px var(–green-glow); }
+
+.cta-sec {
 display: inline-flex;
 align-items: center;
-gap: 10px;
+gap: 8px;
 background: transparent;
-color: var(–text);
-border: 1px solid var(–border);
-border-radius: 10px;
-padding: 16px 28px;
-font-family: ‘Syne’, sans-serif;
-font-size: 15px;
+border: 1px solid var(–border-bright);
+border-radius: 12px;
+padding: 16px 24px;
+font-family: ‘Rajdhani’, sans-serif;
+font-size: 17px;
 font-weight: 600;
+color: var(–text);
 cursor: pointer;
 transition: all 0.2s;
 }
-.btn-cta-sec:hover { border-color: var(–text); }
 
-/* Typing animation */
-@keyframes typing {
-from { width: 0; }
-to { width: 100%; }
-}
+.cta-sec:hover { border-color: var(–blue); color: var(–blue); }
 
-.typed {
-overflow: hidden;
-animation: fadeIn 0.05s ease forwards;
-}
-
-@keyframes fadeIn {
-from { opacity: 0; }
-to { opacity: 1; }
-}
-
-/* Responsive */
-@media (max-width: 600px) {
-.bva { grid-template-columns: 1fr; }
-.savings-grid { grid-template-columns: 1fr; }
-.grand-totals { flex-direction: column; }
-.gt-item { border-right: none; border-bottom: 1px solid var(–border); }
-.gt-item:last-child { border-bottom: none; }
-.top-bar .tally-pill { display: none; }
-.progress-wrap { max-width: 200px; }
+.closing-footer {
+font-family: ‘DM Mono’, monospace;
+font-size: 10px;
+color: var(–muted);
+letter-spacing: 2px;
+opacity: 0.5;
 }
 </style>
 
 </head>
 <body>
 
-<!-- ============ SPLASH ============ -->
+<div class="bg-canvas">
+  <div class="bg-grid"></div>
+  <div class="bg-orb bg-orb-1"></div>
+  <div class="bg-orb bg-orb-2"></div>
+</div>
 
-<div class="screen active" id="splash">
-  <div class="splash-glow"></div>
+<!-- ══════════════════════════════════════
+     SETUP SCREEN
+══════════════════════════════════════ -->
 
-  <div class="brand-tag">Breakout AI Solutions &nbsp;·&nbsp; Live Demo</div>
+<div class="screen active fade-in" id="setup">
+  <div class="setup-logo">Breakout AI Solutions &nbsp;·&nbsp; Client Demo</div>
+  <h1 class="setup-title">Your AI <span>Operations</span><br>Dashboard</h1>
+  <p class="setup-sub">Enter client details to launch their personalized demo</p>
 
-  <h1 class="splash">What If Your Business<br><em>Ran Itself?</em></h1>
-  <p class="tagline">See exactly how AI handles your leads, follow-ups, proposals, scheduling, billing — and more. In real time.</p>
+  <div class="setup-form">
+    <div class="form-group">
+      <label class="form-label">Client Company Name</label>
+      <input type="text" class="form-input" id="company-input" placeholder="e.g. Desert Peak Roofing" autocomplete="off">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Industry Vertical</label>
+      <select class="form-select" id="vertical-select">
+        <option value="">— Select Industry —</option>
+        <option value="home">Home Services (HVAC, Plumbing, Roofing)</option>
+        <option value="legal">Legal (Law Firm)</option>
+        <option value="dental">Dental / Medical</option>
+        <option value="realestate">Real Estate</option>
+        <option value="consulting">Consulting / Coaching</option>
+        <option value="agency">Marketing Agency</option>
+        <option value="construction">Contractors / Construction</option>
+        <option value="other">Other / General Business</option>
+      </select>
+    </div>
+    <button class="launch-btn" onclick="launchDashboard()">LAUNCH DASHBOARD →</button>
+  </div>
+</div>
 
-  <div class="client-pill">
-    <span class="dot"></span>
-    Demo Company: <strong>Apex Home Services</strong> &nbsp;·&nbsp; HVAC · Plumbing · Roofing
+<!-- ══════════════════════════════════════
+     DASHBOARD SCREEN
+══════════════════════════════════════ -->
+
+<div class="screen" id="dashboard">
+  <div class="dash-header">
+    <div class="dash-left">
+      <div class="dash-brand">Breakout AI</div>
+      <div class="dash-divider"></div>
+      <div class="dash-client">
+        <div class="dash-client-name" id="dash-company">—</div>
+        <div class="dash-client-vertical" id="dash-vertical">—</div>
+      </div>
+    </div>
+
+```
+<div class="dash-center">
+  <div class="dash-status-dot"></div>
+  <div class="dash-status-text">AI System Live</div>
+</div>
+
+<div class="dash-right">
+  <div class="dash-tally">
+    <span class="dash-tally-val" id="tally-hrs">0 hrs</span>
+    <span class="dash-tally-lbl">Saved / Week</span>
+  </div>
+  <div class="dash-divider"></div>
+  <div class="dash-tally">
+    <span class="dash-tally-val" id="tally-dollars">$0</span>
+    <span class="dash-tally-lbl">Saved / Year</span>
+  </div>
+</div>
+```
+
   </div>
 
-  <div class="stat-row">
-    <div class="splash-stat">
-      <span class="num">11</span>
-      <span class="lbl">AI Integrations</span>
-    </div>
-    <div class="splash-stat">
-      <span class="num">40+</span>
-      <span class="lbl">Hrs Saved / Week</span>
-    </div>
-    <div class="splash-stat">
-      <span class="num">$0</span>
-      <span class="lbl">Extra Headcount</span>
-    </div>
+  <div class="dash-progress">
+    <div class="dash-progress-fill" id="dash-progress"></div>
   </div>
 
-  <button class="btn-primary" onclick="startDemo()">
-    ▶ &nbsp; Start the Demo
+  <div class="dash-body">
+    <div class="dash-intro">
+      <div class="dash-intro-title">Select any AI tool to see it in action</div>
+    </div>
+
+```
+<div class="tool-grid" id="tool-grid">
+  <!-- Injected by JS -->
+</div>
+
+<div class="results-btn-wrap">
+  <button class="see-results-btn" id="results-btn" onclick="showClosing()">
+    View Full Results →
   </button>
-
-  <div class="powered-by">POWERED BY BREAKOUT AI SOLUTIONS</div>
 </div>
-
-<!-- ============ STATION SCREEN ============ -->
-
-<div class="screen" id="station-screen">
-
-  <div class="top-bar">
-    <div class="tbl">STATION <span id="tb-num">01</span> OF 11</div>
-    <div class="progress-wrap">
-      <div class="progress-track">
-        <div class="progress-fill" id="prog-fill" style="width:9%"></div>
-      </div>
-      <div class="progress-label" id="prog-label">Step 1 of 11</div>
-    </div>
-    <div class="tally-pill">
-      <div class="tally-item">
-        <span class="tv" id="tally-hrs">0 hrs</span>
-        <span class="tl">SAVED / WK</span>
-      </div>
-      <div class="tally-item">
-        <span class="tv" id="tally-dollars">$0</span>
-        <span class="tl">SAVED / YR</span>
-      </div>
-    </div>
-  </div>
-
-  <div class="station-content" id="station-content">
-    <!-- Injected by JS -->
-  </div>
-
-  <div class="bottom-nav">
-    <div class="nav-hint" id="nav-hint">Enter their answers above, then run the demo</div>
-    <div class="nav-btns">
-      <button class="btn-back" onclick="goBack()">← Back</button>
-      <button class="btn-next" id="btn-next" onclick="goNext()">Next Station →</button>
-    </div>
-  </div>
-
-</div>
-
-<!-- ============ CLOSING SCREEN ============ -->
-
-<div class="screen" id="closing-screen">
-  <div class="closing-glow"></div>
-
-  <div class="closing">
-    <div class="closing-eyebrow">// Your Results Summary</div>
-    <h2>Here's What AI<br>Does for <span id="close-co">Apex Home Services</span></h2>
-    <p class="sub">Based on what you told us today, here's the real impact — every week, every year.</p>
-
-```
-<div class="grand-totals">
-  <div class="gt-item">
-    <span class="gv" id="grand-hrs">0</span>
-    <span class="gl">Hours saved<br>every week</span>
-  </div>
-  <div class="gt-item">
-    <span class="gv" id="grand-dollars">$0</span>
-    <span class="gl">Saved or recovered<br>every year</span>
-  </div>
-  <div class="gt-item">
-    <span class="gv" id="grand-days">0</span>
-    <span class="gl">Full work days<br>given back per month</span>
-  </div>
-</div>
-
-<div class="closing-cta">
-  <p>This is what's waiting on the other side of a single AI audit. No new hires. No disruption. Just systems that work while you sleep.</p>
-  <div class="cta-btns">
-    <button class="btn-cta-main" onclick="alert('Schedule your audit at breakoutaisolutions.com')">
-      ✓ &nbsp; Let's Build This For You
-    </button>
-    <button class="btn-cta-sec" onclick="restartDemo()">
-      ↺ &nbsp; Restart Demo
-    </button>
-  </div>
-</div>
-
-<div class="powered-by" style="position:relative;bottom:auto;right:auto;margin-top:24px;">BREAKOUT AI SOLUTIONS &nbsp;·&nbsp; breakoutaisolutions.com &nbsp;·&nbsp; (818) 388-3322</div>
 ```
 
   </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     MODAL
+══════════════════════════════════════ -->
+
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal" id="modal">
+    <div class="modal-bar" id="modal-bar"></div>
+    <div class="modal-header">
+      <div class="modal-title-block">
+        <div class="modal-eyebrow" id="modal-eyebrow"></div>
+        <div class="modal-title" id="modal-title"></div>
+      </div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="modal-body">
+      <!-- Injected by JS -->
+    </div>
+    <div class="modal-footer">
+      <div class="modal-footer-note" id="modal-footer-note">Run the demo to see results</div>
+      <button class="done-btn" id="done-btn" onclick="markDone()">✓ &nbsp;Done — Back to Dashboard</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     CLOSING SCREEN
+══════════════════════════════════════ -->
+
+<div class="screen" id="closing">
+  <div class="closing-spotlight"></div>
+
+  <div class="closing-eyebrow">// Your AI Transformation Summary</div>
+  <h2 class="closing-title">Here's What Changes for<br><span class="closing-company" id="close-company">Your Business</span></h2>
+  <p class="closing-sub">Based on your numbers — real impact, every week.</p>
+
+  <div class="grand-grid">
+    <div class="grand-item">
+      <span class="grand-val" id="grand-hrs">0</span>
+      <span class="grand-lbl">Hours saved<br>every week</span>
+    </div>
+    <div class="grand-item">
+      <span class="grand-val" id="grand-dollars">$0</span>
+      <span class="grand-lbl">Recovered or saved<br>every year</span>
+    </div>
+    <div class="grand-item">
+      <span class="grand-val" id="grand-days">0</span>
+      <span class="grand-lbl">Full work days<br>back per month</span>
+    </div>
+  </div>
+
+  <p class="closing-msg">This is what's waiting on the other side of your AI audit. No new hires. No disruption. Just systems that work — while you focus on growing.</p>
+
+  <div class="closing-btns">
+    <a class="cta-main" href="https://www.breakoutaisolutions.com/book-a-call" target="_blank">✓ &nbsp;Let's Build This For You</a>
+    <button class="cta-sec" onclick="restartDemo()">↺ &nbsp;Restart Demo</button>
+  </div>
+
+  <div class="closing-footer">BREAKOUT AI SOLUTIONS &nbsp;·&nbsp; breakoutaisolutions.com &nbsp;·&nbsp; (818) 388-3322</div>
 </div>
 
 <script>
+// ═══════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════
+var companyName = '';
+var verticalKey = '';
 var totalHrs = 0;
 var totalDollars = 0;
-var currentStation = 0;
-var stationDone = [];
+var completedTools = {};
+var currentToolIdx = null;
+var demoRan = false;
+var WAGE = 28;
 
-var HOURLY = 25; // assumed hourly labor cost for calcs
+// ═══════════════════════════════════════
+// VERTICAL PRESETS
+// ═══════════════════════════════════════
+var verticals = {
+  home: {
+    label: 'Home Services',
+    placeholder: 'Apex Home Services',
+    defaults: { leadHrs:6, leadPeople:2, callsWeek:90, missedPct:28, emailsWeek:40, emailMins:10, apptWeek:18, apptMins:14, presHrs:2, presWeek:4, propWeek:10, propHrs:1.5, contractWeek:10, signDays:3, followNoReply:22, followHrs:5, invWeek:20, invDelay:2, invLate:18, newsHrs:4, newsFreq:1, socialHrs:6, socialPlatforms:3, seoHrs:3, seoSpend:500 }
+  },
+  legal: {
+    label: 'Law Firm',
+    placeholder: 'Hargrove & Associates',
+    defaults: { leadHrs:4, leadPeople:2, callsWeek:60, missedPct:22, emailsWeek:50, emailMins:15, apptWeek:12, apptMins:18, presHrs:3, presWeek:3, propWeek:8, propHrs:2.5, contractWeek:12, signDays:5, followNoReply:15, followHrs:4, invWeek:15, invDelay:4, invLate:25, newsHrs:5, newsFreq:1, socialHrs:4, socialPlatforms:2, seoHrs:4, seoSpend:800 }
+  },
+  dental: {
+    label: 'Dental / Medical',
+    placeholder: 'Desert Smiles Dental',
+    defaults: { leadHrs:3, leadPeople:2, callsWeek:110, missedPct:30, emailsWeek:30, emailMins:8, apptWeek:30, apptMins:10, presHrs:2, presWeek:3, propWeek:5, propHrs:1, contractWeek:5, signDays:2, followNoReply:25, followHrs:6, invWeek:35, invDelay:1, invLate:20, newsHrs:3, newsFreq:1, socialHrs:5, socialPlatforms:3, seoHrs:3, seoSpend:600 }
+  },
+  realestate: {
+    label: 'Real Estate',
+    placeholder: 'Summit Realty Group',
+    defaults: { leadHrs:8, leadPeople:3, callsWeek:70, missedPct:32, emailsWeek:60, emailMins:12, apptWeek:15, apptMins:16, presHrs:2.5, presWeek:5, propWeek:12, propHrs:2, contractWeek:8, signDays:4, followNoReply:30, followHrs:7, invWeek:8, invDelay:3, invLate:15, newsHrs:5, newsFreq:2, socialHrs:8, socialPlatforms:3, seoHrs:4, seoSpend:700 }
+  },
+  consulting: {
+    label: 'Consulting / Coaching',
+    placeholder: 'Elevate Business Coaching',
+    defaults: { leadHrs:5, leadPeople:1, callsWeek:40, missedPct:20, emailsWeek:35, emailMins:14, apptWeek:10, apptMins:12, presHrs:3, presWeek:4, propWeek:6, propHrs:2, contractWeek:6, signDays:3, followNoReply:18, followHrs:4, invWeek:10, invDelay:2, invLate:10, newsHrs:6, newsFreq:2, socialHrs:6, socialPlatforms:3, seoHrs:3, seoSpend:400 }
+  },
+  agency: {
+    label: 'Marketing Agency',
+    placeholder: 'Velocity Creative Agency',
+    defaults: { leadHrs:5, leadPeople:2, callsWeek:50, missedPct:18, emailsWeek:80, emailMins:10, apptWeek:10, apptMins:10, presHrs:3, presWeek:6, propWeek:8, propHrs:2, contractWeek:8, signDays:2, followNoReply:20, followHrs:5, invWeek:15, invDelay:3, invLate:20, newsHrs:4, newsFreq:2, socialHrs:10, socialPlatforms:3, seoHrs:5, seoSpend:1000 }
+  },
+  construction: {
+    label: 'Contractors / Construction',
+    placeholder: 'Ironclad General Contractors',
+    defaults: { leadHrs:6, leadPeople:2, callsWeek:60, missedPct:35, emailsWeek:30, emailMins:12, apptWeek:12, apptMins:16, presHrs:2, presWeek:4, propWeek:10, propHrs:2, contractWeek:10, signDays:5, followNoReply:20, followHrs:5, invWeek:18, invDelay:3, invLate:22, newsHrs:3, newsFreq:1, socialHrs:4, socialPlatforms:2, seoHrs:2, seoSpend:400 }
+  },
+  other: {
+    label: 'General Business',
+    placeholder: 'Coachella Valley Business',
+    defaults: { leadHrs:5, leadPeople:2, callsWeek:60, missedPct:25, emailsWeek:40, emailMins:10, apptWeek:12, apptMins:12, presHrs:2, presWeek:4, propWeek:8, propHrs:1.5, contractWeek:8, signDays:3, followNoReply:18, followHrs:4, invWeek:15, invDelay:2, invLate:15, newsHrs:4, newsFreq:1, socialHrs:5, socialPlatforms:2, seoHrs:3, seoSpend:500 }
+  }
+};
 
-var stations = [
+// ═══════════════════════════════════════
+// TOOLS DEFINITION
+// ═══════════════════════════════════════
+var tools = [
   {
-    num: "01",
-    category: "LEAD GENERATION",
-    catColor: "#00d4ff",
-    title: "AI <em style='color:#00d4ff'>Finds Your Leads</em><br>While You Sleep",
-    hook: "Right now, someone on your team is spending hours every week searching for new prospects — Googling, scrolling, copy-pasting names into a spreadsheet. That ends today. AI scrapes, filters, and delivers a ready-to-contact lead list every single morning.",
-    before: "Your team manually searches for leads — Google, Yelp, LinkedIn — one at a time. Hours gone. Half the list is outdated.",
-    after: "AI automatically pulls targeted leads every morning: name, phone, email, business type, location. Your team starts the day ready to call.",
+    id: 'leads',
+    icon: '🔍',
+    name: 'Lead Scraping',
+    color: '#00b8f0',
+    eyebrow: 'STATION 01 — LEAD GENERATION',
+    title: 'AI Finds Your Leads While You Sleep',
+    beforeBullets: ['Manual Google searches & spreadsheets', 'Hours spent per week per person', 'Outdated contacts, duplicates, dead ends', 'Your best people doing busywork'],
+    afterBullets: ['AI delivers a fresh lead list every morning', 'Name, phone, email, fit score — ready to call', 'Filtered by location, size & service need', 'Your team starts the day ready to close'],
     questions: [
-      { label: "How many hours per week does your team spend finding and researching new leads?", unit: "hrs/week", key: "leadHrs", default: 5 },
-      { label: "How many people on your team do this task?", unit: "people", key: "leadPeople", default: 2 }
+      { label: 'Hours/week your team spends finding leads', unit: 'hrs/wk', key: 'leadHrs' },
+      { label: 'How many people do this task?', unit: 'people', key: 'leadPeople' }
     ],
-    output: "🔍 AI LEAD SCRAPE — Apex Home Services — Palm Desert, CA\n─────────────────────────────────────────\n\n✅ LEAD #1\nCompany: Sunrise Property Management\nContact: Karen Ellis, Operations Manager\nPhone: (760) 555-0182\nEmail: k.ellis@sunriseprop.com\nService Need: Annual HVAC maintenance — 24 units\nFit Score: 94/100 ★ HIGH VALUE\n\n✅ LEAD #2\nCompany: Desert Palms HOA\nContact: Tom Reyes, Facilities Director\nPhone: (760) 555-0341\nEmail: t.reyes@desertpalms.org\nService Need: Emergency plumbing + quarterly inspections\nFit Score: 89/100 ★ HIGH VALUE\n\n✅ LEAD #3\nCompany: Coachella Valley Medical Offices\nContact: Sandra Park, Office Manager\nPhone: (760) 555-0517\nEmail: s.park@cvmedoffice.com\nService Need: Commercial HVAC replacement — 3 units\nFit Score: 97/100 ★★ PRIORITY\n\n─────────────────────────────────────────\n📊 27 leads found · 3 priority · Delivered 6:00 AM daily",
-    calcHrs: function(q) { return q.leadHrs * q.leadPeople; },
-    calcDollars: function(q) { return q.leadHrs * q.leadPeople * HOURLY * 52; },
-    savingsLabel: function(q) { return { hrs: q.leadHrs * q.leadPeople, dollars: q.leadHrs * q.leadPeople * HOURLY * 52, extra: "That's " + (q.leadHrs * q.leadPeople * 52) + " hours a year your team gets back to close deals — not chase them." }; }
-  },
-  {
-    num: "02",
-    category: "LEAD QUALIFICATION",
-    catColor: "#7c3aed",
-    title: "AI <em style='color:#7c3aed'>Scores Every Lead</em><br>So You Chase the Right Ones",
-    hook: "Not every lead is worth your time. But right now, your team treats them all the same — calling the tire-kickers first and missing the hot ones. AI instantly scores each lead by budget, urgency, and fit, so you always know exactly who to call next.",
-    before: "Every lead goes into the same pile. Your team guesses who's worth calling. Hot leads go cold while time is wasted on the wrong ones.",
-    after: "Every lead gets an instant score: fit, urgency, and budget. Your team calls the 90+ scores first. No guesswork. No wasted calls.",
-    questions: [
-      { label: "How many new leads come in per week?", unit: "leads/week", key: "leadsPerWeek", default: 30 },
-      { label: "What percentage of those leads are actually worth pursuing? (honest estimate)", unit: "%", key: "goodLeadPct", default: 30 }
-    ],
-    output: "🎯 AI LEAD QUALIFIER — Apex Home Services\n─────────────────────────────────────────\n\nLEAD SCORING REPORT — Week of April 7\n\n🟢 PRIORITY TIER (Score 85–100) — CALL FIRST\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n1. Coachella Valley Medical — Score: 97\n   Reason: Large commercial HVAC, urgent timeline, approved budget\n   Recommended action: Call within 1 hour\n\n2. Sunrise Property Mgmt — Score: 94\n   Reason: Recurring contract potential, 24 units, warm referral\n   Recommended action: Call today, mention maintenance packages\n\n🟡 NURTURE TIER (Score 50–84) — FOLLOW UP\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n3. Desert Palms HOA — Score: 76\n   Reason: Interested but comparing 3 vendors\n   Recommended action: Send comparison guide, follow up Thursday\n\n🔴 LOW PRIORITY (Score 0–49) — AUTO-NURTURE\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n4. Residential Inquiry — Score: 31\n   Reason: Small job, no urgency, price shopping\n   Recommended action: Add to email nurture sequence\n\n─────────────────────────────────────────\nResult: Your team focuses on 2 real deals instead of 30 cold calls.",
-    calcHrs: function(q) { return 3; },
-    calcDollars: function(q) {
-      var wasted = q.leadsPerWeek * (1 - q.goodLeadPct/100);
-      return Math.round(wasted * 0.5 * HOURLY * 52);
+    output: function(d, co) {
+      return '🔍 AI LEAD SCRAPE — ' + co + '\n' +
+'─────────────────────────────────\n\n' +
+'✅  LEAD #1 — FIT SCORE: 97/100 ★ PRIORITY\n' +
+'    Company:  Sunrise Property Management\n' +
+'    Contact:  Karen Ellis, Operations Mgr\n' +
+'    Phone:    (760) 555-0182\n' +
+'    Email:    k.ellis@sunriseprop.com\n' +
+'    Need:     Annual service contract — 24 units\n\n' +
+'✅  LEAD #2 — FIT SCORE: 91/100 ★ HIGH VALUE\n' +
+'    Company:  Desert Palms HOA\n' +
+'    Contact:  Tom Reyes, Facilities Director\n' +
+'    Phone:    (760) 555-0341\n' +
+'    Email:    t.reyes@desertpalms.org\n' +
+'    Need:     Emergency + quarterly inspections\n\n' +
+'✅  LEAD #3 — FIT SCORE: 88/100 ★ HIGH VALUE\n' +
+'    Company:  CV Medical Offices\n' +
+'    Contact:  Sandra Park, Office Manager\n' +
+'    Phone:    (760) 555-0517\n' +
+'    Email:    s.park@cvmedoffice.com\n' +
+'    Need:     3-unit commercial replacement\n\n' +
+'─────────────────────────────────\n' +
+'📊  27 leads found · 3 priority · Delivered 6:00 AM';
     },
-    savingsLabel: function(q) {
-      var wasted = Math.round(q.leadsPerWeek * (1 - q.goodLeadPct/100));
-      return { hrs: 3, dollars: Math.round(wasted * 0.5 * HOURLY * 52), extra: "Your team stops wasting calls on " + wasted + " low-quality leads per week." };
-    }
+    calcHrs: function(d) { return d.leadHrs * d.leadPeople; },
+    calcDollars: function(d) { return Math.round(d.leadHrs * d.leadPeople * WAGE * 52); },
+    note: function(d) { return 'That\'s ' + Math.round(d.leadHrs * d.leadPeople * 52) + ' hours/year your team gets back — to close deals, not chase them.'; }
   },
   {
-    num: "03",
-    category: "CRM AUTOMATION",
-    catColor: "#f59e0b",
-    title: "AI <em style='color:#f59e0b'>Fills Your CRM</em><br>The Moment a Lead Comes In",
-    hook: "Data entry is the silent killer of sales productivity. Every time your team manually enters a lead into your CRM, that's time they're not selling. AI captures every lead the second it arrives — name, phone, notes, history — and it's already in your system before anyone picks up the phone.",
-    before: "Leads come in by phone, text, and email. Someone has to enter them into the CRM manually — if they remember at all. Leads fall through the cracks daily.",
-    after: "Every lead auto-populates into your CRM the instant it arrives. Tagged, categorized, assigned. Your team opens the CRM and everything is already there.",
+    id: 'phone',
+    icon: '📞',
+    name: 'Phone Agent + CRM',
+    color: '#ec4899',
+    eyebrow: 'STATION 02 — PHONE & DATA CAPTURE',
+    title: 'Every Call Answered. Every Lead Captured.',
+    beforeBullets: ['Calls go to voicemail after hours', 'Missed calls = missed jobs every week', 'Leads manually entered into CRM — if remembered', 'Data entry pulls your team away from customers'],
+    afterBullets: ['AI answers in 2 rings, 24/7 — qualifies & books', 'CRM record auto-created from every call', 'No missed leads, no data entry, no delays', 'Your team opens CRM — everything is already there'],
     questions: [
-      { label: "How many hours per week does your team spend on data entry and CRM updates?", unit: "hrs/week", key: "crmHrs", default: 6 },
-      { label: "How many people do this?", unit: "people", key: "crmPeople", default: 2 }
+      { label: 'Calls received per week', unit: 'calls/wk', key: 'callsWeek' },
+      { label: '% of calls that go unanswered or to voicemail', unit: '%', key: 'missedPct' }
     ],
-    output: "📋 AUTO CRM ENTRY — Apex Home Services\n─────────────────────────────────────────\n\n✅ NEW RECORD CREATED — 9:14 AM\n\nContact: Sandra Park\nCompany: Coachella Valley Medical Offices\nPhone: (760) 555-0517\nEmail: s.park@cvmedoffice.com\nSource: Website form\nService Requested: Commercial HVAC replacement\nUnits: 3 rooftop systems\nEstimated Value: $18,000–$24,000\nUrgency: High — needs done before summer\nAssigned To: Mike R. (Senior Sales)\nNext Action: Call by 10:00 AM\nFollow-up Reminder: Set for April 10\n\nNOTES AUTO-POPULATED:\n\"Customer mentioned 3 existing Carrier units — 12+ years old. Interested in financing options. Comparing vs. Desert Cooling Co. Warm lead — act fast.\"\n\n─────────────────────────────────────────\nStatus: ✅ Record live in CRM · Task assigned · Reminder set\nTime to complete: 0.0 seconds",
-    calcHrs: function(q) { return q.crmHrs * q.crmPeople; },
-    calcDollars: function(q) { return q.crmHrs * q.crmPeople * HOURLY * 52; },
-    savingsLabel: function(q) { return { hrs: q.crmHrs * q.crmPeople, dollars: q.crmHrs * q.crmPeople * HOURLY * 52, extra: "No more lost leads. No more end-of-day data catch-up. It's done before the call ends." }; }
-  },
-  {
-    num: "04",
-    category: "AI PHONE AGENT",
-    catColor: "#ec4899",
-    title: "AI <em style='color:#ec4899'>Answers Every Call</em><br>24 Hours a Day",
-    hook: "Every missed call is a missed job. Your competitors are answering right now. AI picks up instantly — day, night, weekends — qualifies the caller, gets the details, and books the appointment. Your customer never knows it wasn't a person.",
-    before: "Calls go to voicemail after hours. Customers hang up and call the next company on Google. You lose jobs you never even knew about.",
-    after: "AI answers in 2 rings, 24/7. Asks the right questions, qualifies the job, and books the appointment — all before you wake up.",
-    questions: [
-      { label: "How many calls does your business receive per week?", unit: "calls/week", key: "callsWeek", default: 80 },
-      { label: "What percentage of calls go unanswered or to voicemail?", unit: "%", key: "missedPct", default: 25 }
-    ],
-    output: "📞 AI PHONE AGENT — Apex Home Services\n─────────────────────────────────────────\n\n[INBOUND CALL — Saturday 8:47 PM]\n\nAI Agent: \"Thanks for calling Apex Home Services! I'm the after-hours assistant. What can I help you with tonight?\"\n\nCaller: \"Yeah hi, our AC just went out and it's 95 degrees. We have two kids at home.\"\n\nAI Agent: \"I'm so sorry to hear that — let's get this sorted right away. Can I get your name and address?\"\n\nCaller: \"It's David Romero, 47821 Dune Palm Road, Indio.\"\n\nAI Agent: \"Got it, David. What unit do you have — do you know the brand or model?\"\n\nCaller: \"It's a Lennox, maybe 8 years old. Just stopped blowing cold air.\"\n\nAI Agent: \"Perfect. I'm scheduling an emergency appointment for tomorrow morning at 8 AM with one of our senior techs. You'll get a text confirmation in just a moment. Is that number ending in 4471 the best to reach you?\"\n\nCaller: \"Yes, perfect. Thank you!\"\n\n─────────────────────────────────────────\n✅ Call logged · Appointment booked · Tech notified\n✅ CRM updated · Follow-up reminder set\nJob est. value: $800–$1,400",
-    calcHrs: function(q) { return 4; },
-    calcDollars: function(q) {
-      var missed = Math.round(q.callsWeek * q.missedPct/100);
-      return missed * 800 * 52 * 0.15;
+    output: function(d, co) {
+      var missed = Math.round(d.callsWeek * d.missedPct / 100);
+      return '📞 AI PHONE AGENT — ' + co + '\n' +
+'─────────────────────────────────\n\n' +
+'[INBOUND CALL — Saturday 9:02 PM]\n\n' +
+'AI:     "Thanks for calling! I\'m the after-hours\n' +
+'         assistant. How can I help tonight?"\n\n' +
+'Caller: "Our AC just went out. We have two kids\n' +
+'         at home and it\'s 96 degrees."\n\n' +
+'AI:     "I\'m so sorry — let\'s fix this right away.\n' +
+'         Can I get your name and address?"\n\n' +
+'Caller: "David Romero, 47821 Dune Palm Rd, Indio."\n\n' +
+'AI:     "Got it David. I\'m booking an emergency\n' +
+'         appointment for tomorrow at 8 AM.\n' +
+'         You\'ll get a text confirmation now."\n\n' +
+'─────────────────────────────────\n' +
+'✅  Call logged · Appointment booked\n' +
+'✅  CRM auto-populated · Tech notified\n' +
+'📊  ~' + missed + ' calls/wk currently missed';
     },
-    savingsLabel: function(q) {
-      var missed = Math.round(q.callsWeek * q.missedPct/100);
-      return { hrs: 4, dollars: Math.round(missed * 800 * 52 * 0.15), extra: "You're currently missing ~" + missed + " calls/week. At an avg $800/job, that's real money walking away." };
+    calcHrs: function(d) { return 5; },
+    calcDollars: function(d) { return Math.round(d.callsWeek * (d.missedPct/100) * 900 * 52 * 0.12); },
+    note: function(d) {
+      var missed = Math.round(d.callsWeek * d.missedPct/100);
+      return 'You\'re missing ~' + missed + ' calls/week. At $900 avg job value, that\'s real revenue walking away nightly.';
     }
   },
   {
-    num: "05",
-    category: "COLD OUTREACH",
-    catColor: "#00d4ff",
-    title: "AI <em style='color:#00d4ff'>Writes Personalized Emails</em><br>to Every Lead Instantly",
-    hook: "Generic emails get deleted. Personalized outreach gets replies. But writing a custom email for every lead takes forever — so most teams send the same bland blast to everyone. AI writes a unique, relevant email to every single prospect in seconds, using their name, their business, and their specific situation.",
-    before: "Your team sends the same generic email blast to everyone. Open rates are low. Nobody replies. Good leads go cold.",
-    after: "AI writes a personalized outreach email for every lead — their name, their business, their pain point. Sent automatically. Replies come in while you work.",
+    id: 'email',
+    icon: '📧',
+    name: 'Cold Email Outreach',
+    color: '#00b8f0',
+    eyebrow: 'STATION 03 — OUTREACH',
+    title: 'Personalized Emails to Every Lead — Automatically',
+    beforeBullets: ['Generic blasts get ignored or deleted', 'Writing emails takes time your team doesn\'t have', 'One message sent to everyone — no personalization', 'Low open rates, lower reply rates'],
+    afterBullets: ['AI writes a unique email per lead in seconds', 'Uses their name, company, location & specific need', 'Sent automatically on the right day and time', 'Higher open rates + more replies with zero effort'],
     questions: [
-      { label: "How many outreach emails does your team send per week?", unit: "emails/week", key: "emailsWeek", default: 40 },
-      { label: "How many minutes does it take to write and send one email?", unit: "mins each", key: "emailMins", default: 8 }
+      { label: 'Outreach emails sent per week', unit: 'emails/wk', key: 'emailsWeek' },
+      { label: 'Minutes to write & send one email today', unit: 'mins each', key: 'emailMins' }
     ],
-    output: "📧 AI COLD EMAIL — Apex Home Services\n─────────────────────────────────────────\n\nTO: Karen Ellis <k.ellis@sunriseprop.com>\nSUBJECT: HVAC Maintenance for Sunrise Property's 24 Units\n\nHi Karen,\n\nI noticed Sunrise Property Management handles 24 residential units in the Palm Desert area — which means your HVAC systems are working hard, especially heading into summer.\n\nWe're Apex Home Services, and we specialize in property management HVAC contracts. We currently service 3 other HOAs in your zip code, and we offer priority scheduling, 24-hour emergency response, and a single monthly invoice — which property managers tell us cuts their admin headache significantly.\n\nWould it make sense to jump on a quick 10-minute call this week? I'd love to show you what our property maintenance package looks like and give you a no-obligation quote.\n\nEither way, I'll follow up Thursday in case this got buried.\n\nBest,\nMike Reynolds\nApex Home Services\n(760) 555-0100\n\n─────────────────────────────────────────\n⏱ Written in 3 seconds · Sent automatically\n📊 Personalized for Karen's business, size & location",
-    calcHrs: function(q) { return Math.round(q.emailsWeek * q.emailMins / 60 * 10) / 10; },
-    calcDollars: function(q) { return Math.round(q.emailsWeek * q.emailMins / 60 * HOURLY * 52); },
-    savingsLabel: function(q) {
-      var hrs = Math.round(q.emailsWeek * q.emailMins / 60 * 10) / 10;
-      return { hrs: hrs, dollars: Math.round(hrs * HOURLY * 52), extra: "Every email is personalized. Response rates go up. Your team stops writing and starts closing." };
-    }
-  },
-  {
-    num: "06",
-    category: "PROPOSAL GENERATION",
-    catColor: "#7c3aed",
-    title: "AI <em style='color:#7c3aed'>Writes Your Proposals</em><br>in Under 60 Seconds",
-    hook: "A great proposal wins jobs. But writing them takes time your team doesn't have. AI generates a professional, customized proposal the moment a job is qualified — complete with scope, pricing, and a clear call to action. Your prospect gets it fast. Fast proposals win more.",
-    before: "Proposals take 1–3 hours to write and format. Jobs sit in 'pending' while customers wait. Some never get sent at all.",
-    after: "AI generates a complete, professional proposal in 60 seconds. Customer receives it while you're still on the call. First to propose, first to close.",
-    questions: [
-      { label: "How many proposals do you send per week?", unit: "proposals/week", key: "propsWeek", default: 8 },
-      { label: "How long does it take to build one proposal today?", unit: "hrs each", key: "propHrs", default: 1.5 }
-    ],
-    output: "📄 AI PROPOSAL — Apex Home Services\n─────────────────────────────────────────\n\nPROPOSAL #2024-0412\nPrepared for: Coachella Valley Medical Offices\nDate: April 12, 2025\nPrepared by: Apex Home Services\n\nPROJECT SCOPE\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nReplacement of 3 rooftop HVAC units (Carrier, Lennox, Trane)\nUnits: 5-ton commercial grade\nIncludes: Equipment, labor, permits, disposal of old units\nTimeline: 3–5 business days from signed agreement\nWarranty: 2-year parts + labor, 10-year manufacturer\n\nINVESTMENT SUMMARY\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nEquipment (3 units):       $14,400\nInstallation & Labor:        $4,200\nPermits & Disposal:            $600\n─────────────────────────\nTOTAL INVESTMENT:         $19,200\n\nFinancing available: $534/mo — 0% for 36 months\n\nNEXT STEP: Sign and return by April 15 to lock in\ncurrent pricing and secure your summer install slot.\n\n─────────────────────────────────────────\n✅ Sent to s.park@cvmedoffice.com — 58 seconds after call ended",
-    calcHrs: function(q) { return q.propsWeek * q.propHrs; },
-    calcDollars: function(q) { return q.propsWeek * q.propHrs * HOURLY * 52; },
-    savingsLabel: function(q) { return { hrs: q.propsWeek * q.propHrs, dollars: Math.round(q.propsWeek * q.propHrs * HOURLY * 52), extra: "Faster proposals = higher close rates. Customers say yes before they've had time to shop around." }; }
-  },
-  {
-    num: "07",
-    category: "FOLLOW-UP SEQUENCES",
-    catColor: "#10b981",
-    title: "AI <em style='color:#10b981'>Follows Up Automatically</em><br>Until They Say Yes",
-    hook: "80% of sales happen after the 5th follow-up. Most businesses give up after one. AI sends a perfectly timed sequence of follow-up messages — by email or text — to every lead who hasn't responded. Professional, persistent, and completely automatic. You focus on the people who are ready. AI handles everyone else.",
-    before: "Someone says 'let me think about it' and your team moves on. Most of those leads never hear from you again. Money left on the table every week.",
-    after: "AI sends a perfectly timed 5-step follow-up sequence to every non-responder. Most customers convert by message 3. Zero effort from your team.",
-    questions: [
-      { label: "How many leads per week don't respond to your first outreach?", unit: "leads/week", key: "noReply", default: 20 },
-      { label: "How much time does manual follow-up take each week?", unit: "hrs/week", key: "followHrs", default: 4 }
-    ],
-    output: "🔁 AI FOLLOW-UP SEQUENCE — Apex Home Services\n─────────────────────────────────────────\n\nLEAD: Desert Palms HOA — Tom Reyes\nStatus: No reply after initial email\n\n📧 FOLLOW-UP #1 — Day 2\n\"Hi Tom — just circling back on the HVAC proposal for Desert Palms. Happy to answer any questions or adjust the scope. Still have a few spots open before summer.\"\n\n📱 FOLLOW-UP #2 — Day 4 (TEXT)\n\"Hey Tom, Mike from Apex. Sent over a proposal Tuesday — just wanted to make sure it didn't get buried. Reply here or call us anytime: (760) 555-0100\"\n\n📧 FOLLOW-UP #3 — Day 7\n\"Tom — wanted to share something relevant. We just finished a similar project for a Palm Desert HOA last week — saved them $3,200 vs. their previous vendor. Happy to send the comparison if helpful.\"\n\n📧 FOLLOW-UP #4 — Day 12\n\"Final check-in on this one, Tom. We have one installation slot open the week of April 21 — wanted to give Desert Palms first shot before it's gone.\"\n\n📧 FOLLOW-UP #5 — Day 18\n\"Closing the loop on our end, Tom. The offer stands whenever you're ready. Hope to earn your business.\"\n\n─────────────────────────────────────────\n✅ Sequence live · No manual effort required\n📊 Industry avg: 42% of non-responders convert by message 3",
-    calcHrs: function(q) { return q.followHrs; },
-    calcDollars: function(q) {
-      var recovered = Math.round(q.noReply * 0.42 * 800 * 52 * 0.1);
-      return recovered;
+    output: function(d, co) {
+      return '📧 AI OUTREACH EMAIL — ' + co + '\n' +
+'─────────────────────────────────\n\n' +
+'TO:      Karen Ellis <k.ellis@sunriseprop.com>\n' +
+'SUBJECT: HVAC Service Contract — Sunrise Properties\n\n' +
+'Hi Karen,\n\n' +
+'I noticed Sunrise Property manages 24 units in the\n' +
+'Palm Desert area — which means your HVAC systems\n' +
+'are working hard heading into summer.\n\n' +
+'We specialize in property management service\n' +
+'contracts: priority scheduling, 24/7 emergency\n' +
+'response, and one clean monthly invoice.\n\n' +
+'Would a quick 10-minute call this week make sense?\n' +
+'I\'ll follow up Thursday if I don\'t hear back.\n\n' +
+'Best, Mike · ' + co + '\n\n' +
+'─────────────────────────────────\n' +
+'⏱  Written in 4 seconds · Sent automatically\n' +
+'📊  Personalized for Karen\'s business & location';
     },
-    savingsLabel: function(q) {
-      var recovered = Math.round(q.noReply * 0.42 * 800);
-      return { hrs: q.followHrs, dollars: recovered * 52 * 0.1, extra: "~42% of your non-responders will convert. That's roughly $" + (recovered).toLocaleString() + " in recovered revenue per week." };
+    calcHrs: function(d) { return Math.round(d.emailsWeek * d.emailMins / 60 * 10) / 10; },
+    calcDollars: function(d) { return Math.round(d.emailsWeek * d.emailMins / 60 * WAGE * 52); },
+    note: function(d) { return 'Every email is personalized. Response rates go up. Your team stops writing and starts closing.'; }
+  },
+  {
+    id: 'scheduling',
+    icon: '📅',
+    name: 'Appointment Scheduling',
+    color: '#f0b400',
+    eyebrow: 'STATION 04 — SCHEDULING',
+    title: 'Booked, Confirmed & Reminded — Zero Back-and-Forth',
+    beforeBullets: ['6–10 emails to nail down a single time slot', 'Double-bookings and scheduling conflicts', 'No-shows because no reminder was sent', 'Staff time wasted on calendar management'],
+    afterBullets: ['AI books the appointment in one step', 'Instant confirmation sent by text and email', '24-hour and 1-hour reminders auto-sent', 'No-show rate drops by up to 67%'],
+    questions: [
+      { label: 'Appointments booked per week', unit: 'appts/wk', key: 'apptWeek' },
+      { label: 'Minutes spent scheduling each one (calls + emails)', unit: 'mins each', key: 'apptMins' }
+    ],
+    output: function(d, co) {
+      return '📅 APPOINTMENT BOOKED — ' + co + '\n' +
+'─────────────────────────────────\n\n' +
+'Customer:   Sandra Park — CV Medical Offices\n' +
+'Service:    Commercial HVAC Site Assessment\n' +
+'Date:       Thursday, April 17 at 10:00 AM\n' +
+'Tech:       Carlos M. (Commercial Specialist)\n' +
+'Duration:   90 minutes\n\n' +
+'✅  CONFIRMATION SENT (email + text)\n' +
+'"Your appointment is confirmed for Thursday\n' +
+' April 17 at 10 AM. Carlos will call 30 min\n' +
+' before arrival. Questions? Reply here."\n\n' +
+'⏰  REMINDER — Wednesday 10 AM (24 hrs before)\n' +
+'"Reminder: Apex appointment tomorrow at 10 AM!"\n\n' +
+'⏰  REMINDER — Thursday 9 AM (1 hr before)\n' +
+'"Carlos is on his way! ETA ~30 minutes."\n\n' +
+'─────────────────────────────────\n' +
+'✅  Booked · Confirmed · Reminded — 0 back-and-forth\n' +
+'📊  No-show reduction: avg 67% with AI reminders';
+    },
+    calcHrs: function(d) { return Math.round(d.apptWeek * d.apptMins / 60 * 10) / 10; },
+    calcDollars: function(d) { return Math.round(d.apptWeek * d.apptMins / 60 * WAGE * 52 + d.apptWeek * 0.12 * 1000 * 52 * 0.67); },
+    note: function(d) { return 'Cuts scheduling time AND no-shows. Every completed appointment means revenue that would\'ve been lost.'; }
+  },
+  {
+    id: 'presentations',
+    icon: '🖥️',
+    name: 'Presentations',
+    color: '#a78bfa',
+    eyebrow: 'STATION 05 — PRESENTATIONS',
+    title: 'Professional Presentations Built in Minutes',
+    beforeBullets: ['Hours spent building decks from scratch', 'Inconsistent branding and formatting', 'Outdated slides recycled from old jobs', 'Sales rep\'s time on design instead of selling'],
+    afterBullets: ['AI builds a branded, customized deck instantly', 'Pulls in the right info for each prospect', 'Consistent, polished look every single time', 'Ready before the meeting even starts'],
+    questions: [
+      { label: 'Hours to build a presentation from scratch', unit: 'hrs each', key: 'presHrs' },
+      { label: 'Presentations built per week', unit: 'per week', key: 'presWeek' }
+    ],
+    output: function(d, co) {
+      return '🖥️  AI PRESENTATION — ' + co + '\n' +
+'─────────────────────────────────\n\n' +
+'DECK GENERATED: "Why ' + co + '"\n' +
+'Prepared for: CV Medical Offices\n\n' +
+'SLIDE 1 — Who We Are\n' +
+'  · Founded 2011 · 500+ projects completed\n' +
+'  · Licensed, bonded & insured\n' +
+'  · Palm Desert\'s #1 rated service provider\n\n' +
+'SLIDE 2 — Your Challenge\n' +
+'  · 3 aging HVAC units — 12+ years old\n' +
+'  · Summer temps averaging 108°F\n' +
+'  · Downtime risk = patient/staff disruption\n\n' +
+'SLIDE 3 — Our Solution\n' +
+'  · Full replacement: 3 commercial units\n' +
+'  · Timeline: 3–5 days · 10-yr warranty\n' +
+'  · Financing: $0 down, 0% for 36 months\n\n' +
+'SLIDE 4 — Why Now\n' +
+'  · Beat the summer rush\n' +
+'  · Lock in current pricing\n' +
+'  · Protect your team & patients\n\n' +
+'─────────────────────────────────\n' +
+'✅  Generated in 90 seconds · Branded & ready';
+    },
+    calcHrs: function(d) { return d.presHrs * d.presWeek; },
+    calcDollars: function(d) { return Math.round(d.presHrs * d.presWeek * WAGE * 52); },
+    note: function(d) { return 'Your team walks into every meeting with a polished, customized deck — without spending a minute building it.'; }
+  },
+  {
+    id: 'proposals',
+    icon: '📋',
+    name: 'Proposals',
+    color: '#7c3aed',
+    eyebrow: 'STATION 06 — PROPOSALS',
+    title: 'Professional Proposals Out the Door in 60 Seconds',
+    beforeBullets: ['1–3 hours to write and format each proposal', 'Jobs sit in "pending" while customers wait', 'Inconsistent pricing and scope language', 'Some proposals never get sent at all'],
+    afterBullets: ['Full proposal generated in under 60 seconds', 'Customer receives it while you\'re still on the call', 'Consistent scope, pricing & professional look', 'First to propose wins — and you\'re always first'],
+    questions: [
+      { label: 'Proposals sent per week', unit: 'per week', key: 'propWeek' },
+      { label: 'Hours to build one proposal today', unit: 'hrs each', key: 'propHrs' }
+    ],
+    output: function(d, co) {
+      return '📋 AI PROPOSAL — ' + co + '\n' +
+'─────────────────────────────────\n\n' +
+'PROPOSAL #2025-0412\n' +
+'For:   CV Medical Offices — Sandra Park\n' +
+'Date:  April 12, 2025\n\n' +
+'SCOPE OF WORK\n' +
+'  · Replace 3 rooftop HVAC units\n' +
+'  · Equipment, labor, permits & disposal\n' +
+'  · Timeline: 3–5 business days\n' +
+'  · Warranty: 2-yr labor · 10-yr manufacturer\n\n' +
+'INVESTMENT\n' +
+'  Equipment (3 units)    $14,400\n' +
+'  Installation & Labor    $4,200\n' +
+'  Permits & Disposal        $600\n' +
+'  ─────────────────────────────\n' +
+'  TOTAL                  $19,200\n\n' +
+'  Financing: $534/mo · 0% · 36 months\n\n' +
+'NEXT STEP: Sign by April 15 to lock pricing\n' +
+'and secure your pre-summer install slot.\n\n' +
+'─────────────────────────────────\n' +
+'✅  Sent to Sandra — 54 seconds after call ended';
+    },
+    calcHrs: function(d) { return d.propWeek * d.propHrs; },
+    calcDollars: function(d) { return Math.round(d.propWeek * d.propHrs * WAGE * 52); },
+    note: function(d) { return 'Faster proposals close more deals. Customers say yes before they have time to shop around.'; }
+  },
+  {
+    id: 'contracts',
+    icon: '✍️',
+    name: 'Contracts + Signatures',
+    color: '#00e5a0',
+    eyebrow: 'STATION 07 — CONTRACTS',
+    title: 'From Verbal Yes to Signed Contract in Minutes',
+    beforeBullets: ['Emailing Word docs back and forth for days', 'Waiting on signatures slows your cash flow', 'Contracts lost, forgotten or unsigned', 'No system — just hope they remember to sign'],
+    afterBullets: ['AI generates the contract the moment they agree', 'E-signature link sent instantly by text and email', 'Auto-filed in CRM the second it\'s signed', 'Sales cycle shrinks from days to minutes'],
+    questions: [
+      { label: 'Contracts sent per week', unit: 'per week', key: 'contractWeek' },
+      { label: 'Average days to get a contract signed', unit: 'days avg', key: 'signDays' }
+    ],
+    output: function(d, co) {
+      return '✍️  CONTRACT + E-SIGNATURE — ' + co + '\n' +
+'─────────────────────────────────\n\n' +
+'CONTRACT #APX-2025-0412 GENERATED\n' +
+'Party A: ' + co + '\n' +
+'Party B: CV Medical Offices\n' +
+'Service: Commercial HVAC Replacement\n' +
+'Value:   $19,200 · Net 14 payment terms\n\n' +
+'KEY TERMS AUTO-POPULATED:\n' +
+'  · Scope, timeline & warranty included\n' +
+'  · Change order clause + liability limits\n' +
+'  · Payment schedule: 50% deposit / 50% on completion\n\n' +
+'E-SIGNATURE REQUEST SENT:\n' +
+'  📱 Text: "Your contract is ready — sign here:\n' +
+'           apex.sign/contract-0412"\n' +
+'  📧 Email: Contract attached + DocuSign link\n\n' +
+'STATUS UPDATE — 18 minutes later:\n' +
+'  ✅  Sandra Park — SIGNED\n' +
+'  ✅  Contract filed in CRM automatically\n' +
+'  ✅  Deposit invoice triggered\n\n' +
+'─────────────────────────────────\n' +
+'⏱  Verbal yes → signed contract: 18 minutes';
+    },
+    calcHrs: function(d) { return Math.round(d.contractWeek * 0.5 * 10) / 10; },
+    calcDollars: function(d) { return Math.round(d.contractWeek * d.signDays * 200 * 52 * 0.1); },
+    note: function(d) { return 'Every day a contract goes unsigned is a day your cash flow is delayed. AI closes that gap instantly.'; }
+  },
+  {
+    id: 'followup',
+    icon: '🔁',
+    name: 'Follow-Up + SMS',
+    color: '#f0b400',
+    eyebrow: 'STATION 08 — FOLLOW-UP',
+    title: '80% of Sales Happen After Follow-Up #5 — AI Never Forgets',
+    beforeBullets: ['One follow-up, then silence — deals go cold', 'Your team moves on, good leads forgotten', 'No system = no consistency = lost revenue', 'Manual texting eats hours every week'],
+    afterBullets: ['5-touch automated sequence: email + SMS', 'Perfectly timed, personalized to each lead', 'Runs itself — zero effort from your team', 'Industry avg: 42% of non-responders convert by #3'],
+    questions: [
+      { label: 'Leads per week that don\'t reply to first contact', unit: 'leads/wk', key: 'followNoReply' },
+      { label: 'Hours/week spent on manual follow-up today', unit: 'hrs/wk', key: 'followHrs' }
+    ],
+    output: function(d, co) {
+      return '🔁 FOLLOW-UP SEQUENCE — ' + co + '\n' +
+'─────────────────────────────────\n\n' +
+'LEAD: Desert Palms HOA — Tom Reyes\n' +
+'Status: No reply after initial outreach\n\n' +
+'📧  DAY 2 — EMAIL\n' +
+'"Tom — just circling back on our proposal.\n' +
+' Happy to adjust scope or answer questions.\n' +
+' Still have pre-summer slots available."\n\n' +
+'📱  DAY 4 — TEXT\n' +
+'"Hey Tom, Mike here. Sent a proposal Tuesday\n' +
+' — want to make sure it didn\'t get buried.\n' +
+' Reply here anytime: (760) 555-0100"\n\n' +
+'📧  DAY 7 — EMAIL\n' +
+'"Wanted to share — we just finished a similar\n' +
+' project for a Palm Desert HOA and saved them\n' +
+' $3,200 vs their previous vendor. Worth a look?"\n\n' +
+'📧  DAY 12 — EMAIL\n' +
+'"One install slot open week of April 21.\n' +
+' Wanted to give Desert Palms first shot."\n\n' +
+'📧  DAY 18 — EMAIL\n' +
+'"Closing the loop, Tom. Offer stands whenever\n' +
+' you\'re ready. Hope to earn your business."\n\n' +
+'─────────────────────────────────\n' +
+'✅  Sequence live · No manual effort required';
+    },
+    calcHrs: function(d) { return d.followHrs; },
+    calcDollars: function(d) { return Math.round(d.followNoReply * 0.42 * 1000 * 52 * 0.08); },
+    note: function(d) {
+      var recovered = Math.round(d.followNoReply * 0.42);
+      return 'At 42% conversion, that\'s ~' + recovered + ' extra deals/week recovered that used to just disappear.';
     }
   },
   {
-    num: "08",
-    category: "APPOINTMENT SCHEDULING",
-    catColor: "#f59e0b",
-    title: "AI <em style='color:#f59e0b'>Books Appointments</em><br>Without the Back-and-Forth",
-    hook: "Scheduling a single appointment can take 6–10 emails. 'Does Tuesday work?' 'No, how about Thursday?' AI eliminates all of it. The moment a lead is ready to move forward, AI checks your calendar, offers available times, and books the appointment — confirmed, reminded, and ready to go.",
-    before: "Booking an appointment takes 6–10 emails back and forth. Slots get double-booked. No-shows happen because nobody sent a reminder.",
-    after: "AI books the appointment in one step, sends a confirmation, and fires a reminder 24 hours and 1 hour before. No-shows drop dramatically.",
+    id: 'invoicing',
+    icon: '💵',
+    name: 'Invoicing + Collections',
+    color: '#00e5a0',
+    eyebrow: 'STATION 09 — BILLING',
+    title: 'Get Paid Faster — Invoiced the Second the Job Is Done',
+    beforeBullets: ['Invoices sent hours or days after the job', 'Some never get sent — money just left behind', 'Chasing late payments wastes staff time', 'Cash flow gaps create real stress'],
+    afterBullets: ['Invoice auto-generated the moment job is marked done', 'Payment link sent instantly by text and email', 'Reminders sent automatically before and after due date', 'Collections handled without a single awkward call'],
     questions: [
-      { label: "How many appointments do you book per week?", unit: "appts/week", key: "apptWeek", default: 15 },
-      { label: "How many minutes does scheduling each one take (calls + emails)?", unit: "mins each", key: "apptMins", default: 12 }
+      { label: 'Invoices sent per week', unit: 'per week', key: 'invWeek' },
+      { label: 'Average days after job to send invoice', unit: 'days late', key: 'invDelay' }
     ],
-    output: "📅 AI SCHEDULING — Apex Home Services\n─────────────────────────────────────────\n\nNEW APPOINTMENT BOOKED\n\nCustomer: Sandra Park — CV Medical Offices\nService: Commercial HVAC Site Assessment\nDate: Thursday, April 17 at 10:00 AM\nTech Assigned: Carlos M. (Commercial Specialist)\nLocation: 78900 Avenue 47, Indio CA 92201\nEstimated Duration: 90 minutes\n\n✅ CONFIRMATION SENT (email + text)\n\"Hi Sandra! Your appointment with Apex Home Services is confirmed for Thursday April 17 at 10 AM. Carlos will be your tech — he'll call 30 min before arrival. Questions? Reply here or call (760) 555-0100.\"\n\n⏰ REMINDER SENT — Wednesday 10:00 AM (24 hrs before)\n\"Reminder: Apex Home Services tomorrow at 10 AM. Carlos is looking forward to meeting you!\"\n\n⏰ REMINDER SENT — Thursday 9:00 AM (1 hr before)\n\"Carlos from Apex is on his way! ETA approximately 30 minutes.\"\n\n─────────────────────────────────────────\n✅ Booked, confirmed, reminded — zero back and forth\n📊 No-show rate reduction: avg 67% with AI reminders",
-    calcHrs: function(q) { return Math.round(q.apptWeek * q.apptMins / 60 * 10) / 10; },
-    calcDollars: function(q) { return Math.round(q.apptWeek * q.apptMins / 60 * HOURLY * 52); },
-    savingsLabel: function(q) {
-      var hrs = Math.round(q.apptWeek * q.apptMins / 60 * 10) / 10;
-      var noshow = Math.round(q.apptWeek * 0.15 * 800 * 52 * 0.67);
-      return { hrs: hrs, dollars: Math.round(hrs * HOURLY * 52) + noshow, extra: "Saves scheduling time AND cuts no-shows by ~67%. Every completed appointment = revenue." };
-    }
+    output: function(d, co) {
+      return '💵 AUTO INVOICE — ' + co + '\n' +
+'─────────────────────────────────\n\n' +
+'INVOICE #APX-2025-0847\n' +
+'Date: April 12, 2025 — 3:22 PM\n' +
+'(Job completed: 3:20 PM — 2 minutes ago)\n\n' +
+'BILL TO: CV Medical Offices — Sandra Park\n\n' +
+'  3x Commercial HVAC (Replaced)   $14,400\n' +
+'  Installation & Labor              $4,200\n' +
+'  Permits & Disposal                  $600\n' +
+'  ─────────────────────────────────\n' +
+'  Subtotal:                        $19,200\n' +
+'  Tax (8.75%):                      $1,680\n' +
+'  TOTAL DUE:                       $20,880\n\n' +
+'  Pay online: apex.pay/inv-0847\n' +
+'  Due: April 26 (Net 14)\n\n' +
+'AUTO-REMINDERS:\n' +
+'  → Friendly reminder: April 22\n' +
+'  → Due date notice:  April 26\n' +
+'  → Overdue notice:   May 3 (if unpaid)\n\n' +
+'─────────────────────────────────\n' +
+'✅  Invoice sent · Portal live · Reminders set';
+    },
+    calcHrs: function(d) { return Math.round(d.invWeek * 0.3 * 10) / 10; },
+    calcDollars: function(d) { return Math.round(d.invWeek * d.invDelay * 180 * 52 * 0.08); },
+    note: function(d) { return 'Faster invoices = faster cash. No more delayed billing, forgotten invoices, or awkward collections calls.'; }
   },
   {
-    num: "09",
-    category: "OBJECTION HANDLING",
-    catColor: "#ec4899",
-    title: "AI <em style='color:#ec4899'>Handles Objections</em><br>So Your Team Always Has an Answer",
-    hook: "'It's too expensive.' 'Let me get another quote.' 'I need to think about it.' These objections kill deals every day — not because they can't be handled, but because your team doesn't always have the right response in the moment. AI coaches your team in real time with the exact right thing to say.",
-    before: "Your team hears an objection, freezes, and says 'I'll get back to you.' The customer calls someone else. Deal closed — by your competitor.",
-    after: "AI gives your team the perfect response to any objection instantly — by text, script, or email. Deals that used to die start closing.",
+    id: 'newsletter',
+    icon: '📰',
+    name: 'Newsletter',
+    color: '#00b8f0',
+    eyebrow: 'STATION 10 — NEWSLETTERS',
+    title: 'Stay Top of Mind With Every Client — On Autopilot',
+    beforeBullets: ['Newsletter never gets done — no time to write it', 'Clients forget about you between jobs', 'Inconsistent or zero email communication', 'Missed opportunity to generate repeat business'],
+    afterBullets: ['AI writes, formats & schedules a branded newsletter', 'Relevant content for your industry every month', 'Keeps your name in front of every past client', 'Drives repeat bookings and referrals automatically'],
     questions: [
-      { label: "How many deals per week do you feel are lost to price or hesitation objections?", unit: "deals/week", key: "lostDeals", default: 3 },
-      { label: "What is your average job value?", unit: "$ avg job", key: "avgJob", default: 1200 }
+      { label: 'Hours spent on newsletters or email content per month', unit: 'hrs/month', key: 'newsHrs' },
+      { label: 'How many newsletters do you currently send per month?', unit: 'per month', key: 'newsFreq' }
     ],
-    output: "💬 AI OBJECTION HANDLER — Apex Home Services\n─────────────────────────────────────────\n\nOBJECTION DETECTED: \"Your price is higher than the other quote I got.\"\n\n─────────────────────────────────────────\n\n✅ RECOMMENDED RESPONSE:\n\n\"I completely understand, and I appreciate you being upfront with me. Can I ask — was the other quote for the same equipment and warranty coverage?\n\nThe reason I ask is we see this often. A lot of quotes look lower because they're using builder-grade equipment or leaving out permit costs. Ours includes a 10-year manufacturer warranty, 2-year labor warranty, and we pull all permits ourselves — which protects you if you ever sell the home.\n\nWhen you factor that in, we're actually very competitive. And if it helps, we have a financing option at $0 down that keeps your cash in the business.\n\nWould that make the decision easier?\"\n\n─────────────────────────────────────────\n\nOBJECTION: \"I need to think about it.\"\n✅ RESPONSE: \"Totally fair — what part would be helpful to think through together right now?\"\n\nOBJECTION: \"Can you do better on price?\"\n✅ RESPONSE: \"Let me see what I can do. If I can sharpen the pencil a bit, can we get this signed today?\"\n\n─────────────────────────────────────────\n📊 Teams using AI coaching close 31% more deals on first contact",
-    calcHrs: function(q) { return 2; },
-    calcDollars: function(q) { return Math.round(q.lostDeals * q.avgJob * 0.35 * 52); },
-    savingsLabel: function(q) {
-      var recovered = Math.round(q.lostDeals * q.avgJob * 0.35);
-      return { hrs: 2, dollars: recovered * 52, extra: "If AI helps you recover just 35% of those lost deals, that's $" + recovered.toLocaleString() + "/week in revenue you're currently leaving behind." };
-    }
+    output: function(d, co) {
+      return '📰 AI NEWSLETTER — ' + co + '\n' +
+'─────────────────────────────────\n\n' +
+'SUBJECT: 3 Signs Your AC Won\'t Survive Summer\n' +
+'FROM:    ' + co + '\n' +
+'TO:      847 subscribers\n\n' +
+'─── THIS MONTH\'S EDITION ──────────\n\n' +
+'👋  WELCOME\n' +
+'"With desert temps hitting 110°F this summer,\n' +
+' your HVAC system will be tested. Here\'s what\n' +
+' to watch for before it\'s too late."\n\n' +
+'🔧  3 WARNING SIGNS TO WATCH\n' +
+'  1. Warm air blowing on high settings\n' +
+'  2. Unusual noises or short cycling\n' +
+'  3. Spike in your electric bill\n\n' +
+'🎁  EXCLUSIVE OFFER — SUBSCRIBERS ONLY\n' +
+'"Book a tune-up this month and get a free\n' +
+' 22-point inspection — normally $129. Mention\n' +
+' this email when you call."\n\n' +
+'📞  BOOK NOW: (760) 555-0100\n\n' +
+'─────────────────────────────────\n' +
+'✅  Written, designed & scheduled automatically\n' +
+'📊  Avg open rate: 34% · Click rate: 12%';
+    },
+    calcHrs: function(d) { return d.newsHrs; },
+    calcDollars: function(d) { return Math.round(d.newsHrs * WAGE * 12 + 2400); },
+    note: function(d) { return 'One newsletter per month keeps your entire client list warm — driving repeat bookings and referrals on autopilot.'; }
   },
   {
-    num: "10",
-    category: "INVOICING & BILLING",
-    catColor: "#10b981",
-    title: "AI <em style='color:#10b981'>Sends Invoices</em><br>the Second the Job Is Done",
-    hook: "Every day an invoice sits unsent is a day you're not getting paid. Most businesses send invoices hours or days after a job — sometimes they forget entirely. AI generates and sends the invoice the moment your tech marks the job complete. No delay. No chasing. Cash flows faster.",
-    before: "Invoices get sent hours or days after the job. Sometimes they're forgotten entirely. Chasing payment takes more time. Cash flow suffers.",
-    after: "The instant a job is marked complete, AI generates and sends the invoice. Payment reminders go out automatically. Cash hits your account faster.",
+    id: 'social',
+    icon: '📱',
+    name: 'Social Media',
+    color: '#ec4899',
+    eyebrow: 'STATION 11 — SOCIAL MEDIA',
+    title: 'Consistent Presence on Every Platform — Zero Effort',
+    beforeBullets: ['Posting is sporadic — weeks go by with nothing', 'Content creation takes hours per post', 'Different tone and quality across platforms', 'Competitors showing up while you\'re invisible'],
+    afterBullets: ['AI creates & schedules posts for all 3 platforms weekly', 'Content tailored to each platform\'s format & audience', 'Consistent brand voice — every single week', 'Your business stays visible while you work'],
     questions: [
-      { label: "How many invoices do you send per week?", unit: "invoices/week", key: "invWeek", default: 20 },
-      { label: "On average, how many days after a job do you send the invoice?", unit: "days late", key: "invDelay", default: 2 }
+      { label: 'Hours/week currently spent on social media content', unit: 'hrs/wk', key: 'socialHrs' },
+      { label: 'Number of platforms you manage', unit: 'platforms', key: 'socialPlatforms' }
     ],
-    output: "💵 AUTO INVOICE — Apex Home Services\n─────────────────────────────────────────\n\nINVOICE #APX-2025-0847\nDate: April 12, 2025 — 3:22 PM\nJob Completed: 3:20 PM (2 minutes ago)\n\nBILL TO:\nSandra Park\nCoachella Valley Medical Offices\n78900 Avenue 47, Indio CA 92201\n\nSERVICES RENDERED:\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n3x Commercial HVAC Units (Replaced)    $14,400\nInstallation & Labor                    $4,200\nPermits & Disposal                        $600\n─────────────────────────────────────\nSubtotal:                              $19,200\nTax (8.75%):                            $1,680\nTOTAL DUE:                            $20,880\n\nPayment Due: April 26, 2025 (Net 14)\nPay online: apex.pay/inv-0847\nAccepted: Credit card, ACH, check\n\n⏰ AUTO-REMINDERS SCHEDULED:\n  → Friendly reminder: April 22 (4 days before due)\n  → Due date notice: April 26\n  → Overdue notice: May 3 (if unpaid)\n\n─────────────────────────────────────────\n✅ Invoice sent · Payment portal live · Reminders set",
-    calcHrs: function(q) { return Math.round(q.invWeek * 0.25 * 10) / 10; },
-    calcDollars: function(q) { return Math.round(q.invWeek * q.invDelay * 150); },
-    savingsLabel: function(q) {
-      return { hrs: Math.round(q.invWeek * 0.25 * 10) / 10, dollars: Math.round(q.invWeek * q.invDelay * 150 * 52), extra: "Faster invoices = faster cash. At " + q.invWeek + " jobs/week delayed by " + q.invDelay + " days, you're floating significant cash unnecessarily." };
-    }
+    output: function(d, co) {
+      return '📱 AI SOCIAL CONTENT — ' + co + '\n' +
+'─────────────────────────────────\n\n' +
+'FACEBOOK POST\n' +
+'"Summer is coming fast — and so are emergency\n' +
+' AC calls. Don\'t wait until it breaks to find\n' +
+' out it\'s broken. Our team is booking tune-ups\n' +
+' NOW before the rush hits. Limited spots left.\n' +
+' 📞 Call us or tap the link to book. 🌡️"\n\n' +
+'─────────────────────────────────\n' +
+'INSTAGRAM CAPTION\n' +
+'"108° days don\'t forgive aging HVAC systems. 🌵\n' +
+' We replaced 3 commercial units last week before\n' +
+' the summer heat hit. Is yours ready?\n' +
+' · Link in bio to schedule a free assessment.\n' +
+' #HVAC #PalmDesert #HomeServices #SummerReady"\n\n' +
+'─────────────────────────────────\n' +
+'LINKEDIN POST\n' +
+'"Facility managers: summer preparation starts\n' +
+' now, not in July. We\'re offering commercial\n' +
+' HVAC assessments through May — priority\n' +
+' scheduling for property managers. DM us."\n\n' +
+'─────────────────────────────────\n' +
+'✅  3 posts · Scheduled for Tuesday 9 AM\n' +
+'📊  All platforms · Branded · No effort required';
+    },
+    calcHrs: function(d) { return d.socialHrs; },
+    calcDollars: function(d) { return Math.round(d.socialHrs * WAGE * 52 + 1800); },
+    note: function(d) { return 'Your business stays consistently visible on every platform — without your team spending a minute on content.'; }
   },
   {
-    num: "11",
-    category: "PERFORMANCE DASHBOARD",
-    catColor: "#7c3aed",
-    title: "AI <em style='color:#7c3aed'>Tells You How Your Business Is Doing</em><br>Every Single Morning",
-    hook: "Most business owners run on gut feel because getting real numbers takes too long. AI compiles every metric — leads, calls, proposals, closed jobs, revenue — into a plain-English morning briefing. You wake up knowing exactly where your business stands and what needs your attention today.",
-    before: "You have to dig through 4 different apps to understand how business is going. You're reacting to problems instead of seeing them coming.",
-    after: "Every morning, AI sends you a plain-English summary: what came in, what closed, what needs attention, and what's trending. You run the business. It runs itself.",
+    id: 'seo',
+    icon: '🔎',
+    name: 'SEO + AEO',
+    color: '#a78bfa',
+    eyebrow: 'STATION 12 — SEARCH & AI VISIBILITY',
+    title: 'Show Up First on Google — and in AI Search Results',
+    beforeBullets: ['Competitors rank above you on every search', 'No strategy — just hoping Google finds you', 'Missing from AI answers (ChatGPT, Siri, Alexa)', 'Paying for ads because organic traffic isn\'t there'],
+    afterBullets: ['AI optimizes your site for top local search rankings', 'AEO positions your business as the AI-recommended answer', 'More organic leads — fewer ad dollars needed', 'Customers find you before they find anyone else'],
     questions: [
-      { label: "How many hours per week do you spend pulling reports or checking on business performance?", unit: "hrs/week", key: "reportHrs", default: 3 },
-      { label: "How many people on your team spend time on reporting?", unit: "people", key: "reportPeople", default: 2 }
+      { label: 'Hours/month spent on SEO or content marketing today', unit: 'hrs/month', key: 'seoHrs' },
+      { label: 'Monthly budget currently spent on Google Ads', unit: '$/month', key: 'seoSpend' }
     ],
-    output: "📊 AI MORNING BRIEFING — Apex Home Services\nThursday, April 12 · 7:00 AM\n─────────────────────────────────────────\n\nGOOD MORNING, MIKE. HERE'S YOUR BUSINESS AT A GLANCE:\n\n📥 LEADS (Last 7 Days)\n  New leads received:         27\n  Qualified (score 85+):       8  ← up 14% vs last week\n  Responded within 5 min:     27  (100%) ✅\n\n📋 PIPELINE\n  Active proposals out:        6\n  Total pipeline value:   $89,400\n  Proposals awaiting reply:    3  ← follow-up recommended\n\n✅ JOBS CLOSED THIS WEEK\n  Jobs won:                    5\n  Revenue closed:         $34,200\n  Avg job value:           $6,840  ← up from $5,100 last week ↑\n\n⚠️  NEEDS YOUR ATTENTION\n  → Desert Palms HOA — no reply in 8 days. Last follow-up sent.\n  → Invoice #0831 — overdue $4,200. Auto-reminder sent yesterday.\n  → 2 techs available Friday afternoon — consider pushing outreach.\n\n📈 30-DAY TREND: Revenue up 18% · Close rate up 11%\n\n─────────────────────────────────────────\nHave a great day. Your AI has already handled 14 tasks since midnight.",
-    calcHrs: function(q) { return q.reportHrs * q.reportPeople; },
-    calcDollars: function(q) { return Math.round(q.reportHrs * q.reportPeople * HOURLY * 52); },
-    savingsLabel: function(q) { return { hrs: q.reportHrs * q.reportPeople, dollars: Math.round(q.reportHrs * q.reportPeople * HOURLY * 52), extra: "You stop guessing and start knowing. Every decision gets sharper because the data is always right in front of you." }; }
+    output: function(d, co) {
+      return '🔎 SEO + AEO REPORT — ' + co + '\n' +
+'─────────────────────────────────\n\n' +
+'LOCAL SEARCH RANKINGS — Palm Desert, CA\n\n' +
+'  "HVAC repair near me"         #2  ↑ (was #11)\n' +
+'  "AC replacement Palm Desert"  #1  ✅ TOP SPOT\n' +
+'  "Emergency AC service Indio"  #3  ↑ (was #14)\n' +
+'  "Commercial HVAC Coachella"   #2  ↑ (was #9)\n\n' +
+'─────────────────────────────────\n' +
+'AI ANSWER ENGINE RESULT (ChatGPT / Siri)\n\n' +
+'User asks: "Who\'s the best HVAC company\n' +
+'            in Palm Desert?"\n\n' +
+'AI Answer: "' + co + ' is highly rated\n' +
+'            in Palm Desert, CA — known for fast\n' +
+'            response times, commercial expertise,\n' +
+'            and 5-star customer reviews. They offer\n' +
+'            24/7 emergency service and free\n' +
+'            assessments. Recommended for both\n' +
+'            residential and commercial HVAC."\n\n' +
+'─────────────────────────────────\n' +
+'📊  Organic leads up 68% · Ad spend down 40%';
+    },
+    calcHrs: function(d) { return d.seoHrs; },
+    calcDollars: function(d) { return Math.round(d.seoHrs * WAGE * 12 + d.seoSpend * 0.4 * 12); },
+    note: function(d) { return 'You show up first on Google AND in AI answers. Customers find you before anyone else — for free.'; }
   }
 ];
 
-function startDemo() {
-  document.getElementById('splash').classList.remove('active');
-  document.getElementById('station-screen').classList.add('active');
-  currentStation = 0;
-  totalHrs = 0;
-  totalDollars = 0;
-  stationDone = [];
-  renderStation(0);
+// ═══════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════
+function showScreen(id) {
+  var screens = document.querySelectorAll('.screen');
+  for (var i = 0; i < screens.length; i++) {
+    screens[i].classList.remove('active');
+    screens[i].style.display = 'none';
+  }
+  var s = document.getElementById(id);
+  s.style.display = 'flex';
+  setTimeout(function() { s.classList.add('active'); }, 10);
 }
 
-function renderStation(idx) {
-  var s = stations[idx];
-  var pct = Math.round(((idx + 1) / 11) * 100);
+function getDefaults() {
+  var v = verticals[verticalKey] || verticals['other'];
+  return v.defaults;
+}
 
-  document.getElementById('tb-num').textContent = s.num;
-  document.getElementById('prog-fill').style.width = pct + '%';
-  document.getElementById('prog-label').textContent = 'Step ' + (idx + 1) + ' of 11';
-  document.getElementById('btn-next').textContent = idx < 10 ? 'Next Station →' : 'See Your Results →';
+function getQVal(key) {
+  var el = document.getElementById('qval-' + key);
+  if (el) return parseFloat(el.value) || 0;
+  return getDefaults()[key] || 0;
+}
 
-  var qHTML = '';
-  s.questions.forEach(function(q, qi) {
-    qHTML += '<div class="q-item">' +
-      '<div class="q-label">' + q.label + '</div>' +
-      '<div class="q-input">' +
-      '<input type="number" id="q-' + qi + '" value="' + q.default + '" min="0">' +
-      '<span class="unit">' + q.unit + '</span>' +
+// ═══════════════════════════════════════
+// LAUNCH
+// ═══════════════════════════════════════
+function launchDashboard() {
+  var nameEl = document.getElementById('company-input');
+  var vertEl = document.getElementById('vertical-select');
+  companyName = nameEl.value.trim();
+  verticalKey = vertEl.value;
+
+  if (!companyName) { nameEl.focus(); nameEl.style.borderColor = '#ff4560'; return; }
+  if (!verticalKey) { vertEl.style.borderColor = '#ff4560'; return; }
+
+  var v = verticals[verticalKey];
+  document.getElementById('dash-company').textContent = companyName;
+  document.getElementById('dash-vertical').textContent = v.label;
+  document.getElementById('close-company').textContent = companyName;
+
+  buildToolGrid();
+  showScreen('dashboard');
+}
+
+// ═══════════════════════════════════════
+// BUILD GRID
+// ═══════════════════════════════════════
+function buildToolGrid() {
+  var grid = document.getElementById('tool-grid');
+  grid.innerHTML = '';
+  for (var i = 0; i < tools.length; i++) {
+    (function(tool, idx) {
+      var btn = document.createElement('div');
+      btn.className = 'tool-btn';
+      btn.id = 'tool-btn-' + tool.id;
+      btn.innerHTML =
+        '<div class="tool-check">✓</div>' +
+        '<div class="tool-icon">' + tool.icon + '</div>' +
+        '<div class="tool-name">' + tool.name + '</div>';
+      btn.onclick = function() { openTool(idx); };
+      grid.appendChild(btn);
+    })(tools[i], i);
+  }
+}
+
+// ═══════════════════════════════════════
+// OPEN TOOL MODAL
+// ═══════════════════════════════════════
+function openTool(idx) {
+  currentToolIdx = idx;
+  demoRan = false;
+  var tool = tools[idx];
+  var defaults = getDefaults();
+
+  document.getElementById('modal-bar').style.background = tool.color;
+  document.getElementById('modal-eyebrow').textContent = tool.eyebrow;
+  document.getElementById('modal-eyebrow').style.color = tool.color;
+  document.getElementById('modal-title').textContent = tool.title;
+  document.getElementById('done-btn').classList.remove('ready');
+  document.getElementById('modal-footer-note').textContent = 'Run the demo to see results';
+
+  // Build before/after
+  var beforeHTML = '<ul class="bva-bullets">';
+  for (var b = 0; b < tool.beforeBullets.length; b++) {
+    beforeHTML += '<li>' + tool.beforeBullets[b] + '</li>';
+  }
+  beforeHTML += '</ul>';
+
+  var afterHTML = '<ul class="bva-bullets">';
+  for (var a = 0; a < tool.afterBullets.length; a++) {
+    afterHTML += '<li>' + tool.afterBullets[a] + '</li>';
+  }
+  afterHTML += '</ul>';
+
+  // Build questions
+  var qHTML = '<div class="q-block"><div class="q-block-title">// Ask them — enter their numbers</div>';
+  for (var q = 0; q < tool.questions.length; q++) {
+    var qItem = tool.questions[q];
+    var defVal = defaults[qItem.key] || 0;
+    qHTML += '<div class="q-row">' +
+      '<div class="q-text">' + qItem.label + '</div>' +
+      '<div class="q-input-wrap">' +
+      '<input type="number" class="q-num" id="qval-' + qItem.key + '" value="' + defVal + '" min="0">' +
+      '<span class="q-unit">' + qItem.unit + '</span>' +
       '</div></div>';
-  });
+  }
+  qHTML += '</div>';
 
-  var html = '<div class="station-eyebrow">' +
-    '<span class="station-num-badge">STATION ' + s.num + '</span>' +
-    '<span class="station-category" style="background:rgba(255,255,255,0.05);border:1px solid ' + s.catColor + '33;color:' + s.catColor + '">' + s.category + '</span>' +
-    '</div>' +
-    '<h2 class="station-main-title">' + s.title + '</h2>' +
-    '<p class="station-hook">' + s.hook + '</p>' +
+  document.getElementById('modal-body').innerHTML =
     '<div class="bva">' +
-    '<div class="bva-card before"><div class="bva-label">❌ Today Without AI</div><div class="bva-text">' + s.before + '</div></div>' +
-    '<div class="bva-card after"><div class="bva-label">✅ With AI in Place</div><div class="bva-text">' + s.after + '</div></div>' +
+    '<div class="bva-card bva-before"><span class="bva-label">❌ TODAY WITHOUT AI</span>' + beforeHTML + '</div>' +
+    '<div class="bva-card bva-after"><span class="bva-label">✅ WITH AI IN PLACE</span>' + afterHTML + '</div>' +
     '</div>' +
-    '<div class="questions-block">' +
-    '<div class="qb-title">// Ask them — then enter their numbers below</div>' +
     qHTML +
-    '</div>' +
-    '<button class="run-demo-btn" onclick="runDemo(' + idx + ')">▶ Run the Demo</button>' +
+    '<button class="run-btn" id="run-btn" onclick="runDemo()">▶ &nbsp;Run the Demo</button>' +
     '<div class="output-panel" id="output-panel">' +
-    '<div class="output-header"><span class="dot g"></span><span class="dot y"></span><span class="dot r"></span><span class="oht">AI OUTPUT — LIVE SIMULATION</span></div>' +
-    '<div class="output-body" id="output-body"></div>' +
+    '<div class="output-top"><div class="dot dot-g"></div><div class="dot dot-y"></div><div class="dot dot-r"></div><span class="output-label">AI OUTPUT — LIVE SIMULATION</span></div>' +
+    '<div class="output-text" id="output-text"></div>' +
     '</div>' +
     '<div class="savings-card" id="savings-card">' +
-    '<div class="sc-title">// Their Personalized Savings — ' + s.category + '</div>' +
-    '<div class="savings-grid">' +
-    '<div class="saving-stat"><span class="sv" id="sv-hrs">—</span><span class="sl">Hours saved / week</span></div>' +
-    '<div class="saving-stat"><span class="sv" id="sv-dollars">—</span><span class="sl">Dollars saved / year</span></div>' +
-    '<div class="saving-stat"><span class="sv" id="sv-extra">—</span><span class="sl">Running total saved</span></div>' +
+    '<div class="savings-title">// Their Personalized Savings — ' + tool.name + '</div>' +
+    '<div class="savings-row">' +
+    '<div class="saving-item"><span class="sv" id="sv-hrs">—</span><span class="sl">Hours saved / week</span></div>' +
+    '<div class="saving-item"><span class="sv" id="sv-dollars">—</span><span class="sl">Recovered / year</span></div>' +
+    '<div class="saving-item"><span class="sv" id="sv-total">—</span><span class="sl">Running total</span></div>' +
     '</div>' +
-    '<p style="font-size:13px;color:#94a3b8;margin-top:14px;line-height:1.6" id="sv-note"></p>' +
+    '<div class="savings-note" id="savings-note"></div>' +
     '</div>';
 
-  document.getElementById('station-content').innerHTML = html;
-
-  // Scroll to top
-  document.getElementById('station-content').scrollTop = 0;
-  window.scrollTo(0, 0);
+  document.getElementById('modal-overlay').classList.add('open');
 }
 
-function runDemo(idx) {
-  var s = stations[idx];
-  var qVals = {};
-  s.questions.forEach(function(q, qi) {
-    var el = document.getElementById('q-' + qi);
-    qVals[q.key] = parseFloat(el ? el.value : q.default) || q.default;
-  });
+// ═══════════════════════════════════════
+// RUN DEMO
+// ═══════════════════════════════════════
+function runDemo() {
+  var tool = tools[currentToolIdx];
+  var btn = document.getElementById('run-btn');
+  btn.disabled = true;
 
-  // Show output with typing effect
-  var panel = document.getElementById('output-panel');
-  var body = document.getElementById('output-body');
-  panel.classList.add('visible');
-  body.textContent = '';
+  var outputPanel = document.getElementById('output-panel');
+  var outputText = document.getElementById('output-text');
+  outputPanel.classList.add('show');
+  outputText.innerHTML = '';
 
-  var text = s.output;
-  var i = 0;
-  var speed = 8;
+  var text = tool.output(getDefaults(), companyName);
+  var lines = text.split('\n');
+  var delay = 0;
 
-  function typeChar() {
-    if (i < text.length) {
-      body.textContent += text[i];
-      i++;
-      // Scroll output as it types
-      panel.scrollTop = panel.scrollHeight;
-      setTimeout(typeChar, speed);
-    } else {
-      showSavings(idx, qVals);
-    }
+  for (var i = 0; i < lines.length; i++) {
+    (function(line, d) {
+      setTimeout(function() {
+        var span = document.createElement('span');
+        span.className = 'line';
+        span.textContent = line;
+        span.style.animationDelay = '0ms';
+        outputText.appendChild(span);
+        outputPanel.scrollTop = outputPanel.scrollHeight;
+
+        if (d >= (lines.length - 1) * 60) {
+          showSavings();
+        }
+      }, d);
+    })(lines[i], delay);
+    delay += 60;
   }
-  typeChar();
 }
 
-function showSavings(idx, qVals) {
-  var s = stations[idx];
-  var result = s.savingsLabel(qVals);
-  var hrs = Math.round(result.hrs * 10) / 10;
-  var dollars = Math.round(result.dollars);
+// ═══════════════════════════════════════
+// SHOW SAVINGS
+// ═══════════════════════════════════════
+function showSavings() {
+  var tool = tools[currentToolIdx];
+  var defaults = getDefaults();
 
-  // Add to running totals
-  if (!stationDone[idx]) {
+  var hrs = Math.round(tool.calcHrs(defaults) * 10) / 10;
+  var dollars = tool.calcDollars(defaults);
+  var note = tool.note(defaults);
+
+  if (!completedTools[tool.id]) {
     totalHrs += hrs;
     totalDollars += dollars;
-    stationDone[idx] = true;
+    completedTools[tool.id] = true;
   }
 
   document.getElementById('sv-hrs').textContent = hrs + ' hrs';
   document.getElementById('sv-dollars').textContent = '$' + dollars.toLocaleString();
-  document.getElementById('sv-extra').textContent = '$' + totalDollars.toLocaleString() + ' total';
-  document.getElementById('sv-note').textContent = result.extra;
+  document.getElementById('sv-total').textContent = '$' + totalDollars.toLocaleString();
+  document.getElementById('savings-note').textContent = note;
+  document.getElementById('savings-card').classList.add('show');
 
-  document.getElementById('savings-card').classList.add('visible');
+  document.getElementById('done-btn').classList.add('ready');
+  document.getElementById('modal-footer-note').textContent = 'Great — tap Done to activate this tool';
 
-  // Update top bar
+  demoRan = true;
+  updateDashboardTally();
+}
+
+// ═══════════════════════════════════════
+// MARK DONE
+// ═══════════════════════════════════════
+function markDone() {
+  if (!demoRan) return;
+  var tool = tools[currentToolIdx];
+
+  // Activate button on dashboard
+  var btn = document.getElementById('tool-btn-' + tool.id);
+  if (btn) btn.classList.add('active');
+
+  // Update progress
+  var done = Object.keys(completedTools).length;
+  var pct = Math.round((done / tools.length) * 100);
+  document.getElementById('dash-progress').style.width = pct + '%';
+
+  // Show results button if all done
+  if (done >= tools.length) {
+    document.getElementById('results-btn').classList.add('visible');
+  }
+
+  closeModal();
+}
+
+// ═══════════════════════════════════════
+// CLOSE MODAL
+// ═══════════════════════════════════════
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('open');
+}
+
+// ═══════════════════════════════════════
+// UPDATE TALLY
+// ═══════════════════════════════════════
+function updateDashboardTally() {
   document.getElementById('tally-hrs').textContent = Math.round(totalHrs * 10) / 10 + ' hrs';
-  document.getElementById('tally-dollars').textContent = '$' + totalDollars.toLocaleString();
+  document.getElementById('tally-dollars').textContent = '$' + Math.round(totalDollars / 1000) + 'K';
 }
 
-function goNext() {
-  if (currentStation < 10) {
-    currentStation++;
-    renderStation(currentStation);
-  } else {
-    showClosing();
-  }
-}
-
-function goBack() {
-  if (currentStation > 0) {
-    currentStation--;
-    renderStation(currentStation);
-  } else {
-    document.getElementById('station-screen').classList.remove('active');
-    document.getElementById('splash').classList.add('active');
-  }
-}
-
+// ═══════════════════════════════════════
+// SHOW CLOSING
+// ═══════════════════════════════════════
 function showClosing() {
-  document.getElementById('station-screen').classList.remove('active');
-  document.getElementById('closing-screen').classList.add('active');
-
-  var daysPerMonth = Math.round(totalHrs * 4.3 / 8);
-  document.getElementById('grand-hrs').textContent = Math.round(totalHrs) + ' hrs';
-  document.getElementById('grand-dollars').textContent = '$' + Math.round(totalDollars / 1000) + 'K+';
-  document.getElementById('grand-days').textContent = daysPerMonth + ' days';
+  var days = Math.round(totalHrs * 4.3 / 8);
+  animateCount('grand-hrs', 0, Math.round(totalHrs), ' hrs', 1200);
+  animateCountDollar('grand-dollars', 0, Math.round(totalDollars / 1000), 1400);
+  animateCount('grand-days', 0, days, '', 1000);
+  showScreen('closing');
 }
 
+function animateCount(elId, from, to, suffix, duration) {
+  var el = document.getElementById(elId);
+  var start = null;
+  function step(ts) {
+    if (!start) start = ts;
+    var prog = Math.min((ts - start) / duration, 1);
+    var val = Math.round(from + (to - from) * easeOut(prog));
+    el.textContent = val + suffix;
+    if (prog < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+
+function animateCountDollar(elId, from, to, duration) {
+  var el = document.getElementById(elId);
+  var start = null;
+  function step(ts) {
+    if (!start) start = ts;
+    var prog = Math.min((ts - start) / duration, 1);
+    var val = Math.round(from + (to - from) * easeOut(prog));
+    el.textContent = '$' + val + 'K+';
+    if (prog < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+
+function easeOut(t) { return 1 - Math.pow(1 - t, 3); }
+
+// ═══════════════════════════════════════
+// RESTART
+// ═══════════════════════════════════════
 function restartDemo() {
-  document.getElementById('closing-screen').classList.remove('active');
   totalHrs = 0;
   totalDollars = 0;
-  stationDone = [];
-  currentStation = 0;
-  document.getElementById('splash').classList.add('active');
+  completedTools = {};
+  currentToolIdx = null;
+  demoRan = false;
+  companyName = '';
+  verticalKey = '';
+  document.getElementById('company-input').value = '';
+  document.getElementById('vertical-select').value = '';
+  document.getElementById('tally-hrs').textContent = '0 hrs';
+  document.getElementById('tally-dollars').textContent = '$0';
+  document.getElementById('dash-progress').style.width = '0%';
+  document.getElementById('results-btn').classList.remove('visible');
+  showScreen('setup');
 }
+
+// Close modal on overlay click
+document.getElementById('modal-overlay').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+// Show results btn after at least 6 tools demoed
+setInterval(function() {
+  var done = Object.keys(completedTools).length;
+  if (done >= 6) {
+    document.getElementById('results-btn').classList.add('visible');
+  }
+}, 1000);
 </script>
 
 </body>
