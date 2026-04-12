@@ -141,6 +141,18 @@ color: var(–blue-bright);
 .nav-tab.int-tab { opacity: 0.6; }
 .nav-tab.int-tab.active { opacity: 1; }
 
+.nav-tab.completed {
+border-color: rgba(52,211,153,0.35);
+color: var(–success);
+background: rgba(52,211,153,0.07);
+opacity: 1;
+}
+
+.nav-tab.completed .tab-icon::after {
+content: ’ ✓’;
+font-size: 10px;
+}
+
 .tab-icon { font-size: 14px; }
 
 /* Separator between live and integration tabs */
@@ -464,10 +476,115 @@ max-height: 600px; overflow-y: auto;
 .integration-note { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; background: rgba(251,191,36,0.06); border: 1px solid rgba(251,191,36,0.2); border-radius: 8px; font-size: 12px; color: var(–warn); }
 
 /* ── HOME PANEL ── */
-.home-hero { text-align: center; padding: 60px 20px 40px; }
-.home-hero h1 { font-family: ‘Syne’, sans-serif; font-size: 44px; font-weight: 800; letter-spacing: -1.5px; line-height: 1.1; margin-bottom: 14px; }
+.home-hero { text-align: center; padding: 48px 20px 32px; }
+.home-hero h1 { font-family: ‘Syne’, sans-serif; font-size: 44px; font-weight: 800; letter-spacing: -1.5px; line-height: 1.1; margin-bottom: 12px; }
 .home-hero h1 span { background: linear-gradient(90deg, var(–blue-bright), #93c5fd); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-.home-hero p { font-size: 17px; color: var(–text-dim); font-weight: 300; max-width: 540px; margin: 0 auto 40px; line-height: 1.65; }
+.home-hero p { font-size: 16px; color: var(–text-dim); font-weight: 300; max-width: 520px; margin: 0 auto 0; line-height: 1.65; }
+
+/* ROI STATS BAR */
+.roi-bar {
+display: flex; align-items: center; justify-content: center;
+gap: 0;
+background: var(–navy2);
+border: 1px solid var(–blue-border);
+border-radius: 16px;
+padding: 20px 0;
+margin: 28px 0 16px;
+position: relative; overflow: hidden;
+}
+
+.roi-bar::before {
+content: ‘’;
+position: absolute; top: 0; left: 0; right: 0; height: 1px;
+background: linear-gradient(90deg, transparent, var(–blue), transparent);
+opacity: 0.6;
+}
+
+.roi-stat {
+flex: 1; text-align: center; padding: 0 16px;
+}
+
+.roi-num {
+font-family: ‘Syne’, sans-serif;
+font-size: 36px; font-weight: 800;
+letter-spacing: -1px;
+background: linear-gradient(90deg, var(–blue-bright), #93c5fd);
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+background-clip: text;
+line-height: 1.1;
+margin-bottom: 4px;
+}
+
+.roi-label {
+font-size: 11px; color: var(–text-dimmer);
+font-weight: 400; text-transform: uppercase;
+letter-spacing: 0.5px;
+}
+
+.roi-divider {
+width: 1px; height: 44px;
+background: var(–glass-border);
+flex-shrink: 0;
+}
+
+/* ROI CALCULATOR */
+.roi-calc {
+background: var(–navy2);
+border: 1px solid var(–glass-border);
+border-radius: 16px;
+padding: 22px 24px;
+margin-bottom: 28px;
+position: relative; overflow: hidden;
+}
+
+.roi-calc::before {
+content: ‘’;
+position: absolute; top: 0; left: 0; right: 0; height: 1px;
+background: linear-gradient(90deg, transparent, rgba(59,130,246,0.5), transparent);
+}
+
+.roi-calc-header {
+display: flex; align-items: baseline; gap: 12px;
+margin-bottom: 16px;
+}
+
+.roi-calc-title {
+font-family: ‘Syne’, sans-serif;
+font-size: 13px; font-weight: 700;
+color: var(–text);
+}
+
+.roi-calc-sub {
+font-size: 11px; color: var(–text-dimmer);
+}
+
+.roi-inputs {
+display: flex; gap: 10px; flex-wrap: wrap;
+margin-bottom: 16px;
+}
+
+.roi-input-group {
+flex: 1; min-width: 140px;
+}
+
+.roi-input-group label {
+display: block; font-size: 10px; font-weight: 500;
+color: var(–text-dim); margin-bottom: 5px;
+text-transform: uppercase; letter-spacing: 0.5px;
+}
+
+.roi-result {
+background: var(–navy3);
+border: 1px solid var(–blue-border);
+border-radius: 10px;
+padding: 14px 18px;
+font-size: 14px; color: var(–text-dim);
+line-height: 1.7;
+}
+
+.roi-result strong { color: var(–blue-bright); font-weight: 700; }
+.roi-result .roi-highlight { color: var(–success); font-weight: 700; }
 .stations-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; max-width: 860px; margin: 0 auto; }
 .station-tile { background: var(–navy2); border: 1px solid var(–glass-border); border-radius: 14px; padding: 20px; cursor: pointer; transition: all 0.2s; text-align: left; }
 .station-tile:hover { border-color: var(–blue-border); background: var(–navy3); transform: translateY(-2px); }
@@ -491,7 +608,83 @@ max-height: 600px; overflow-y: auto;
 @keyframes spin { to { transform: rotate(360deg); } }
 @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
-/* Responsive */
+/* ── INTEGRATION DEMO STYLES ── */
+
+/* Lead scraping table */
+.leads-table { width: 100%; border-collapse: collapse; }
+.leads-table th { font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(–text-dimmer); padding: 10px 16px; text-align: left; border-bottom: 1px solid var(–glass-border); background: var(–navy3); }
+.leads-table td { font-size: 13px; color: var(–text-dim); padding: 11px 16px; border-bottom: 1px solid rgba(255,255,255,0.04); vertical-align: middle; }
+.leads-table tr:last-child td { border-bottom: none; }
+.leads-table tr { transition: background 0.15s; }
+.leads-table tr:hover td { background: var(–glass); }
+.lead-name { font-weight: 500; color: var(–text); }
+.lead-score { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; }
+.lead-score.hot { background: rgba(52,211,153,0.12); color: var(–success); border: 1px solid rgba(52,211,153,0.25); }
+.lead-score.warm { background: rgba(251,191,36,0.1); color: var(–warn); border: 1px solid rgba(251,191,36,0.22); }
+.lead-score.cold { background: rgba(148,163,184,0.1); color: var(–text-dimmer); border: 1px solid var(–glass-border); }
+.lead-row-new { animation: rowSlide 0.4s ease both; }
+@keyframes rowSlide { from { opacity: 0; transform: translateX(-8px); } to { opacity: 1; transform: translateX(0); } }
+
+/* Phone call UI */
+.call-bubble { display: flex; gap: 10px; align-items: flex-start; animation: fadeIn 0.3s ease both; }
+.call-bubble.ai { flex-direction: row; }
+.call-bubble.lead { flex-direction: row-reverse; }
+.bubble-avatar { width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 13px; }
+.bubble-avatar.ai-av { background: linear-gradient(135deg, var(–blue), var(–blue-dim)); box-shadow: 0 0 10px rgba(59,130,246,0.3); }
+.bubble-avatar.lead-av { background: var(–navy4); border: 1px solid var(–glass-border); }
+.bubble-text { max-width: 78%; padding: 10px 14px; border-radius: 12px; font-size: 13px; line-height: 1.55; }
+.call-bubble.ai .bubble-text { background: var(–blue-glow); border: 1px solid var(–blue-border); color: var(–text); border-radius: 4px 12px 12px 12px; }
+.call-bubble.lead .bubble-text { background: var(–navy3); border: 1px solid var(–glass-border); color: var(–text-dim); border-radius: 12px 4px 12px 12px; }
+.bubble-label { font-size: 9px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 3px; }
+.call-bubble.ai .bubble-label { color: var(–blue-bright); }
+.call-bubble.lead .bubble-label { color: var(–text-dimmer); text-align: right; }
+
+.crm-field { display: flex; gap: 10px; padding: 7px 0; border-bottom: 1px solid rgba(255,255,255,0.04); font-size: 13px; }
+.crm-field:last-child { border-bottom: none; }
+.crm-key { color: var(–text-dimmer); font-size: 11px; font-weight: 500; min-width: 110px; padding-top: 1px; }
+.crm-val { color: var(–text); }
+.crm-val.tag { display: inline-flex; padding: 1px 8px; border-radius: 10px; font-size: 11px; }
+.crm-val.qualified { background: rgba(52,211,153,0.12); color: var(–success); }
+
+/* Pipeline steps (contracts, scheduling, invoicing) */
+.pipeline { display: flex; flex-direction: column; gap: 0; }
+.pipe-step { display: flex; align-items: flex-start; gap: 16px; padding: 16px 0; position: relative; }
+.pipe-step:not(:last-child)::after { content: ‘’; position: absolute; left: 15px; top: 44px; bottom: 0; width: 2px; background: var(–glass-border); }
+.pipe-step.done::after { background: linear-gradient(180deg, var(–success), var(–glass-border)); }
+.pipe-dot { width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 14px; border: 2px solid var(–glass-border); background: var(–navy3); transition: all 0.3s; z-index: 1; }
+.pipe-step.done .pipe-dot { background: rgba(52,211,153,0.12); border-color: rgba(52,211,153,0.4); }
+.pipe-step.active .pipe-dot { background: var(–blue-glow); border-color: var(–blue); box-shadow: 0 0 12px rgba(59,130,246,0.3); animation: pulse 1.5s ease infinite; }
+.pipe-content { flex: 1; padding-top: 4px; }
+.pipe-title { font-family: ‘Syne’, sans-serif; font-size: 14px; font-weight: 700; color: var(–text-dim); margin-bottom: 3px; }
+.pipe-step.done .pipe-title { color: var(–text); }
+.pipe-step.active .pipe-title { color: var(–blue-bright); }
+.pipe-detail { font-size: 12px; color: var(–text-dimmer); line-height: 1.5; }
+.pipe-time { font-size: 10px; color: var(–text-dimmer); margin-top: 4px; font-style: italic; }
+.pipe-step.done .pipe-time { color: var(–success); }
+
+/* Dashboard grid */
+.dash-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 20px; }
+.dash-card { background: var(–navy2); border: 1px solid var(–glass-border); border-radius: 14px; padding: 18px; position: relative; overflow: hidden; }
+.dash-card::before { content: ‘’; position: absolute; top: 0; left: 0; right: 0; height: 2px; }
+.dash-card.blue::before { background: linear-gradient(90deg, var(–blue), transparent); }
+.dash-card.green::before { background: linear-gradient(90deg, var(–success), transparent); }
+.dash-card.yellow::before { background: linear-gradient(90deg, var(–warn), transparent); }
+.dash-card-label { font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(–text-dimmer); margin-bottom: 8px; }
+.dash-card-num { font-family: ‘Syne’, sans-serif; font-size: 32px; font-weight: 800; color: var(–text); letter-spacing: -1px; margin-bottom: 2px; }
+.dash-card-sub { font-size: 11px; color: var(–text-dimmer); }
+.dash-card-trend { font-size: 11px; color: var(–success); font-weight: 600; margin-top: 6px; }
+.dash-activity { background: var(–navy2); border: 1px solid var(–glass-border); border-radius: 14px; padding: 18px; }
+.dash-activity-title { font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(–text-dimmer); margin-bottom: 14px; }
+.activity-row { display: flex; align-items: center; gap: 12px; padding: 9px 0; border-bottom: 1px solid rgba(255,255,255,0.04); font-size: 13px; }
+.activity-row:last-child { border-bottom: none; }
+.activity-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.activity-dot.green { background: var(–success); box-shadow: 0 0 6px var(–success); }
+.activity-dot.blue { background: var(–blue); box-shadow: 0 0 6px var(–blue); }
+.activity-dot.yellow { background: var(–warn); box-shadow: 0 0 6px var(–warn); }
+.activity-text { flex: 1; color: var(–text-dim); }
+.activity-time { font-size: 11px; color: var(–text-dimmer); }
+
+@media (max-width: 768px) { .dash-grid { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 768px) {
 .panel { padding: 20px 16px 60px; }
 .topnav-main { padding: 0 16px; }
@@ -587,6 +780,38 @@ max-height: 600px; overflow-y: auto;
     </div>
 
 ```
+<!-- ROI STATS BAR -->
+<div class="roi-bar" id="roiBar">
+  <div class="roi-stat">
+    <div class="roi-num" id="statHours">0</div>
+    <div class="roi-label">hrs saved / week</div>
+  </div>
+  <div class="roi-divider"></div>
+  <div class="roi-stat">
+    <div class="roi-num" id="statRevenue">$0</div>
+    <div class="roi-label">revenue potential / mo</div>
+  </div>
+  <div class="roi-divider"></div>
+  <div class="roi-stat">
+    <div class="roi-num" id="statLeads">0</div>
+    <div class="roi-label">more leads / month</div>
+  </div>
+  <div class="roi-divider"></div>
+  <div class="roi-stat">
+    <div class="roi-num" id="statROI">0x</div>
+    <div class="roi-label">ROI on investment</div>
+  </div>
+</div>
+
+<!-- ROI CALCULATOR -->
+<div class="roi-calc" id="roiCalc">
+  <div class="roi-calc-header">
+    <div class="roi-calc-title">📊 Live Impact Tracker</div>
+    <div class="roi-calc-sub">Numbers update as you run each demo</div>
+  </div>
+  <div class="roi-result" id="roiResult"></div>
+</div>
+
 <div class="stations-grid">
   <div class="station-tile live-tile" onclick="showPanel('cold-email')">
     <div class="tile-icon">📧</div>
@@ -1028,100 +1253,241 @@ max-height: 600px; overflow-y: auto;
   </div>
 
   <!-- ══════════════════════════════════════════
-       INTEGRATION PANELS
+       LEAD SCRAPING DEMO
   ══════════════════════════════════════════ -->
 
   <div class="panel" id="panel-lead-scraping">
-    <div class="integration-panel">
-      <div class="integration-icon-lg">🎯</div>
-      <div class="integration-title">Lead Scraping</div>
-      <div class="integration-desc">AI automatically finds, verifies, and enriches leads from LinkedIn, Google Maps, and industry directories — delivered to your CRM daily.</div>
-      <div class="integration-connects">
-        <span class="int-chip">Clay.com</span>
-        <span class="int-chip">Apollo.io</span>
-        <span class="int-chip">LinkedIn Sales Nav</span>
-        <span class="int-chip">Google Maps</span>
-        <span class="int-chip">Hunter.io</span>
+    <div class="section-hero">
+      <div class="section-eyebrow">Station 1 · Integration Demo</div>
+      <div class="section-title">Find your perfect leads<br><span>while you sleep.</span></div>
+      <div class="section-sub">AI scans Google Maps, LinkedIn, and directories — finds, verifies, and enriches leads automatically. Watch it run.</div>
+    </div>
+    <div class="card">
+      <div class="row2">
+        <div class="field"><label>Business Type to Target</label>
+          <select class="sel" id="ls-type">
+            <option value="HVAC companies">HVAC Companies</option>
+            <option value="Real Estate Agents">Real Estate Agents</option>
+            <option value="Med Spas">Med Spas</option>
+            <option value="Law Firms">Law Firms</option>
+            <option value="Restaurants">Restaurants</option>
+            <option value="Contractors">Contractors</option>
+          </select>
+        </div>
+        <div class="field"><label>Location</label>
+          <select class="sel" id="ls-location">
+            <option value="Palm Desert, CA">Palm Desert, CA</option>
+            <option value="Phoenix, AZ">Phoenix, AZ</option>
+            <option value="Las Vegas, NV">Las Vegas, NV</option>
+            <option value="Dallas, TX">Dallas, TX</option>
+          </select>
+        </div>
+        <div class="field"><label>Source</label>
+          <select class="sel" id="ls-source">
+            <option value="Google Maps">Google Maps</option>
+            <option value="LinkedIn">LinkedIn</option>
+            <option value="Apollo.io">Apollo.io</option>
+          </select>
+        </div>
       </div>
-      <div class="integration-note">⚡ Connected via API during your Breakout AI build</div>
+      <button class="btn-primary" id="ls-btn" onclick="runLeadScrape()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+        Start Lead Scan
+      </button>
+    </div>
+    <div class="status-bar" id="ls-status"><div class="spinner"></div><span id="ls-status-text">Scanning Google Maps…</span></div>
+    <div class="out-card" id="ls-out">
+      <div class="out-header">
+        <div class="out-title">Leads Found</div>
+        <div class="out-actions">
+          <div class="meta-item" id="ls-count" style="color:var(--success);font-weight:600"></div>
+          <button class="btn-sm" onclick="runLeadScrape()">Scan Again</button>
+        </div>
+      </div>
+      <div class="out-body" id="ls-body" style="padding:0"></div>
     </div>
   </div>
+
+  <!-- ══════════════════════════════════════════
+       PHONE AGENT DEMO
+  ══════════════════════════════════════════ -->
 
   <div class="panel" id="panel-phone-agent">
-    <div class="integration-panel">
-      <div class="integration-icon-lg">📞</div>
-      <div class="integration-title">Phone Agent + CRM</div>
-      <div class="integration-desc">An AI voice agent calls your inbound leads within 60 seconds, qualifies them with your script, and logs everything directly to your CRM.</div>
-      <div class="integration-connects">
-        <span class="int-chip">Twilio</span>
-        <span class="int-chip">HubSpot</span>
-        <span class="int-chip">Salesforce</span>
-        <span class="int-chip">GoHighLevel</span>
-        <span class="int-chip">VAPI</span>
+    <div class="section-hero">
+      <div class="section-eyebrow">Station 2 · Integration Demo</div>
+      <div class="section-title">AI calls your lead<br><span>in 60 seconds.</span></div>
+      <div class="section-sub">A new lead fills out your form. The AI dials instantly, qualifies them with your script, and logs everything to your CRM — no human required.</div>
+    </div>
+    <div class="card">
+      <div class="row2">
+        <div class="field"><label>Lead Name</label>
+          <input class="inp" id="ph-name" type="text" value="Marcus Rivera" />
+        </div>
+        <div class="field"><label>Business</label>
+          <input class="inp" id="ph-biz" type="text" value="Rivera Plumbing" />
+        </div>
       </div>
-      <div class="integration-note">⚡ Connected via API during your Breakout AI build</div>
+      <div class="row2">
+        <div class="field"><label>Industry</label>
+          <select class="sel" id="ph-industry">
+            <option value="plumbing">Plumbing / Trades</option>
+            <option value="realestate">Real Estate</option>
+            <option value="medspa">Med Spa</option>
+            <option value="restaurant">Restaurant</option>
+          </select>
+        </div>
+        <div class="field"><label>Script Style</label>
+          <select class="sel" id="ph-script">
+            <option value="discovery">Discovery Call</option>
+            <option value="qualify">Lead Qualification</option>
+            <option value="followup">Post-Quote Follow-Up</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn-primary" id="ph-btn" onclick="runPhoneCall()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 012 1.18 2 2 0 014 0h3a2 2 0 012 1.72c.13.96.36 1.9.7 2.81a2 2 0 01-.45 2.11L8.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0122 16z"/></svg>
+        Initiate AI Call
+      </button>
+    </div>
+    <div class="out-card" id="ph-out" style="margin-top:0">
+      <div class="out-header">
+        <div class="out-title" id="ph-call-status">Call In Progress</div>
+        <div class="out-actions">
+          <div id="ph-timer" style="font-family:'Syne',sans-serif;font-size:13px;color:var(--text-dim)">0:00</div>
+        </div>
+      </div>
+      <!-- Phone UI -->
+      <div id="ph-call-ui" style="padding:20px 24px">
+        <div id="ph-transcript" style="display:flex;flex-direction:column;gap:10px;max-height:320px;overflow-y:auto;margin-bottom:16px"></div>
+        <div id="ph-typing" style="display:none;padding:10px 14px;background:var(--navy3);border-radius:10px;border:1px solid var(--glass-border);font-size:13px;color:var(--text-dimmer);font-style:italic"></div>
+      </div>
+      <!-- CRM log -->
+      <div id="ph-crm" style="display:none;border-top:1px solid var(--glass-border);padding:20px 24px">
+        <div style="font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--blue-bright);margin-bottom:12px">CRM Entry Logged Automatically</div>
+        <div id="ph-crm-body"></div>
+      </div>
+      <div class="meta-strip" id="ph-meta" style="display:none"></div>
     </div>
   </div>
+
+  <!-- ══════════════════════════════════════════
+       CONTRACTS DEMO
+  ══════════════════════════════════════════ -->
 
   <div class="panel" id="panel-contracts">
-    <div class="integration-panel">
-      <div class="integration-icon-lg">✍️</div>
-      <div class="integration-title">Contracts + Signatures</div>
-      <div class="integration-desc">When a proposal is accepted, AI generates the contract, sends it for signature, and notifies your team — no manual steps required.</div>
-      <div class="integration-connects">
-        <span class="int-chip">DocuSign</span>
-        <span class="int-chip">PandaDoc</span>
-        <span class="int-chip">HelloSign</span>
-        <span class="int-chip">Adobe Sign</span>
+    <div class="section-hero">
+      <div class="section-eyebrow">Station 6 · Integration Demo</div>
+      <div class="section-title">Proposal accepted.<br><span>Contract sent in seconds.</span></div>
+      <div class="section-sub">The moment a client says yes, AI generates the contract, sends it for e-signature, and notifies your team — zero manual steps.</div>
+    </div>
+    <div class="card">
+      <div class="row2">
+        <div class="field"><label>Client Name</label>
+          <input class="inp" id="ct-client" type="text" value="Sarah Johnson" />
+        </div>
+        <div class="field"><label>Service</label>
+          <select class="sel" id="ct-service">
+            <option value="AI Audit + Roadmap — $2,500">AI Audit + Roadmap — $2,500</option>
+            <option value="Full AI Build — $6,500">Full AI Build — $6,500</option>
+            <option value="Monthly Retainer — $1,500/mo">Monthly Retainer — $1,500/mo</option>
+          </select>
+        </div>
       </div>
-      <div class="integration-note">⚡ Connected via API during your Breakout AI build</div>
+      <button class="btn-primary" id="ct-btn" onclick="runContract()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        Generate &amp; Send Contract
+      </button>
+    </div>
+    <div class="out-card" id="ct-out">
+      <div class="out-header">
+        <div class="out-title">Contract Pipeline</div>
+      </div>
+      <div class="out-body" id="ct-body"></div>
     </div>
   </div>
+
+  <!-- ══════════════════════════════════════════
+       SCHEDULING DEMO
+  ══════════════════════════════════════════ -->
 
   <div class="panel" id="panel-scheduling">
-    <div class="integration-panel">
-      <div class="integration-icon-lg">📅</div>
-      <div class="integration-title">Scheduling</div>
-      <div class="integration-desc">Qualified leads book directly into your calendar. AI handles rescheduling, reminders, and no-show follow-ups automatically.</div>
-      <div class="integration-connects">
-        <span class="int-chip">Calendly</span>
-        <span class="int-chip">Google Calendar</span>
-        <span class="int-chip">Acuity</span>
-        <span class="int-chip">GoHighLevel</span>
+    <div class="section-hero">
+      <div class="section-eyebrow">Station 8 · Integration Demo</div>
+      <div class="section-title">Lead qualified.<br><span>Meeting booked automatically.</span></div>
+      <div class="section-sub">After a call or form submission, AI sends a booking link, fills your calendar, and handles reminders — all without you touching anything.</div>
+    </div>
+    <div class="card">
+      <div class="row2">
+        <div class="field"><label>Lead Name</label>
+          <input class="inp" id="sc-name" type="text" value="Tom Keller" /></div>
+        <div class="field"><label>Meeting Type</label>
+          <select class="sel" id="sc-type">
+            <option value="Discovery Call (30 min)">Discovery Call — 30 min</option>
+            <option value="AI Audit Review (60 min)">AI Audit Review — 60 min</option>
+            <option value="Strategy Session (45 min)">Strategy Session — 45 min</option>
+          </select>
+        </div>
       </div>
-      <div class="integration-note">⚡ Connected via API during your Breakout AI build</div>
+      <button class="btn-primary" id="sc-btn" onclick="runScheduling()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        Send Booking + Auto-Schedule
+      </button>
+    </div>
+    <div class="out-card" id="sc-out">
+      <div class="out-header"><div class="out-title">Scheduling Pipeline</div></div>
+      <div class="out-body" id="sc-body"></div>
     </div>
   </div>
+
+  <!-- ══════════════════════════════════════════
+       INVOICING DEMO
+  ══════════════════════════════════════════ -->
 
   <div class="panel" id="panel-invoicing">
-    <div class="integration-panel">
-      <div class="integration-icon-lg">💰</div>
-      <div class="integration-title">Invoicing</div>
-      <div class="integration-desc">Signed contracts automatically trigger invoices. AI tracks payment status, sends reminders, and flags overdue accounts to your team.</div>
-      <div class="integration-connects">
-        <span class="int-chip">QuickBooks</span>
-        <span class="int-chip">Stripe</span>
-        <span class="int-chip">FreshBooks</span>
-        <span class="int-chip">Wave</span>
-        <span class="int-chip">Xero</span>
+    <div class="section-hero">
+      <div class="section-eyebrow">Station 9 · Integration Demo</div>
+      <div class="section-title">Contract signed.<br><span>Invoice sent automatically.</span></div>
+      <div class="section-sub">Signed contracts trigger invoices instantly. AI tracks payment, sends reminders, and flags overdue accounts — hands free.</div>
+    </div>
+    <div class="card">
+      <div class="row2">
+        <div class="field"><label>Client</label>
+          <input class="inp" id="inv-client" type="text" value="Rivera Home Services" /></div>
+        <div class="field"><label>Service &amp; Amount</label>
+          <select class="sel" id="inv-amount">
+            <option value="2500">AI Audit + Roadmap — $2,500</option>
+            <option value="6500">Full AI Build — $6,500</option>
+            <option value="1500">Monthly Retainer — $1,500</option>
+          </select>
+        </div>
       </div>
-      <div class="integration-note">⚡ Connected via API during your Breakout AI build</div>
+      <button class="btn-primary" id="inv-btn" onclick="runInvoicing()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+        Trigger Invoice Pipeline
+      </button>
+    </div>
+    <div class="out-card" id="inv-out">
+      <div class="out-header"><div class="out-title">Invoice Pipeline</div></div>
+      <div class="out-body" id="inv-body"></div>
     </div>
   </div>
 
+  <!-- ══════════════════════════════════════════
+       DASHBOARD DEMO
+  ══════════════════════════════════════════ -->
+
   <div class="panel" id="panel-dashboard-station">
-    <div class="integration-panel">
-      <div class="integration-icon-lg">📊</div>
-      <div class="integration-title">Pipeline Dashboard</div>
-      <div class="integration-desc">Every station feeds into a single real-time dashboard — leads, proposals, signatures, payments, and content performance in one view.</div>
-      <div class="integration-connects">
-        <span class="int-chip">n8n</span>
-        <span class="int-chip">Make.com</span>
-        <span class="int-chip">Airtable</span>
-        <span class="int-chip">Notion</span>
-        <span class="int-chip">Google Sheets</span>
-      </div>
-      <div class="integration-note">⚡ Built and configured during your Breakout AI engagement</div>
+    <div class="section-hero">
+      <div class="section-eyebrow">Station 12 · Integration Demo</div>
+      <div class="section-title">Every station.<br><span>One real-time view.</span></div>
+      <div class="section-sub">Your entire AI pipeline — leads, calls, proposals, contracts, invoices — visible in a single live dashboard. Nothing falls through the cracks.</div>
+    </div>
+    <div class="dash-grid" id="dashGrid"></div>
+    <div style="text-align:center;margin-top:24px">
+      <button class="btn-primary" style="width:auto;padding:12px 32px;display:inline-flex" onclick="refreshDash()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
+        Refresh Live Data
+      </button>
     </div>
   </div>
 
@@ -1269,6 +1635,7 @@ function runColdEmail() {
     rawStore['ce'] = text;
     renderEmails(text, 'ce-body');
     showOut('ce');
+    demoComplete('cold-email');
   });
 }
 
@@ -1328,6 +1695,7 @@ function runProposal() {
     rawStore['pr'] = text;
     renderProposal(text, 'pr-body', client, biz);
     showOut('pr');
+    demoComplete('proposal');
   });
 }
 
@@ -1424,6 +1792,7 @@ function runFollowup() {
     rawStore['fu'] = text;
     renderSequence(text, 'fu-body');
     showOut('fu');
+    demoComplete('followup');
   });
 }
 
@@ -1498,6 +1867,7 @@ function runNewsletter() {
     document.getElementById('nl-meta').innerHTML = '<div class="meta-item">&#128221; <strong>' + wc + '</strong> words</div><div class="meta-item">&#9200; <strong>' + Math.ceil(wc/200) + ' min</strong> read</div>';
     document.getElementById('nl-raw').textContent = text;
     showOut('nl');
+    demoComplete('newsletter');
   });
 }
 
@@ -1617,6 +1987,7 @@ function runSocial() {
     rawStore['sm'] = text;
     renderPosts(text, 'sm-body');
     showOut('sm');
+    demoComplete('social');
   });
 }
 
@@ -1688,6 +2059,7 @@ function runSEO() {
     rawStore['seo'] = text;
     renderSEO(text, 'seo-body', biz);
     showOut('seo');
+    demoComplete('seo');
   });
 }
 
@@ -1754,7 +2126,511 @@ function renderSEO(text, bodyId, biz) {
   document.getElementById(bodyId).innerHTML = html;
 }
 
-// ── ENTER KEY ──
+// ── DEMO PROGRESS TRACKER ──
+// Stats start at zero. Each demo completion adds its contribution.
+var demoStats = {
+  hoursSaved: 0,
+  revenue: 0,
+  leads: 0,
+  demosRun: 0
+};
+
+var demoContributions = {
+  'cold-email':  { hours: 3,  revenue: 1200, leads: 8,  activity: '📧 Cold email sequence generated — 3 hrs of outreach automated' },
+  'proposal':    { hours: 2,  revenue: 2500, leads: 0,  activity: '📋 Proposal built in seconds — 2 hrs of writing saved' },
+  'followup':    { hours: 4,  revenue: 1800, leads: 5,  activity: '💬 Follow-up sequence armed — 4 hrs of manual chasing eliminated' },
+  'newsletter':  { hours: 3,  revenue: 600,  leads: 12, activity: '✉️ Newsletter published — 3 hrs of content work done instantly' },
+  'social':      { hours: 4,  revenue: 800,  leads: 15, activity: '📱 Week of social posts created — 4 hrs of content scheduled' },
+  'seo':         { hours: 5,  revenue: 1400, leads: 22, activity: '🔍 SEO package built — 5 hrs of keyword research automated' },
+  'lead-scraping': { hours: 6, revenue: 3200, leads: 47, activity: '🎯 Lead scan complete — 47 verified prospects found automatically' },
+  'phone-agent': { hours: 8,  revenue: 4500, leads: 0,  activity: '📞 AI call completed — lead qualified and CRM updated hands-free' },
+  'contracts':   { hours: 2,  revenue: 2500, leads: 0,  activity: '✍️ Contract sent and tracked — 2 hrs of paperwork eliminated' },
+  'scheduling':  { hours: 3,  revenue: 900,  leads: 0,  activity: '📅 Meeting auto-booked — scheduling handled without a single email' },
+  'invoicing':   { hours: 2,  revenue: 2500, leads: 0,  activity: '💰 Invoice triggered automatically — payment tracking armed' },
+  'dashboard-station': { hours: 1, revenue: 0, leads: 0, activity: '📊 Dashboard reviewed — full pipeline visibility confirmed' }
+};
+
+var completedDemos = {};
+var liveActivityFeed = [];
+
+function demoComplete(stationId) {
+  if (completedDemos[stationId]) return; // only count each once
+  completedDemos[stationId] = true;
+
+  var contrib = demoContributions[stationId];
+  if (!contrib) return;
+
+  demoStats.hoursSaved += contrib.hours;
+  demoStats.revenue += contrib.revenue;
+  demoStats.leads += contrib.leads;
+  demoStats.demosRun++;
+
+  // Mark nav tab as completed
+  var tabs = document.querySelectorAll('.nav-tab');
+  for (var i = 0; i < tabs.length; i++) {
+    if (tabs[i].getAttribute('data-panel') === stationId) {
+      tabs[i].classList.add('completed');
+    }
+  }
+
+  // Mark station tile on home panel
+  var tiles = document.querySelectorAll('.station-tile');
+  for (var j = 0; j < tiles.length; j++) {
+    var tile = tiles[j];
+    if (tile.getAttribute('onclick') && tile.getAttribute('onclick').indexOf("'" + stationId + "'") !== -1) {
+      tile.style.borderColor = 'rgba(52,211,153,0.4)';
+      tile.style.background = 'rgba(52,211,153,0.05)';
+      var badge = tile.querySelector('.tile-badge');
+      if (badge) {
+        var existing = badge.querySelector('.done-badge');
+        if (!existing) {
+          var doneBadge = document.createElement('span');
+          doneBadge.className = 'done-badge';
+          doneBadge.style.cssText = 'display:inline-block;padding:2px 7px;border-radius:3px;font-size:8px;font-weight:700;letter-spacing:1px;text-transform:uppercase;background:rgba(52,211,153,0.12);color:#34d399;border:1px solid rgba(52,211,153,0.28);margin-left:6px';
+          doneBadge.textContent = '✓ DONE';
+          badge.appendChild(doneBadge);
+        }
+      }
+    }
+  }
+
+  // Add to live activity feed
+  var now = new Date();
+  liveActivityFeed.unshift({ text: contrib.activity, time: 'just now', dot: 'green' });
+  if (liveActivityFeed.length > 8) liveActivityFeed.pop();
+
+  // Animate ROI stats bar up
+  var roi = demoStats.demosRun > 0 ? Math.round((demoStats.revenue / (demoStats.demosRun * 1500)) * 10) / 10 : 0;
+  if (roi < 1) roi = demoStats.demosRun > 0 ? 1.5 : 0;
+
+  countUp('statHours', demoStats.hoursSaved, '', '', 900);
+  countUp('statRevenue', demoStats.revenue, '$', '', 1100);
+  countUp('statLeads', demoStats.leads, '', '', 800);
+  countUp('statROI', roi, '', 'x', 1000);
+
+  // Update ROI result text
+  var resultEl = document.getElementById('roiResult');
+  if (resultEl) {
+    if (demoStats.demosRun === 0) {
+      resultEl.innerHTML = '<span style="color:var(--text-dimmer)">Run the demos above — each one adds real numbers here.</span>';
+    } else {
+      resultEl.innerHTML =
+        'Across <strong>' + demoStats.demosRun + ' station' + (demoStats.demosRun > 1 ? 's' : '') + '</strong> demonstrated so far, this system saves ' +
+        '<span class="roi-highlight">' + demoStats.hoursSaved + ' hours per week</span>, ' +
+        'generates <span class="roi-highlight">$' + demoStats.revenue.toLocaleString() + ' in monthly revenue potential</span>, ' +
+        'and surfaces <span class="roi-highlight">' + demoStats.leads + ' new leads</span> — all automatically.';
+    }
+  }
+
+  // Refresh dashboard if it's been opened
+  if (dashInited) refreshDash();
+}
+
+// Override countUp to start FROM current value not zero
+function countUp(elId, target, prefix, suffix, duration) {
+  var el = document.getElementById(elId);
+  if (!el) return;
+  // Parse current value
+  var currentText = el.textContent.replace(prefix,'').replace(suffix,'').replace(/,/g,'').trim();
+  var current = parseFloat(currentText) || 0;
+  if (current === target) return;
+
+  var startTime = null;
+  var isFloat = (suffix === 'x' && target < 10);
+
+  function step(ts) {
+    if (!startTime) startTime = ts;
+    var progress = Math.min((ts - startTime) / duration, 1);
+    var ease = 1 - Math.pow(1 - progress, 3);
+    var val = current + (target - current) * ease;
+    if (isFloat) {
+      el.textContent = prefix + val.toFixed(1) + suffix;
+    } else if (target >= 1000) {
+      el.textContent = prefix + Math.floor(val).toLocaleString() + suffix;
+    } else {
+      el.textContent = prefix + Math.floor(val) + suffix;
+    }
+    if (progress < 1) requestAnimationFrame(step);
+    else el.textContent = prefix + (isFloat ? target.toFixed(1) : (target >= 1000 ? Math.floor(target).toLocaleString() : Math.floor(target))) + suffix;
+  }
+  requestAnimationFrame(step);
+}
+
+function initROI() {
+  // Start everything at zero — stats build as demos run
+  document.getElementById('statHours').textContent = '0';
+  document.getElementById('statRevenue').textContent = '$0';
+  document.getElementById('statLeads').textContent = '0';
+  document.getElementById('statROI').textContent = '0x';
+  document.getElementById('roiResult').innerHTML = '<span style="color:var(--text-dimmer)">Run the demos above — each one adds real numbers here.</span>';
+}
+
+// Trigger recalc when returning home
+var _origShowPanel = showPanel;
+showPanel = function(id) {
+  _origShowPanel(id);
+};
+
+setTimeout(initROI, 100);
+
+
+
+// ══════════════════════════════════════════
+// LEAD SCRAPING DEMO
+// ══════════════════════════════════════════
+var leadData = {
+  'HVAC companies': [
+    { name: 'Desert Air HVAC', owner: 'Jeff Morales', phone: '(760) 555-0182', email: 'jeff@desertairhvac.com', rating: '4.8★', reviews: 94, score: 'hot' },
+    { name: 'Cool Breeze Systems', owner: 'Linda Park', phone: '(760) 555-0247', email: 'linda@coolbreezesys.com', rating: '4.6★', reviews: 61, score: 'hot' },
+    { name: 'Valley Climate Control', owner: 'Steve Torres', phone: '(760) 555-0391', email: 'info@valleyclimate.com', rating: '4.3★', reviews: 38, score: 'warm' },
+    { name: 'Sunrise HVAC & Plumbing', owner: 'Mike Chen', phone: '(760) 555-0158', email: 'mike@sunrisehvac.net', rating: '4.5★', reviews: 52, score: 'warm' },
+    { name: 'Pro Air Solutions', owner: 'Dana White', phone: '(760) 555-0433', email: 'dana@proairsol.com', rating: '3.9★', reviews: 17, score: 'cold' },
+    { name: 'Desert Comfort Pros', owner: 'Ray Sandoval', phone: '(760) 555-0076', email: 'ray@desertcomfort.com', rating: '4.7★', reviews: 83, score: 'hot' },
+    { name: 'Peak Performance HVAC', owner: 'Tanya Rivers', phone: '(760) 555-0512', email: 'tanya@peakperfhvac.com', rating: '4.4★', reviews: 44, score: 'warm' }
+  ],
+  'Real Estate Agents': [
+    { name: 'Sarah Kim Properties', owner: 'Sarah Kim', phone: '(760) 555-0284', email: 'sarah@sarahkimhomes.com', rating: '5.0★', reviews: 112, score: 'hot' },
+    { name: 'Marcus Realty Group', owner: 'Marcus Bell', phone: '(760) 555-0367', email: 'm.bell@marcusrealty.com', rating: '4.9★', reviews: 88, score: 'hot' },
+    { name: 'Desert Homes by Lisa', owner: 'Lisa Nguyen', phone: '(760) 555-0491', email: 'lisa@deserthomesre.com', rating: '4.7★', reviews: 63, score: 'hot' },
+    { name: 'Coachella Valley Realty', owner: 'Tom Reeves', phone: '(760) 555-0203', email: 'tom@cvrealty.com', rating: '4.2★', reviews: 29, score: 'warm' },
+    { name: 'Oasis Properties', owner: 'Cara Jensen', phone: '(760) 555-0618', email: 'cara@oasisprop.com', rating: '4.5★', reviews: 47, score: 'warm' }
+  ],
+  'Med Spas': [
+    { name: 'Glow Medical Spa', owner: 'Dr. Amy Chen', phone: '(760) 555-0349', email: 'amy@glowmedspa.com', rating: '4.9★', reviews: 201, score: 'hot' },
+    { name: 'Desert Radiance', owner: 'Brittany Walsh', phone: '(760) 555-0127', email: 'brit@desertradiance.com', rating: '4.8★', reviews: 156, score: 'hot' },
+    { name: 'Luxe Aesthetic Studio', owner: 'Priya Sharma', phone: '(760) 555-0574', email: 'priya@luxeaesthetic.com', rating: '4.6★', reviews: 89, score: 'warm' },
+    { name: 'Valley Skin & Body', owner: 'Nicole Adams', phone: '(760) 555-0238', email: 'nicole@valleyskin.com', rating: '4.3★', reviews: 44, score: 'warm' }
+  ],
+  'Restaurants': [
+    { name: 'The Palms Bistro', owner: 'Carlo Russo', phone: '(760) 555-0381', email: 'carlo@palmsbistro.com', rating: '4.7★', reviews: 318, score: 'hot' },
+    { name: 'Desert Spice Kitchen', owner: 'Amir Hassan', phone: '(760) 555-0195', email: 'amir@desertspice.com', rating: '4.5★', reviews: 187, score: 'warm' },
+    { name: 'Sunset Grille', owner: 'Jana Porter', phone: '(760) 555-0462', email: 'jana@sunsetgrille.net', rating: '4.8★', reviews: 412, score: 'hot' },
+    { name: 'Cactus & Rye', owner: 'Brett Fox', phone: '(760) 555-0293', email: 'brett@cactusrye.com', rating: '4.4★', reviews: 94, score: 'warm' },
+    { name: "Tony's Italian", owner: 'Tony Marino', phone: '(760) 555-0087', email: 'tony@tonysmarina.com', rating: '3.8★', reviews: 22, score: 'cold' }
+  ],
+  'Law Firms': [
+    { name: 'Coachella Valley Law', owner: 'Atty. David Ross', phone: '(760) 555-0441', email: 'd.ross@cvlaw.com', rating: '4.9★', reviews: 67, score: 'hot' },
+    { name: 'Desert Legal Group', owner: 'Atty. Renee Park', phone: '(760) 555-0528', email: 'renee@desertlegal.com', rating: '4.7★', reviews: 43, score: 'hot' },
+    { name: 'Palm Springs Attorneys', owner: 'Atty. Kevin Hall', phone: '(760) 555-0316', email: 'khall@psattorneys.com', rating: '4.3★', reviews: 28, score: 'warm' }
+  ],
+  'Contractors': [
+    { name: 'Rivera Home Services', owner: 'Marcus Rivera', phone: '(760) 555-0173', email: 'm.rivera@riverahomes.com', rating: '4.8★', reviews: 76, score: 'hot' },
+    { name: 'Desert Build Co.', owner: 'Shane Brooks', phone: '(760) 555-0259', email: 'shane@desertbuild.com', rating: '4.6★', reviews: 54, score: 'hot' },
+    { name: 'Valley Contractors Inc.', owner: 'Pat Gomez', phone: '(760) 555-0487', email: 'pat@valleycontractors.com', rating: '4.4★', reviews: 38, score: 'warm' },
+    { name: 'Sunrise Renovations', owner: 'Tara Simmons', phone: '(760) 555-0362', email: 'tara@sunrisereno.com', rating: '4.1★', reviews: 19, score: 'warm' },
+    { name: 'Pro Finish Builders', owner: 'Dan Kirk', phone: '(760) 555-0091', email: 'dan@profinish.net', rating: '3.7★', reviews: 11, score: 'cold' }
+  ]
+};
+
+function runLeadScrape() {
+  var type = document.getElementById('ls-type').value;
+  var location = document.getElementById('ls-location').value;
+  var source = document.getElementById('ls-source').value;
+  document.getElementById('ls-btn').disabled = true;
+  document.getElementById('ls-out').style.display = 'none';
+  document.getElementById('ls-status').style.display = 'flex';
+  var messages = ['Connecting to ' + source + '…','Searching ' + type + ' in ' + location + '…','Found results — verifying contact data…','Enriching records with email + owner info…','Scoring leads by engagement signals…','Preparing export…'];
+  var mi = 0;
+  var iv = setInterval(function() { if (mi < messages.length) { document.getElementById('ls-status-text').textContent = messages[mi]; mi++; } else clearInterval(iv); }, 600);
+  setTimeout(function() {
+    clearInterval(iv);
+    document.getElementById('ls-status').style.display = 'none';
+    document.getElementById('ls-btn').disabled = false;
+    var leads = leadData[type] || leadData['HVAC companies'];
+    var hot = leads.filter(function(l){ return l.score==='hot'; }).length;
+    document.getElementById('ls-count').textContent = leads.length + ' leads — ' + hot + ' hot';
+    var html = '<table class="leads-table"><thead><tr><th>Business</th><th>Owner</th><th>Phone</th><th>Email</th><th>Rating</th><th>Score</th></tr></thead><tbody>';
+    for (var i = 0; i < leads.length; i++) {
+      var l = leads[i];
+      html += '<tr class="lead-row-new" style="animation-delay:' + (i*110) + 'ms"><td><span class="lead-name">' + esc(l.name) + '</span></td><td>' + esc(l.owner) + '</td><td>' + esc(l.phone) + '</td><td style="color:var(--blue-bright)">' + esc(l.email) + '</td><td>' + l.rating + ' <span style="color:var(--text-dimmer);font-size:11px">(' + l.reviews + ')</span></td><td><span class="lead-score ' + l.score + '">' + l.score.toUpperCase() + '</span></td></tr>';
+    }
+    html += '</tbody></table>';
+    document.getElementById('ls-body').innerHTML = html;
+    document.getElementById('ls-out').style.display = 'block';
+    document.getElementById('ls-out').scrollIntoView({ behavior:'smooth', block:'nearest' });
+    demoComplete('lead-scraping');
+  }, 3800);
+}
+
+// ══════════════════════════════════════════
+// PHONE AGENT DEMO
+// ══════════════════════════════════════════
+var phoneScripts = {
+  discovery: [
+    { role:'ai', text:"Hi, this is Aria calling from Breakout AI Solutions. Am I speaking with {name}?" },
+    { role:'lead', text:"Yeah, this is {name}. Who is this?" },
+    { role:'ai', text:"Hi {name}! I'm an AI assistant for Breakout AI Solutions. You filled out our contact form about AI automation for {biz} — is now a good moment for a couple quick questions?" },
+    { role:'lead', text:"Sure, I've got a few minutes." },
+    { role:'ai', text:"Great. What's the biggest time drain in your business right now — follow-ups, scheduling, paperwork, or something else?" },
+    { role:'lead', text:"Honestly? Follow-ups. We quote jobs and then lose track. Half the time the competitor calls before we do." },
+    { role:'ai', text:"That's exactly what we hear from most {biz_type} owners. You're leaving revenue on the table every week. Have you looked at automation tools before, or is this new territory?" },
+    { role:'lead', text:"We tried something with email once. Didn't stick. I don't want anything complicated." },
+    { role:'ai', text:"Completely understand — our approach is human-first, built around how you already work. I'm flagging you as high-priority and having Dave reach out personally within the hour. Does that work?" },
+    { role:'lead', text:"Yeah that's fine. Have him call my cell." },
+    { role:'ai', text:"Perfect. Everything's logged and Dave will call you shortly. Thanks {name} — talk soon!" }
+  ],
+  qualify: [
+    { role:'ai', text:"Hi, may I speak with {name}? This is Aria from Breakout AI Solutions." },
+    { role:'lead', text:"Speaking." },
+    { role:'ai', text:"Hi {name}, quick question — is {biz} handling digital follow-up with customers currently, or mostly manual?" },
+    { role:'lead', text:"Mostly manual. We have one person but it's inconsistent." },
+    { role:'ai', text:"How many new leads or quotes do you send out per week roughly?" },
+    { role:'lead', text:"Probably 15 to 20." },
+    { role:'ai', text:"And what's your average job value?" },
+    { role:'lead', text:"Anywhere from $800 to $3,000 depending on the job." },
+    { role:'ai', text:"You're a strong fit. I'm marking you as qualified and sending your info to Dave now for a no-cost audit proposal. Sound good?" },
+    { role:'lead', text:"Yeah, send it over." }
+  ],
+  followup: [
+    { role:'ai', text:"Hi {name}, this is Aria from Breakout AI. Following up on the proposal Dave sent for {biz} — did you get a chance to look at it?" },
+    { role:'lead', text:"Yeah I glanced at it. Still thinking." },
+    { role:'ai', text:"That's fair. Was there anything that gave you pause?" },
+    { role:'lead', text:"Mainly the price. I want to make sure it's worth it." },
+    { role:'ai', text:"Completely reasonable. Based on your numbers — 15 to 20 quotes a week at around $2,000 average — recapturing even 2 lost jobs a month adds $4,000 in revenue. The investment typically pays for itself in 30 days." },
+    { role:'lead', text:"When you put it that way..." },
+    { role:'ai', text:"I'll let Dave know you're warm and he'll call today to walk through the ROI. Fair enough?" },
+    { role:'lead', text:"Yeah have him call me." }
+  ]
+};
+
+var phoneTimer = null;
+var phoneSeconds = 0;
+
+function runPhoneCall() {
+  var name = document.getElementById('ph-name').value || 'Marcus Rivera';
+  var biz = document.getElementById('ph-biz').value || 'your business';
+  var industry = document.getElementById('ph-industry').value;
+  var scriptKey = document.getElementById('ph-script').value;
+  var bizTypes = { plumbing:'plumbing company', realestate:'real estate business', medspa:'med spa', restaurant:'restaurant' };
+  var bizType = bizTypes[industry] || 'business';
+  var script = phoneScripts[scriptKey];
+  var lines = [];
+  for (var i = 0; i < script.length; i++) {
+    lines.push({ role: script[i].role, text: script[i].text.replace(/{name}/g, name.split(' ')[0]).replace(/{biz}/g, biz).replace(/{biz_type}/g, bizType) });
+  }
+  document.getElementById('ph-btn').disabled = true;
+  document.getElementById('ph-transcript').innerHTML = '';
+  document.getElementById('ph-typing').style.display = 'none';
+  document.getElementById('ph-crm').style.display = 'none';
+  document.getElementById('ph-meta').style.display = 'none';
+  document.getElementById('ph-call-status').textContent = 'Dialing ' + name + '…';
+  document.getElementById('ph-out').style.display = 'block';
+  document.getElementById('ph-out').scrollIntoView({ behavior:'smooth', block:'nearest' });
+  phoneSeconds = 0;
+  if (phoneTimer) clearInterval(phoneTimer);
+  phoneTimer = setInterval(function() {
+    phoneSeconds++;
+    var m = Math.floor(phoneSeconds/60), s = phoneSeconds%60;
+    document.getElementById('ph-timer').textContent = m + ':' + (s<10?'0':'') + s;
+  }, 1000);
+  setTimeout(function() { document.getElementById('ph-call-status').textContent = 'Call Connected'; playLines(lines, 0, name, biz); }, 1400);
+}
+
+function playLines(lines, idx, name, biz) {
+  if (idx >= lines.length) {
+    if (phoneTimer) clearInterval(phoneTimer);
+    document.getElementById('ph-call-status').textContent = '&#10003; Call Complete — CRM Updated';
+    showCRMLog(name, biz);
+    document.getElementById('ph-btn').disabled = false;
+    return;
+  }
+  var line = lines[idx];
+  var typingEl = document.getElementById('ph-typing');
+  var transcript = document.getElementById('ph-transcript');
+  typingEl.style.display = 'block';
+  typingEl.textContent = line.role === 'ai' ? 'AI Agent speaking…' : name.split(' ')[0] + ' responding…';
+  var delay = Math.min(line.role === 'ai' ? 1200 + line.text.length * 16 : 900 + line.text.length * 12, 3000);
+  setTimeout(function() {
+    typingEl.style.display = 'none';
+    var bubble = document.createElement('div');
+    bubble.className = 'call-bubble ' + (line.role === 'ai' ? 'ai' : 'lead');
+    bubble.innerHTML = '<div class="bubble-avatar ' + (line.role==='ai'?'ai-av':'lead-av') + '">' + (line.role==='ai'?'🤖':'👤') + '</div>' +
+      '<div><div class="bubble-label">' + (line.role==='ai' ? 'AI AGENT — ARIA' : name.toUpperCase()) + '</div>' +
+      '<div class="bubble-text">' + esc(line.text) + '</div></div>';
+    transcript.appendChild(bubble);
+    transcript.scrollTop = transcript.scrollHeight;
+    setTimeout(function() { playLines(lines, idx+1, name, biz); }, line.role==='ai' ? 500 : 700);
+  }, delay);
+}
+
+function showCRMLog(name, biz) {
+  var now = new Date();
+  var timeStr = now.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
+  var dateStr = now.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+  document.getElementById('ph-crm-body').innerHTML =
+    '<div class="crm-field"><div class="crm-key">Contact</div><div class="crm-val">' + esc(name) + '</div></div>' +
+    '<div class="crm-field"><div class="crm-key">Business</div><div class="crm-val">' + esc(biz) + '</div></div>' +
+    '<div class="crm-field"><div class="crm-key">Call Duration</div><div class="crm-val">' + document.getElementById('ph-timer').textContent + '</div></div>' +
+    '<div class="crm-field"><div class="crm-key">Status</div><div class="crm-val"><span class="crm-val tag qualified">&#10003; Qualified</span></div></div>' +
+    '<div class="crm-field"><div class="crm-key">Pain Point</div><div class="crm-val">Manual follow-ups — losing quotes to faster competitors</div></div>' +
+    '<div class="crm-field"><div class="crm-key">Next Action</div><div class="crm-val">Dave to call within 1 hour — send audit proposal</div></div>' +
+    '<div class="crm-field"><div class="crm-key">Logged</div><div class="crm-val">' + dateStr + ' at ' + timeStr + '</div></div>';
+  document.getElementById('ph-crm').style.display = 'block';
+  document.getElementById('ph-meta').innerHTML = '<div class="meta-item">&#128222; Logged to <strong>HubSpot</strong></div><div class="meta-item">&#128179; Follow-up task created</div><div class="meta-item">&#128140; Email sequence triggered</div>';
+  document.getElementById('ph-meta').style.display = 'flex';
+  demoComplete('phone-agent');
+}
+
+// ══════════════════════════════════════════
+// CONTRACTS / SCHEDULING / INVOICING DEMOS
+// ══════════════════════════════════════════
+function runContract() {
+  var client = document.getElementById('ct-client').value || 'Sarah Johnson';
+  var service = document.getElementById('ct-service').value;
+  document.getElementById('ct-btn').disabled = true;
+  var steps = [
+    { icon:'📋', title:'Proposal Accepted', detail:client + ' accepted the proposal for ' + service, done:true, time:'Just now' },
+    { icon:'⚙️', title:'Contract Generated', detail:'AI pulled client details, service scope, and payment terms — contract built in 4 seconds', active:true },
+    { icon:'📧', title:'Sent for E-Signature', detail:'DocuSign link delivered to ' + client + ' via email and SMS' },
+    { icon:'✍️', title:'Awaiting Signature', detail:'Reminder auto-scheduled at 24 hours if unsigned' },
+    { icon:'✅', title:'Contract Countersigned', detail:'Your copy filed. Invoice + onboarding sequence triggered automatically.' }
+  ];
+  document.getElementById('ct-out').style.display = 'block';
+  renderPipeline('ct-body', steps, function() { document.getElementById('ct-btn').disabled = false; demoComplete('contracts'); });
+}
+
+function runScheduling() {
+  var name = document.getElementById('sc-name').value || 'Tom Keller';
+  var type = document.getElementById('sc-type').value;
+  document.getElementById('sc-btn').disabled = true;
+  var days = ['Monday','Tuesday','Wednesday','Thursday','Friday'];
+  var times = ['9:00 AM','10:30 AM','2:00 PM','3:30 PM'];
+  var slot = days[Math.floor(Math.random()*days.length)] + ' at ' + times[Math.floor(Math.random()*times.length)];
+  var steps = [
+    { icon:'🤖', title:'Lead Qualified by AI', detail:name + ' completed qualification and was marked ready to book', done:true, time:'Just now' },
+    { icon:'📅', title:'Booking Link Sent', detail:'Calendly link for "' + type + '" texted and emailed to ' + name, active:true },
+    { icon:'✅', title:'Meeting Booked', detail:name + ' selected ' + slot + ' — confirmed instantly' },
+    { icon:'🔔', title:'Reminders Scheduled', detail:'24-hour and 1-hour reminders set for both parties automatically' },
+    { icon:'📋', title:'Meeting Brief Sent', detail:"AI-generated brief with " + name + "'s background, pain points, and talking points sent to Dave" }
+  ];
+  document.getElementById('sc-out').style.display = 'block';
+  renderPipeline('sc-body', steps, function() { document.getElementById('sc-btn').disabled = false; demoComplete('scheduling'); });
+}
+
+function runInvoicing() {
+  var client = document.getElementById('inv-client').value || 'Rivera Home Services';
+  var amount = parseInt(document.getElementById('inv-amount').value);
+  var service = document.getElementById('inv-amount').options[document.getElementById('inv-amount').selectedIndex].text;
+  document.getElementById('inv-btn').disabled = true;
+  var invNum = 1000 + Math.floor(Math.random()*900);
+  var steps = [
+    { icon:'✍️', title:'Contract Signed', detail:client + ' signed the agreement for ' + service, done:true, time:'Just now' },
+    { icon:'⚡', title:'Invoice Auto-Generated', detail:'$' + amount.toLocaleString() + ' invoice created in QuickBooks — Invoice #' + invNum, active:true },
+    { icon:'📧', title:'Invoice Delivered', detail:'Sent to ' + client + ' via email with Stripe payment link' },
+    { icon:'⏰', title:'Reminder Sequence Armed', detail:'Follow-up reminders at 3, 7, and 14 days if unpaid' },
+    { icon:'💰', title:'Payment Received', detail:'$' + amount.toLocaleString() + ' cleared — QuickBooks updated, team notified via Slack' }
+  ];
+  document.getElementById('inv-out').style.display = 'block';
+  renderPipeline('inv-body', steps, function() { document.getElementById('inv-btn').disabled = false; demoComplete('invoicing'); });
+}
+
+function renderPipeline(bodyId, steps, onDone) {
+  var el = document.getElementById(bodyId);
+  var html = '<div class="pipeline" style="padding:22px 28px">';
+  for (var i = 0; i < steps.length; i++) {
+    var s = steps[i];
+    var cls = s.done ? 'done' : (s.active ? 'active' : '');
+    html += '<div class="pipe-step ' + cls + '" id="pp-' + bodyId + '-' + i + '">' +
+      '<div class="pipe-dot">' + s.icon + '</div>' +
+      '<div class="pipe-content">' +
+      '<div class="pipe-title">' + esc(s.title) + '</div>' +
+      '<div class="pipe-detail">' + esc(s.detail) + '</div>' +
+      '<div class="pipe-time" id="pt-' + bodyId + '-' + i + '">' + (s.time||'') + '</div>' +
+      '</div></div>';
+  }
+  html += '</div>';
+  el.innerHTML = html;
+  var startIdx = 0;
+  for (var j = 0; j < steps.length; j++) { if (steps[j].active) { startIdx = j; break; } }
+  animatePipe(bodyId, steps, startIdx, onDone);
+}
+
+function animatePipe(bodyId, steps, idx, onDone) {
+  if (idx >= steps.length) { if (onDone) onDone(); return; }
+  var el = document.getElementById('pp-' + bodyId + '-' + idx);
+  if (!el) { if (onDone) onDone(); return; }
+  el.className = 'pipe-step active';
+  setTimeout(function() {
+    el.className = 'pipe-step done';
+    var tEl = document.getElementById('pt-' + bodyId + '-' + idx);
+    if (tEl && !tEl.textContent) {
+      var now = new Date();
+      tEl.textContent = 'Completed ' + now.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
+      tEl.style.color = 'var(--success)';
+    }
+    var next = document.getElementById('pp-' + bodyId + '-' + (idx+1));
+    if (next) next.className = 'pipe-step active';
+    animatePipe(bodyId, steps, idx+1, onDone);
+  }, 800 + Math.random()*700);
+}
+
+// ══════════════════════════════════════════
+// DASHBOARD DEMO
+// ══════════════════════════════════════════
+var dashActivities = [
+  { dot:'green', text:'New lead scraped — Desert Air HVAC (HOT)', time:'2 min ago' },
+  { dot:'blue', text:'AI call completed — Marcus Rivera qualified', time:'8 min ago' },
+  { dot:'green', text:'Contract signed — Sarah Johnson ($2,500)', time:'14 min ago' },
+  { dot:'blue', text:'Meeting booked — Tom Keller, Tuesday 10:30 AM', time:'22 min ago' },
+  { dot:'green', text:'Invoice paid — Rivera Home Services ($6,500)', time:'1 hr ago' },
+  { dot:'yellow', text:'Follow-up reminder sent — 3 prospects (Day 4)', time:'2 hrs ago' },
+  { dot:'blue', text:'Newsletter published — 847 subscribers', time:'3 hrs ago' },
+  { dot:'green', text:'Lead scraped — Glow Medical Spa (HOT)', time:'4 hrs ago' }
+];
+
+function refreshDash() {
+  // Use real demo stats where available, pad with baseline for visual richness
+  var leads = demoStats.leads > 0 ? demoStats.leads + 18 : 24 + Math.floor(Math.random()*8);
+  var calls = completedDemos['phone-agent'] ? 12 + Math.floor(Math.random()*4) : 11 + Math.floor(Math.random()*5);
+  var revenue = demoStats.revenue > 0 ? demoStats.revenue + 9400 : 18400 + Math.floor(Math.random()*4200);
+  var proposals = completedDemos['proposal'] ? 8 + Math.floor(Math.random()*3) : 7 + Math.floor(Math.random()*4);
+  var signed = completedDemos['contracts'] ? Math.floor(proposals * 0.55) : Math.floor(proposals * 0.4);
+  var hours = demoStats.hoursSaved > 0 ? demoStats.hoursSaved + 14 : 31 + Math.floor(Math.random()*7);
+
+  var cards = [
+    { label:'Leads This Week', num:leads, sub:'from 3 sources', trend:'+' + (2+Math.floor(Math.random()*4)) + ' from last week', color:'blue' },
+    { label:'Calls Completed', num:calls, sub:'AI qualified', trend:Math.floor(calls*0.7) + ' marked hot', color:'green' },
+    { label:'Monthly Revenue', num:'$' + revenue.toLocaleString(), sub:'pipeline value', trend:'&#8593; 23% vs last month', color:'green' },
+    { label:'Proposals Sent', num:proposals, sub:'this week', trend:Math.floor(proposals*0.6) + ' opened', color:'blue' },
+    { label:'Contracts Signed', num:signed, sub:'avg 18 hrs to sign', trend:'$' + (signed*2800).toLocaleString() + ' locked in', color:'green' },
+    { label:'Hours Saved', num:hours, sub:'this week', trend:'~$' + (28*hours).toLocaleString() + ' in labor', color:'yellow' }
+  ];
+
+  var html = '';
+  for (var i = 0; i < cards.length; i++) {
+    var c = cards[i];
+    html += '<div class="dash-card ' + c.color + '"><div class="dash-card-label">' + c.label + '</div><div class="dash-card-num">' + c.num + '</div><div class="dash-card-sub">' + c.sub + '</div><div class="dash-card-trend">' + c.trend + '</div></div>';
+  }
+  document.getElementById('dashGrid').innerHTML = html;
+
+  // Merge live demo activity with static feed
+  var combined = liveActivityFeed.concat(dashActivities).slice(0, 10);
+
+  var existAct = document.getElementById('dashActivity');
+  if (existAct) existAct.remove();
+  var actDiv = document.createElement('div');
+  actDiv.id = 'dashActivity';
+  actDiv.className = 'dash-activity';
+  var actHtml = '<div class="dash-activity-title">Live Activity Feed</div>';
+  for (var j = 0; j < combined.length; j++) {
+    var a = combined[j];
+    actHtml += '<div class="activity-row"><div class="activity-dot ' + a.dot + '"></div><div class="activity-text">' + esc(a.text) + '</div><div class="activity-time">' + a.time + '</div></div>';
+  }
+  actDiv.innerHTML = actHtml;
+  document.getElementById('dashGrid').insertAdjacentElement('afterend', actDiv);
+}
+
+var dashInited = false;
+var _sp = showPanel;
+showPanel = function(id) {
+  _sp(id);
+  if (id === 'dashboard-station') {
+    if (!dashInited) { dashInited = true; }
+    refreshDash();
+    demoComplete('dashboard-station');
+  }
+};
+
 document.addEventListener('keydown', function(e) {
   if (e.key !== 'Enter' || e.shiftKey || e.target.tagName === 'TEXTAREA') return;
   var active = document.querySelector('.panel.active');
