@@ -695,17 +695,274 @@ line-height: 1.7;
 .status-dot span { display: none; }
 }
 
-@media (min-width: 1024px) {
-.brand-tag { display: block; }
+/* ── INTRO SCREEN ── */
+#introScreen {
+position: fixed; inset: 0;
+z-index: 9999;
+display: flex; align-items: center; justify-content: center;
+padding: 20px;
 }
-</style>
 
+.intro-bg {
+position: absolute; inset: 0;
+background: var(–navy);
+background-image:
+linear-gradient(rgba(59,130,246,0.04) 1px, transparent 1px),
+linear-gradient(90deg, rgba(59,130,246,0.04) 1px, transparent 1px);
+background-size: 44px 44px;
+}
+
+.intro-bg::after {
+content: ‘’;
+position: absolute; inset: 0;
+background: radial-gradient(ellipse at 60% 20%, rgba(59,130,246,0.12) 0%, transparent 60%);
+}
+
+.intro-card {
+position: relative; z-index: 1;
+background: var(–navy2);
+border: 1px solid var(–glass-border);
+border-radius: 20px;
+padding: 40px 44px;
+width: 100%; max-width: 620px;
+box-shadow: 0 40px 80px rgba(0,0,0,0.5);
+animation: fadeUp 0.5s ease both;
+}
+
+.intro-card::before {
+content: ‘’;
+position: absolute; top: 0; left: 0; right: 0; height: 1px;
+border-radius: 20px 20px 0 0;
+background: linear-gradient(90deg, transparent, var(–blue), transparent);
+opacity: 0.7;
+}
+
+.intro-logo {
+text-align: center; margin-bottom: 28px;
+}
+
+.intro-icon {
+width: 52px; height: 52px;
+border-radius: 14px;
+background: linear-gradient(135deg, var(–blue), var(–blue-dim));
+box-shadow: 0 0 32px rgba(59,130,246,0.45);
+display: flex; align-items: center; justify-content: center;
+font-size: 24px;
+margin: 0 auto 12px;
+}
+
+.intro-brand {
+font-family: ‘Syne’, sans-serif;
+font-size: 20px; font-weight: 800;
+letter-spacing: -0.3px; color: var(–text);
+margin-bottom: 3px;
+}
+
+.intro-tagline {
+font-size: 12px; color: var(–text-dimmer);
+font-weight: 300; letter-spacing: 0.5px;
+}
+
+.intro-divider {
+height: 1px;
+background: var(–glass-border);
+margin-bottom: 24px;
+}
+
+.intro-heading {
+font-family: ‘Syne’, sans-serif;
+font-size: 22px; font-weight: 800;
+letter-spacing: -0.4px; color: var(–text);
+margin-bottom: 8px;
+}
+
+.intro-sub {
+font-size: 14px; color: var(–text-dim);
+font-weight: 300; line-height: 1.6;
+margin-bottom: 24px;
+}
+
+.intro-form { margin-bottom: 24px; }
+
+.intro-row {
+display: flex; gap: 12px; margin-bottom: 12px; flex-wrap: wrap;
+}
+
+.intro-field {
+flex: 1; min-width: 200px;
+}
+
+.intro-field label {
+display: block; font-size: 11px; font-weight: 500;
+color: var(–text-dim); margin-bottom: 6px;
+text-transform: uppercase; letter-spacing: 0.5px;
+}
+
+.intro-inp {
+width: 100%;
+background: var(–navy3);
+border: 1px solid var(–blue-border);
+border-radius: 10px;
+padding: 11px 14px;
+color: var(–text);
+font-family: ‘DM Sans’, sans-serif;
+font-size: 14px; outline: none;
+transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.intro-inp:focus {
+border-color: var(–blue);
+box-shadow: 0 0 0 3px var(–blue-glow);
+}
+
+.intro-inp::placeholder { color: var(–text-dimmer); }
+
+.intro-sel {
+width: 100%;
+background: var(–navy3);
+border: 1px solid var(–glass-border);
+border-radius: 10px;
+padding: 11px 14px;
+color: var(–text);
+font-family: ‘DM Sans’, sans-serif;
+font-size: 14px; outline: none; cursor: pointer;
+appearance: none;
+background-image: url(“data:image/svg+xml,%3Csvg xmlns=‘http://www.w3.org/2000/svg’ width=‘10’ height=‘10’ viewBox=‘0 0 12 12’%3E%3Cpath fill=’%238fa3c0’ d=‘M6 8L1 3h10z’/%3E%3C/svg%3E”);
+background-repeat: no-repeat;
+background-position: right 12px center;
+transition: border-color 0.2s;
+}
+
+.intro-sel:focus { border-color: var(–blue-border); }
+
+.intro-btn {
+width: 100%;
+padding: 16px;
+background: linear-gradient(135deg, var(–blue), var(–blue-dim));
+border: none; border-radius: 12px;
+color: #fff;
+font-family: ‘Syne’, sans-serif;
+font-size: 16px; font-weight: 800;
+letter-spacing: -0.2px;
+cursor: pointer;
+transition: opacity 0.2s, box-shadow 0.2s;
+box-shadow: 0 6px 24px rgba(59,130,246,0.35);
+display: flex; align-items: center; justify-content: center; gap: 10px;
+margin-bottom: 12px;
+}
+
+.intro-btn:hover { opacity: 0.92; box-shadow: 0 8px 32px rgba(59,130,246,0.5); }
+
+.intro-skip {
+text-align: center;
+font-size: 12px; color: var(–text-dimmer);
+cursor: pointer; text-decoration: underline;
+text-underline-offset: 2px;
+transition: color 0.2s;
+}
+
+.intro-skip:hover { color: var(–text-dim); }
+
+/* Prospect badge in topnav */
+.prospect-badge {
+display: flex; align-items: center; gap: 7px;
+padding: 5px 12px;
+background: var(–blue-glow);
+border: 1px solid var(–blue-border);
+border-radius: 20px;
+font-size: 12px; color: var(–blue-bright);
+font-weight: 500; white-space: nowrap;
+cursor: pointer;
+transition: all 0.18s;
+}
+
+.prospect-badge:hover { background: rgba(59,130,246,0.2); }
+.prospect-badge-dot { width: 5px; height: 5px; background: var(–success); border-radius: 50%; box-shadow: 0 0 6px var(–success); }
+
+#introScreen.hidden {
+opacity: 0; pointer-events: none;
+transition: opacity 0.4s ease;
+}
+
+</style>
 </head>
 <body>
 
-<!-- TOP NAV -->
+<!-- ══════════════════════════════════════════
+     INTRO SCREEN OVERLAY
+══════════════════════════════════════════ -->
 
-<div class="topnav">
+<div id="introScreen">
+  <div class="intro-bg"></div>
+  <div class="intro-card">
+    <div class="intro-logo">
+      <div class="intro-icon">⚡</div>
+      <div class="intro-brand">Breakout AI Solutions</div>
+      <div class="intro-tagline">Human-First AI for Business</div>
+    </div>
+
+```
+<div class="intro-divider"></div>
+
+<div class="intro-heading">Before we begin</div>
+<div class="intro-sub">Enter your prospect's info to personalize this demo for them — their name, company, and industry will be used throughout every station.</div>
+
+<div class="intro-form">
+  <div class="intro-row">
+    <div class="intro-field">
+      <label>Contact First Name</label>
+      <input class="intro-inp" id="intro-contact" type="text" placeholder="e.g. Marcus" />
+    </div>
+    <div class="intro-field">
+      <label>Company Name</label>
+      <input class="intro-inp" id="intro-company" type="text" placeholder="e.g. Rivera Home Services" />
+    </div>
+  </div>
+  <div class="intro-row">
+    <div class="intro-field">
+      <label>Industry / Vertical</label>
+      <select class="intro-sel" id="intro-vertical">
+        <option value="">Select industry…</option>
+        <option value="trades">Trades &amp; Contractors</option>
+        <option value="realestate">Real Estate</option>
+        <option value="medspa">Med Spa / Healthcare</option>
+        <option value="restaurant">Restaurant &amp; Hospitality</option>
+        <option value="ecommerce">E-Commerce</option>
+        <option value="services">Professional Services</option>
+        <option value="legal">Legal</option>
+        <option value="fitness">Fitness &amp; Wellness</option>
+      </select>
+    </div>
+    <div class="intro-field">
+      <label>Team Size</label>
+      <select class="intro-sel" id="intro-teamsize">
+        <option value="solo">Solo / 1 person</option>
+        <option value="small" selected>2–5 people</option>
+        <option value="medium">6–15 people</option>
+        <option value="large">16–50 people</option>
+      </select>
+    </div>
+  </div>
+  <div class="intro-row">
+    <div class="intro-field" style="flex:2">
+      <label>What's their biggest pain point?</label>
+      <input class="intro-inp" id="intro-pain" type="text" placeholder="e.g. Losing quotes to faster competitors, manual follow-ups, inconsistent lead flow…" />
+    </div>
+  </div>
+</div>
+
+<button class="intro-btn" onclick="startDemo()">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+  Launch Demo for <span id="intro-btn-name">This Prospect</span>
+</button>
+
+<div class="intro-skip" onclick="startDemo()">Skip and use default content</div>
+```
+
+  </div>
+</div>
+
+<div class="topnav" id="topNav" style="display:none">
   <div class="topnav-main">
     <div class="brand-row">
       <div class="brand-icon">⚡</div>
@@ -758,6 +1015,10 @@ line-height: 1.7;
 </div>
 
 <div class="topnav-right">
+  <div id="prospectBadge" style="display:none" class="prospect-badge" onclick="resetIntro()">
+    <div class="prospect-badge-dot"></div>
+    <span id="prospectBadgeText">Demo Active</span>
+  </div>
   <div class="status-dot"><span>AI Online</span></div>
 </div>
 ```
@@ -767,7 +1028,7 @@ line-height: 1.7;
 
 <!-- MAIN -->
 
-<div class="main">
+<div class="main" id="mainContent" style="display:none">
 
   <!-- ══════════════════════════════════════════
        HOME
@@ -2126,7 +2387,231 @@ function renderSEO(text, bodyId, biz) {
   document.getElementById(bodyId).innerHTML = html;
 }
 
-// ── DEMO PROGRESS TRACKER ──
+// ── INTRO / PROSPECT SETUP ──
+
+var prospect = {
+  contact: '',
+  company: '',
+  vertical: '',
+  teamSize: 'small',
+  pain: ''
+};
+
+// Vertical config: pre-fill values for each industry
+var verticalConfig = {
+  trades: {
+    label: 'Trades & Contractors',
+    ceRole: 'Owner, HVAC / Plumbing',
+    ceContext: 'Growing fast but losing quotes to competitors who follow up faster. Doing manual follow-ups on 15–20 estimates per week.',
+    prIndustry: 'HVAC / Trades',
+    prNotes: 'Runs a trades business. Biggest pain: manual follow-ups after estimates. Loses ~30% of quoted jobs to faster competitors. Wants automation but doesn\'t want anything complicated. Budget around $2–5k.',
+    nlAudience: 'trades and contractors',
+    smAudience: 'Trades and contractor business owners',
+    seoTopic: 'AI automation for trades and contractors',
+    lsType: 'Contractors',
+    phIndustry: 'plumbing',
+    phScript: 'discovery'
+  },
+  realestate: {
+    label: 'Real Estate',
+    ceRole: 'Owner / Broker, Real Estate',
+    ceContext: 'High lead volume from multiple sources but follow-up is inconsistent. Agents are too busy to nurture every inquiry. Loses deals to agents who respond in minutes.',
+    prIndustry: 'Real Estate',
+    prNotes: 'Runs a real estate team. Pain: too many leads slipping through the cracks. Agents respond hours later while competitors respond in minutes. Wants automated follow-up and lead nurture.',
+    nlAudience: 'real estate professionals',
+    smAudience: 'Real estate agents and brokers',
+    seoTopic: 'AI lead follow-up for real estate agents',
+    lsType: 'Real Estate Agents',
+    phIndustry: 'realestate',
+    phScript: 'qualify'
+  },
+  medspa: {
+    label: 'Med Spa / Healthcare',
+    ceRole: 'Owner / Medical Director, Med Spa',
+    ceContext: 'Strong demand but front desk is overwhelmed. Consultations go unbooked because follow-up is manual. High no-show rate draining revenue.',
+    prIndustry: 'Med Spa / Aesthetics',
+    prNotes: 'Runs a busy med spa. Pain: consult inquiries come in but 40% never get properly followed up on. Staff is overwhelmed. No-show rate is high with no reminder system.',
+    nlAudience: 'healthcare providers',
+    smAudience: 'Med spa owners and aesthetic practitioners',
+    seoTopic: 'AI patient follow-up for med spas',
+    lsType: 'Med Spas',
+    phIndustry: 'medspa',
+    phScript: 'discovery'
+  },
+  restaurant: {
+    label: 'Restaurant & Hospitality',
+    ceRole: 'Owner / GM, Restaurant',
+    ceContext: 'Struggling with repeat customer retention and catering inquiry follow-up. No system for capturing and re-engaging past guests.',
+    prIndustry: 'Restaurant & Hospitality',
+    prNotes: 'Restaurant owner. Pain: catering and private event inquiries often go cold. No automated way to re-engage past customers or run targeted promotions.',
+    nlAudience: 'restaurant and hospitality operators',
+    smAudience: 'Restaurant owners and hospitality operators',
+    seoTopic: 'AI marketing automation for restaurants',
+    lsType: 'Restaurants',
+    phIndustry: 'restaurant',
+    phScript: 'followup'
+  },
+  ecommerce: {
+    label: 'E-Commerce',
+    ceRole: 'Owner / Founder, E-Commerce',
+    ceContext: 'High cart abandonment and poor email open rates. Customer service is slow and manual. Product launches aren\'t getting enough pre-launch buzz.',
+    prIndustry: 'E-Commerce',
+    prNotes: 'E-commerce store owner. Pain: cart abandonment rate around 70%, email sequences are basic, customer support is slow. Wants AI to handle follow-up, FAQs, and content.',
+    nlAudience: 'e-commerce store owners',
+    smAudience: 'E-commerce founders and online store owners',
+    seoTopic: 'AI automation for e-commerce stores',
+    lsType: 'Contractors',
+    phIndustry: 'plumbing',
+    phScript: 'qualify'
+  },
+  services: {
+    label: 'Professional Services',
+    ceRole: 'Owner / Principal, Professional Services',
+    ceContext: 'Referral-heavy business but no system to follow up with warm leads or stay top of mind. Proposals go out and then go quiet.',
+    prIndustry: 'Professional Services',
+    prNotes: 'Professional services firm. Pain: sends proposals but has no follow-up system. Relies on referrals but isn\'t nurturing past clients or warm leads systematically.',
+    nlAudience: 'professional services firms',
+    smAudience: 'Professional services business owners',
+    seoTopic: 'AI business automation for professional services',
+    lsType: 'Law Firms',
+    phIndustry: 'plumbing',
+    phScript: 'followup'
+  },
+  legal: {
+    label: 'Legal',
+    ceRole: 'Managing Partner / Attorney',
+    ceContext: 'Intake process is slow and manual. New inquiries wait too long for a response. Referral follow-up is inconsistent and relies on memory.',
+    prIndustry: 'Legal / Law Firm',
+    prNotes: 'Law firm partner. Pain: intake is manual and slow — potential clients call competitors who respond faster. No automated nurture for referral contacts.',
+    nlAudience: 'professional services firms',
+    smAudience: 'Attorneys and law firm owners',
+    seoTopic: 'AI client intake automation for law firms',
+    lsType: 'Law Firms',
+    phIndustry: 'plumbing',
+    phScript: 'qualify'
+  },
+  fitness: {
+    label: 'Fitness & Wellness',
+    ceRole: 'Owner / Head Coach, Fitness Studio',
+    ceContext: 'Trial members sign up but churn before converting. Follow-up after free trials is manual and inconsistent. Class scheduling reminders are done by hand.',
+    prIndustry: 'Fitness & Wellness',
+    prNotes: 'Gym or studio owner. Pain: high churn after free trials, manual follow-up, no automated way to re-engage members who cancel or go quiet.',
+    nlAudience: 'professional services firms',
+    smAudience: 'Fitness studio and gym owners',
+    seoTopic: 'AI member retention for fitness studios',
+    lsType: 'Contractors',
+    phIndustry: 'plumbing',
+    phScript: 'discovery'
+  }
+};
+
+// Update button label as contact name is typed
+document.addEventListener('DOMContentLoaded', function() {
+  var contactInput = document.getElementById('intro-contact');
+  if (contactInput) {
+    contactInput.addEventListener('input', function() {
+      var name = this.value.trim();
+      document.getElementById('intro-btn-name').textContent = name ? name : 'This Prospect';
+    });
+  }
+});
+
+function startDemo() {
+  prospect.contact = document.getElementById('intro-contact').value.trim() || 'the prospect';
+  prospect.company = document.getElementById('intro-company').value.trim() || 'their business';
+  prospect.vertical = document.getElementById('intro-vertical').value || 'trades';
+  prospect.teamSize = document.getElementById('intro-teamsize').value || 'small';
+  prospect.pain = document.getElementById('intro-pain').value.trim();
+
+  var cfg = verticalConfig[prospect.vertical] || verticalConfig['trades'];
+
+  // Pre-fill Cold Email
+  document.getElementById('ce-name').value = prospect.contact;
+  document.getElementById('ce-company').value = prospect.company;
+  document.getElementById('ce-role').value = cfg.ceRole;
+  document.getElementById('ce-context').value = prospect.pain || cfg.ceContext;
+
+  // Pre-fill Proposal
+  document.getElementById('pr-client').value = prospect.contact;
+  document.getElementById('pr-biz').value = prospect.company;
+  document.getElementById('pr-industry').value = cfg.prIndustry;
+  document.getElementById('pr-notes').value = prospect.pain ? (prospect.company + '. ' + prospect.pain) : cfg.prNotes;
+
+  // Pre-fill Follow-Up
+  document.getElementById('fu-name').value = prospect.contact;
+  document.getElementById('fu-biz').value = prospect.company + ' — ' + cfg.label;
+  document.getElementById('fu-context').value = prospect.pain || cfg.ceContext;
+
+  // Pre-fill Newsletter audience
+  var nlIndustry = document.getElementById('nl-industry');
+  for (var i = 0; i < nlIndustry.options.length; i++) {
+    if (nlIndustry.options[i].value === cfg.nlAudience) { nlIndustry.selectedIndex = i; break; }
+  }
+
+  // Pre-fill Social audience
+  document.getElementById('sm-audience').value = cfg.smAudience;
+
+  // Pre-fill SEO
+  document.getElementById('seo-topic').value = cfg.seoTopic;
+  document.getElementById('seo-biz').value = prospect.company;
+
+  // Pre-fill Lead Scraping
+  var lsType = document.getElementById('ls-type');
+  for (var j = 0; j < lsType.options.length; j++) {
+    if (lsType.options[j].value === cfg.lsType) { lsType.selectedIndex = j; break; }
+  }
+
+  // Pre-fill Phone Agent
+  document.getElementById('ph-name').value = prospect.contact;
+  document.getElementById('ph-biz').value = prospect.company;
+  var phInd = document.getElementById('ph-industry');
+  for (var k = 0; k < phInd.options.length; k++) {
+    if (phInd.options[k].value === cfg.phIndustry) { phInd.selectedIndex = k; break; }
+  }
+  var phScript = document.getElementById('ph-script');
+  for (var m = 0; m < phScript.options.length; m++) {
+    if (phScript.options[m].value === cfg.phScript) { phScript.selectedIndex = m; break; }
+  }
+
+  // Pre-fill Contracts / Scheduling / Invoicing
+  document.getElementById('ct-client').value = prospect.contact;
+  document.getElementById('sc-name').value = prospect.contact;
+  document.getElementById('inv-client').value = prospect.company;
+
+  // Update home hero to reference prospect
+  var heroP = document.querySelector('#panel-home .home-hero p');
+  if (heroP) heroP.textContent = '12 AI stations — customized for ' + prospect.company + ' (' + cfg.label + '). Select any station to see it live.';
+
+  // Show prospect badge in topnav
+  document.getElementById('prospectBadgeText').textContent = prospect.contact + ' · ' + prospect.company;
+  document.getElementById('prospectBadge').style.display = 'flex';
+
+  // Update ROI sub-label
+  var calcSub = document.querySelector('.roi-calc-sub');
+  if (calcSub) calcSub.textContent = 'Numbers build as you run each station for ' + prospect.company;
+
+  // Dismiss intro screen and reveal app
+  var screen = document.getElementById('introScreen');
+  screen.classList.add('hidden');
+  setTimeout(function() {
+    screen.style.display = 'none';
+    document.getElementById('topNav').style.display = 'block';
+    document.getElementById('mainContent').style.display = 'block';
+  }, 400);
+
+  // Initialize ROI at zero
+  initROI();
+}
+
+function resetIntro() {
+  document.getElementById('topNav').style.display = 'none';
+  document.getElementById('mainContent').style.display = 'none';
+  var screen = document.getElementById('introScreen');
+  screen.style.display = 'flex';
+  setTimeout(function() { screen.classList.remove('hidden'); }, 10);
+}
+
+
 // Stats start at zero. Each demo completion adds its contribution.
 var demoStats = {
   hoursSaved: 0,
