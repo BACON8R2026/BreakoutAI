@@ -1638,6 +1638,270 @@ color: var(–muted);
 margin-top: 2px;
 }
 
+/* ── CRM & OUTREACH UI ───────────────── */
+.crm-layout {
+display: flex;
+gap: 12px;
+margin-bottom: 14px;
+min-height: 260px;
+}
+
+.crm-sidebar {
+width: 140px;
+flex-shrink: 0;
+display: flex;
+flex-direction: column;
+gap: 6px;
+}
+
+.crm-source-btn {
+background: var(–panel);
+border: 1.5px solid var(–border2);
+border-radius: 10px;
+padding: 10px 12px;
+cursor: pointer;
+text-align: left;
+transition: all 0.2s;
+-webkit-appearance: none;
+}
+
+.crm-source-btn.active {
+border-color: var(–blue);
+background: var(–bluedim);
+}
+
+.crm-source-btn:active { transform: scale(0.97); }
+
+.crm-source-icon {
+font-size: 18px;
+display: block;
+margin-bottom: 4px;
+}
+
+.crm-source-name {
+font-family: ‘Rajdhani’, sans-serif;
+font-size: 12px;
+font-weight: 700;
+color: var(–bright);
+display: block;
+line-height: 1.2;
+}
+
+.crm-source-preview {
+font-size: 10px;
+color: var(–muted);
+margin-top: 3px;
+line-height: 1.3;
+}
+
+.crm-source-btn.active .crm-source-name { color: var(–blue); }
+
+.crm-content-panel {
+flex: 1;
+background: var(–panel);
+border: 1px solid var(–border2);
+border-radius: 10px;
+overflow: hidden;
+display: flex;
+flex-direction: column;
+}
+
+.crm-content-header {
+background: var(–surface);
+border-bottom: 1px solid var(–border);
+padding: 9px 14px;
+display: flex;
+align-items: center;
+gap: 8px;
+flex-shrink: 0;
+}
+
+.crm-content-header-icon { font-size: 14px; }
+
+.crm-content-header-title {
+font-family: ‘DM Mono’, monospace;
+font-size: 10px;
+letter-spacing: 2px;
+color: var(–blue);
+text-transform: uppercase;
+}
+
+.crm-content-body {
+flex: 1;
+padding: 12px 14px;
+overflow-y: auto;
+font-size: 12px;
+line-height: 1.6;
+color: var(–text);
+-webkit-overflow-scrolling: touch;
+}
+
+.crm-content-body::-webkit-scrollbar { width: 3px; }
+.crm-content-body::-webkit-scrollbar-thumb { background: var(–border2); border-radius: 2px; }
+
+/* SMS bubbles inside CRM */
+.sms-thread { display: flex; flex-direction: column; gap: 6px; }
+
+.sms-bubble-row { display: flex; }
+.sms-bubble-row.out { justify-content: flex-end; }
+.sms-bubble-row.in  { justify-content: flex-start; }
+
+.sms-bubble {
+max-width: 80%;
+padding: 7px 10px;
+border-radius: 12px;
+font-size: 11px;
+line-height: 1.4;
+}
+
+.sms-bubble-row.out .sms-bubble { background: #248bf5; color: #fff; border-bottom-right-radius: 3px; }
+.sms-bubble-row.in  .sms-bubble { background: var(–border2); color: var(–text); border-bottom-left-radius: 3px; }
+
+.sms-time {
+font-family: ‘DM Mono’, monospace;
+font-size: 9px;
+color: var(–muted);
+text-align: center;
+margin: 4px 0;
+}
+
+/* Zoom notes */
+.zoom-notes { }
+.zoom-note-block { margin-bottom: 10px; }
+.zoom-note-speaker { font-family: ‘Rajdhani’, sans-serif; font-size: 12px; font-weight: 700; color: var(–blue); margin-bottom: 2px; }
+.zoom-note-text { font-size: 11px; color: var(–text); line-height: 1.5; }
+.zoom-note-highlight { background: rgba(0,194,255,0.12); border-left: 2px solid var(–blue); padding: 4px 8px; border-radius: 0 4px 4px 0; margin-top: 4px; font-size: 11px; color: var(–bright); }
+
+/* Email thread */
+.email-thread-item { margin-bottom: 12px; border-bottom: 1px solid var(–border); padding-bottom: 10px; }
+.email-thread-item:last-child { border-bottom: none; }
+.email-meta { font-family: ‘DM Mono’, monospace; font-size: 9px; color: var(–muted); margin-bottom: 4px; letter-spacing: 0.5px; }
+.email-subject { font-family: ‘Rajdhani’, sans-serif; font-size: 13px; font-weight: 700; color: var(–bright); margin-bottom: 4px; }
+.email-snippet { font-size: 11px; color: var(–text); line-height: 1.5; }
+
+/* Generate button */
+.crm-generate-btn {
+width: 100%;
+background: linear-gradient(135deg, var(–blue), var(–blue2));
+border: none;
+border-radius: 9px;
+padding: 13px;
+font-family: ‘Rajdhani’, sans-serif;
+font-size: 16px;
+font-weight: 700;
+color: #07090f;
+letter-spacing: 1px;
+cursor: pointer;
+-webkit-appearance: none;
+transition: all 0.2s;
+margin-bottom: 14px;
+}
+
+.crm-generate-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+.crm-generate-btn:active { transform: scale(0.98); }
+
+/* Output side by side */
+.crm-outputs {
+display: none;
+grid-template-columns: 1fr 1fr;
+gap: 12px;
+margin-bottom: 14px;
+}
+
+.crm-outputs.show { display: grid; }
+
+.crm-output-panel {
+background: var(–panel);
+border: 1px solid var(–border2);
+border-radius: 10px;
+overflow: hidden;
+}
+
+.crm-output-header {
+background: var(–surface);
+border-bottom: 1px solid var(–border);
+padding: 8px 12px;
+display: flex;
+align-items: center;
+gap: 7px;
+}
+
+.crm-output-header-icon { font-size: 14px; }
+.crm-output-header-title { font-family: ‘DM Mono’, monospace; font-size: 10px; letter-spacing: 1px; color: var(–muted); text-transform: uppercase; }
+
+.crm-output-body { padding: 12px; }
+
+/* iMessage preview */
+.imsg-preview {
+background: #000;
+border-radius: 8px;
+padding: 10px;
+}
+
+.imsg-to {
+font-family: -apple-system, sans-serif;
+font-size: 10px;
+color: #8e8e93;
+text-align: center;
+margin-bottom: 8px;
+}
+
+.imsg-bubble {
+background: #248bf5;
+color: #fff;
+border-radius: 14px;
+border-bottom-right-radius: 3px;
+padding: 9px 12px;
+font-size: 12px;
+line-height: 1.5;
+font-family: -apple-system, sans-serif;
+position: relative;
+}
+
+.imsg-sent {
+font-family: -apple-system, sans-serif;
+font-size: 10px;
+color: #8e8e93;
+text-align: right;
+margin-top: 4px;
+}
+
+/* Email draft preview */
+.email-draft {
+font-size: 11px;
+line-height: 1.6;
+}
+
+.email-draft-field {
+border-bottom: 1px solid var(–border);
+padding: 3px 0;
+margin-bottom: 3px;
+font-family: ‘DM Mono’, monospace;
+font-size: 10px;
+color: var(–muted);
+}
+
+.email-draft-field span { color: var(–text); }
+
+.email-draft-body {
+margin-top: 10px;
+font-size: 12px;
+color: var(–text);
+line-height: 1.6;
+}
+
+.typing-cursor {
+display: inline-block;
+width: 2px;
+height: 14px;
+background: var(–blue);
+margin-left: 2px;
+vertical-align: text-bottom;
+animation: blink-cursor 0.8s infinite;
+}
+
+@keyframes blink-cursor { 0%,50%{opacity:1} 51%,100%{opacity:0} }
+
 /* ── LEADS UI ────────────────────────── */
 .leads-form {
 background: var(–panel);
@@ -2892,7 +3156,7 @@ var TOOLS = [
     annual:function(d){return Math.round(d.leadHrs*d.leadPeople*WAGE*52);},
     note:function(d){return d.leadPeople+' person'+(d.leadPeople>1?'s':'')+' × '+d.leadHrs+' hrs/wk = '+Math.round(d.leadHrs*d.leadPeople)+' hrs/wk reclaimed — closing deals, not chasing contacts.';}
   },
-  { id:'phone', icon:'[*]', name:'Phone Agent + CRM', color:'#ec4899', richUI:'phone',
+  { id:'phone', icon:'[*]', name:'Phone Agent', color:'#ec4899', richUI:'phone',
     eyebrow:'STATION 02 — PHONE & DATA CAPTURE', title:'Every Call Answered. Every Lead Captured.',
     bb:['Calls go to voicemail after hours & weekends','Missed calls = missed jobs every single week','Leads manually entered into CRM — if remembered','Data entry pulls your team away from customers'],
     ab:['AI answers in 2 rings, 24/7 — qualifies & books','CRM record auto-created from every single call','No missed leads, no data entry, zero delays','Your CRM is always current — no effort needed'],
@@ -2902,15 +3166,14 @@ var TOOLS = [
     annual:function(d){return Math.round(d.callsWeek*(d.missedPct/100)*vd().avgJob*52*0.12);},
     note:function(d){var m=Math.round(d.callsWeek*d.missedPct/100);return'~'+m+' missed calls/week at $'+vd().avgJob+' avg job value. That\'s revenue walking out the door every single night.';}
   },
-  { id:'email', icon:'[*]', name:'Cold Email Outreach', color:'#00c2ff', richUI:false,
-    eyebrow:'STATION 03 — OUTREACH', title:'Personalized Emails to Every Lead — Automatically',
-    bb:['Generic blasts get ignored or deleted','Writing emails takes time nobody has','Same message to everyone — zero personalization','Low open rates, even lower reply rates'],
-    ab:['AI writes a unique email per lead in seconds','Uses their name, company & specific situation','Sent automatically at the optimal time','Higher open rates + more replies with zero effort'],
-    qs:[{l:'Outreach emails sent per week',u:'emails/wk',k:'emailsWeek'},{l:'Minutes to write & send one email today',u:'mins each',k:'emailMins'}],
-    out:function(co){var v=vd();var ec=v.emailContact,c1=v.contact1;return'[*] AI OUTREACH EMAIL — '+co+'\n                                 \n\nTO:      '+c1.name+' <'+c1.email+'>\nSUBJECT: '+v.niche+' Services for '+c1.co+'\n\nHi '+ec.name+',\n\nI noticed '+ec.co+' and wanted to reach out —\nbased on your '+ec.units+', it looks like\nour '+ec.need+' could be a strong fit,\nespecially heading into '+ec.season+' season.\n\nWe specialize in helping '+v.label+' businesses\nin '+v.city+' get better results with less\nmanual work. A quick 10-minute call could\nbe worth your time.\n\nI\'ll follow up Thursday if I don\'t hear back.\n\nBest,\nYour Team · '+co+'\n\n                                 \n   Written in 4 seconds · Sent automatically\n[*]  Personalized for '+ec.name+'\'s specific situation';},
+  { id:'email', icon:'[*]', name:'CRM & Outreach', color:'#00c2ff', richUI:'crm',
+    eyebrow:'STATION 03 — CRM & OUTREACH', title:'AI Reads Your Texts, Notes & Emails — Then Writes the Perfect Message',
+    bb:['Contact history scattered across phone, email, Zoom','Writing follow-ups takes time and gets forgotten','Generic messages get ignored — no context, no connection','Leads go cold because nobody followed up in time'],
+    ab:['AI syncs SMS, meeting notes & email into one CRM record','Reads all context and writes a hyper-personalized message','Sends by text or email automatically at the right time','Every lead gets a follow-up that feels hand-written'],
+    qs:[{l:'Hours/week writing follow-up messages manually',u:'hrs/wk',k:'emailsWeek'},{l:'Leads per week that go cold from no follow-up',u:'leads/wk',k:'followNoReply'}],
     hrs:function(d){return Math.round(d.emailsWeek*d.emailMins/60*10)/10;},
-    annual:function(d){return Math.round(d.emailsWeek*d.emailMins/60*WAGE*52);},
-    note:function(d){return'Every email personalized to each recipient. Response rates go up. Your team stops writing and starts closing.';}
+    annual:function(d){return Math.round(d.emailsWeek*d.emailMins/60*WAGE*52 + d.followNoReply*0.3*vd().avgJob*52*0.08);},
+    note:function(d){return'AI reads every touchpoint — texts, calls, Zoom notes — and writes messages so personal prospects think you wrote them yourself.';}
   },
   { id:'sched', icon:'[*]', name:'Appointment Scheduling', color:'#f0b400', richUI:false,
     eyebrow:'STATION 04 — SCHEDULING', title:'Booked, Confirmed & Reminded — Zero Back-and-Forth',
@@ -3112,6 +3375,8 @@ function runDemo() {
     renderPhone(v, coName);
   } else if (curTool.richUI === 'leads') {
     renderLeads(v, coName);
+  } else if (curTool.richUI === 'crm') {
+    renderCRM(v, coName);
   } else {
     var op = document.getElementById('outpanel');
     var ot = document.getElementById('outtext');
@@ -3293,6 +3558,347 @@ function renderInvoice(v, co) {
     '</div></div></div>';
   wrap.innerHTML = html;
   showSavings();
+}
+
+// ── CRM & OUTREACH ENGINE ─────────────────────
+var CRM_SOURCES = {
+  home: {
+    contact: { name:'Karen Ellis', co:'Sunrise Property Mgmt', phone:'(760) 555-0182', email:'k.ellis@sunriseprop.com' },
+    sms: [
+      { dir:'in',  text:'Hi, this is Karen from Sunrise. We spoke last week about our HVAC units.', time:'Mon 2:14 PM' },
+      { dir:'out', text:'Hi Karen! Great hearing from you. Happy to help with those units.', time:'Mon 2:18 PM' },
+      { dir:'in',  text:'3 of our 12-year-old units have been struggling. One stopped working completely yesterday.', time:'Mon 2:21 PM' },
+      { dir:'out', text:'That is definitely urgent. We can have someone out tomorrow. What time works?', time:'Mon 2:23 PM' },
+      { dir:'in',  text:'Morning works. Also we manage 24 units total so we need a maintenance contract too.', time:'Mon 2:25 PM' },
+      { dir:'out', text:'Perfect — we will bring a full proposal for the maintenance program too. See you tomorrow!', time:'Mon 2:27 PM' }
+    ],
+    zoom: [
+      { speaker:'Karen Ellis', text:'We have been dealing with these units for years. The 3 on the east building are the worst — they are 12 years old and running constantly.', highlight:'Units are 12 years old, east building worst affected' },
+      { speaker:'You', text:'Have you had any quotes before or is this the first time you are looking at replacement?', highlight:null },
+      { speaker:'Karen Ellis', text:'We got one quote last year but it felt too expensive. We need someone who understands property management billing — one invoice monthly is really what we need.', highlight:'Needs single monthly invoice, had previous bad quote experience' },
+      { speaker:'Karen Ellis', text:'If you can handle all 24 units under one contract and come when we call, that is worth a premium to us.', highlight:'Willing to pay premium for responsive all-in contract' }
+    ],
+    email: [
+      { from:'k.ellis@sunriseprop.com', subj:'Re: HVAC Maintenance Proposal', date:'Apr 8', snippet:'Thank you for the proposal. The pricing looks reasonable. My main concern is response time — our tenants cannot wait 3 days for AC in this heat...' },
+      { from:'k.ellis@sunriseprop.com', subj:'Follow up — emergency unit', date:'Apr 10', snippet:'One of our east building units completely stopped. We need someone out ASAP. Are you available tomorrow morning?' }
+    ],
+    smsOut: function(co, name) { return 'Hi Karen! Following up on our conversation about Sunrise\'s HVAC units. Given what you shared — especially the 3 east building units at 12 years old — I wanted to send over a tailored maintenance plan before your next breakdown. Can we lock in a quick call this week? — ' + co; },
+    emailOut: function(co, name) { return { to:'k.ellis@sunriseprop.com', subj:'Sunrise Properties — Custom Maintenance Plan Inside', body:'Hi Karen,\n\nFollowing our Zoom call and our texts this week — I completely understand the frustration with that east building and the 12-year-old units running non-stop in this heat.\n\nI\'ve put together a custom all-inclusive maintenance plan for all 24 of your units, with one clean monthly invoice and same-day emergency response built in.\n\nThis is exactly what you described needing — and I think you\'ll love the numbers.\n\nWould tomorrow morning work to walk through it together?\n\nBest,\nYour Team at ' + co }; }
+  },
+  legal: {
+    contact: { name:'Michael Torres', co:'Torres Family Trust', phone:'(760) 555-0291', email:'m.torres@torresgroup.com' },
+    sms: [
+      { dir:'in',  text:'Hi — I was referred by Bob Chen. Need to talk about estate planning.', time:'Tue 10:02 AM' },
+      { dir:'out', text:'Hi Michael! Thanks for reaching out. Happy to help. Can you tell me a bit about your situation?', time:'Tue 10:06 AM' },
+      { dir:'in',  text:'We have a family trust that has not been updated in 8 years. Also starting a new business and not sure how to structure it.', time:'Tue 10:09 AM' },
+      { dir:'out', text:'Definitely worth reviewing — a lot changes in 8 years. We can look at both the trust and business structure together.', time:'Tue 10:11 AM' },
+      { dir:'in',  text:'Good. I also have two properties that need to be titled correctly for the trust.', time:'Tue 10:14 AM' },
+      { dir:'out', text:'Perfect — that is a common and important fix. Let us schedule a full review.', time:'Tue 10:16 AM' }
+    ],
+    zoom: [
+      { speaker:'Michael Torres', text:'The trust was set up when my kids were young. Now they are adults and I want to make sure everything is structured correctly going forward.', highlight:'Trust outdated, adult children now beneficiaries' },
+      { speaker:'Michael Torres', text:'I am also starting a new consulting business and my accountant told me I need an operating agreement and proper entity setup.', highlight:'New business needs entity formation + operating agreement' },
+      { speaker:'You', text:'And the two properties — are they currently in your personal name or already in the trust?', highlight:null },
+      { speaker:'Michael Torres', text:'Personal name. My accountant said that is a problem. I want to get this all cleaned up before summer.', highlight:'Wants full legal cleanup completed before summer — urgent timeline' }
+    ],
+    email: [
+      { from:'m.torres@torresgroup.com', subj:'Estate Planning + Business Setup', date:'Apr 7', snippet:'Thanks for the intro from Bob. Looking to get my affairs in order — trust update, new LLC, and property titling. What would that package look like...' },
+      { from:'m.torres@torresgroup.com', subj:'Timeline question', date:'Apr 9', snippet:'I have a meeting with my financial advisor in June and I need the legal structure finalized before then. Is that realistic with your firm?' }
+    ],
+    smsOut: function(co, name) { return 'Hi Michael — following up on our conversation. Based on everything you shared (trust update, new business structure, property titling), I put together a flat-fee package that covers everything before your June meeting. Want to lock in a time this week? — ' + co; },
+    emailOut: function(co, name) { return { to:'m.torres@torresgroup.com', subj:'Your Legal Package — Trust, LLC & Property Titling', body:'Hi Michael,\n\nAfter our call and reviewing your notes, I put together a comprehensive flat-fee package that covers exactly what you need:\n\n— Trust update with adult beneficiary provisions\n— New LLC formation + operating agreement\n— Property title transfer into the trust\n\nEverything can be completed well before your June financial advisor meeting.\n\nI know you want this done right the first time. Let\'s get it scheduled this week.\n\nBest,\nYour Team at ' + co }; }
+  },
+  dental: {
+    contact: { name:'Lisa Chen', co:'New Patient', phone:'(760) 555-0211', email:'l.chen@gmail.com' },
+    sms: [
+      { dir:'in',  text:'Hi I saw you on Google. Do you take new patients? I have not been to a dentist in 2 years.', time:'Wed 3:44 PM' },
+      { dir:'out', text:'Hi Lisa! Yes we are accepting new patients. No judgment — we see this often. What brings you in?', time:'Wed 3:47 PM' },
+      { dir:'in',  text:'I have a tooth that has been sensitive to cold for a few weeks. Also just want a general checkup.', time:'Wed 3:49 PM' },
+      { dir:'out', text:'Good that you are coming in — sensitivity can mean a few things and better to catch it early. We have tomorrow at 9 AM available.', time:'Wed 3:51 PM' },
+      { dir:'in',  text:'That works. I have Delta Dental. Will you bill them directly?', time:'Wed 3:53 PM' },
+      { dir:'out', text:'Yes — we handle all Delta billing directly. You will just pay any copay at the visit.', time:'Wed 3:55 PM' }
+    ],
+    zoom: [
+      { speaker:'Lisa Chen', text:'I have been putting off going to the dentist honestly because my last experience was not great. The dentist was very rushed and did not really explain anything.', highlight:'Bad past experience — needs gentle, communicative approach' },
+      { speaker:'Lisa Chen', text:'The sensitivity started about 3 weeks ago. Cold things are the worst. Warm is fine.', highlight:'Cold sensitivity 3 weeks — possible exposed root or early cavity' },
+      { speaker:'You', text:'That pattern usually points to a few specific things we can check quickly. Dr. Reynolds is great at explaining as she goes.', highlight:null },
+      { speaker:'Lisa Chen', text:'I also want to talk about whitening once the main stuff is sorted. I have a wedding in August.', highlight:'Interested in whitening — has August wedding deadline' }
+    ],
+    email: [
+      { from:'l.chen@gmail.com', subj:'New patient question', date:'Apr 8', snippet:'Hi — I found you on Google and you have great reviews. I have some tooth sensitivity and also want a cleaning. Do you have Saturday appointments...' },
+      { from:'l.chen@gmail.com', subj:'Re: Appointment Confirmation', date:'Apr 9', snippet:'Confirmed for tomorrow at 9 AM. Quick question — I am nervous about dental work. Is Dr. Reynolds gentle with anxious patients?' }
+    ],
+    smsOut: function(co, name) { return 'Hi Lisa! Looking forward to seeing you tomorrow at 9. Dr. Reynolds knows you mentioned sensitivity to cold and your last experience — she will walk you through everything and take her time. Also, we have some great whitening options to chat about for your August wedding! See you tomorrow. — ' + co; },
+    emailOut: function(co, name) { return { to:'l.chen@gmail.com', subj:'See You Tomorrow — A Few Things to Know', body:'Hi Lisa,\n\nJust a friendly note ahead of your 9 AM appointment tomorrow.\n\nDr. Reynolds has been briefed on your cold sensitivity (3 weeks is a good time to catch it), and she knows you had a less-than-great experience before. She will explain every step as she goes — no surprises.\n\nWe also have an amazing whitening program we can talk through after your exam — plenty of time before August!\n\nSee you tomorrow. You are in great hands.\n\nWarmly,\n' + co + ' Team' }; }
+  },
+  realestate: {
+    contact: { name:'Amanda Cruz', co:'Cruz Family — Buyers', phone:'(760) 555-0214', email:'a.cruz@gmail.com' },
+    sms: [
+      { dir:'in',  text:'Hi! We are looking to buy in Rancho Mirage. Budget around $700K. Are you familiar with that area?', time:'Thu 11:02 AM' },
+      { dir:'out', text:'Hi Amanda! Very familiar — we have closed 14 deals in Rancho Mirage in the past year. What is drawing you to that area?', time:'Thu 11:05 AM' },
+      { dir:'in',  text:'We want something with a pool and mountain views. We have 2 kids so a good school district matters too.', time:'Thu 11:08 AM' },
+      { dir:'out', text:'Perfect criteria for that area. There are some great options. Are you pre-approved or would you like a lender referral?', time:'Thu 11:10 AM' },
+      { dir:'in',  text:'Pre-approved at $750K. We want to move fast if we find the right house.', time:'Thu 11:12 AM' },
+      { dir:'out', text:'Pre-approved and motivated — you are in great shape. Let us set up showings this weekend.', time:'Thu 11:14 AM' }
+    ],
+    zoom: [
+      { speaker:'Amanda Cruz', text:'We have been looking online for about 2 months. We are tired of losing out on houses. Every one we like goes into multiple offers.', highlight:'Frustrated buyer — missed 3 offers, ready to move fast' },
+      { speaker:'Amanda Cruz', text:'My husband works from home so a dedicated office space or a casita would be a huge bonus. That is not a dealbreaker but would love it.', highlight:'Casita or home office a strong bonus — not dealbreaker' },
+      { speaker:'You', text:'With your budget and pre-approval you are actually in a great position. The challenge is speed — we need to be ready to write same day.', highlight:null },
+      { speaker:'Amanda Cruz', text:'We are absolutely ready. We missed the last house because our old agent was not available on a Sunday. That cannot happen again.', highlight:'Previous agent failed them on a Sunday — need 7-day availability' }
+    ],
+    email: [
+      { from:'a.cruz@gmail.com', subj:'Home search Rancho Mirage', date:'Apr 7', snippet:'Hi — we are serious buyers looking in the $650K-$750K range in Rancho Mirage or Palm Desert. Pool and mountain views preferred. Pre-approved...' },
+      { from:'a.cruz@gmail.com', subj:'Saturday showings', date:'Apr 9', snippet:'Are you available Saturday to show a few homes? We really want to move on something this month if the right one comes up...' }
+    ],
+    smsOut: function(co, name) { return 'Hi Amanda — I lined up 3 showings for Saturday that match exactly what you described: pool, mountain views, good schools, and one has a casita. All in your range. I am available all weekend including Sunday. Ready when you are! — ' + co; },
+    emailOut: function(co, name) { return { to:'a.cruz@gmail.com', subj:'3 Saturday Showings — Pool, Views & a Casita', body:'Hi Amanda,\n\nI found 3 listings that check nearly every box you mentioned — pool, mountain views, school district, and one even has a casita that would be perfect for your husband\'s home office.\n\nAll within your $750K pre-approval. I have blocked Saturday AND Sunday for you — no repeat of last time.\n\nI will send the full listing details tonight. If any of them look right, we write the offer the same day.\n\nLet\'s get you into your home.\n\n— ' + co + ' Team' }; }
+  },
+  consulting: {
+    contact: { name:'Jason Wright', co:'Wright Landscaping', phone:'(760) 555-0228', email:'j.wright@wrightls.com' },
+    sms: [
+      { dir:'in',  text:'Hey — a friend told me you help businesses that are stuck. Revenue has been flat for 2 years.', time:'Fri 9:11 AM' },
+      { dir:'out', text:'Hi Jason! Yes that is exactly what we do. Tell me more — what does the business look like right now?', time:'Fri 9:14 AM' },
+      { dir:'in',  text:'22 employees, about $820K revenue. I am doing everything myself. Estimating, managing crews, doing sales.', time:'Fri 9:17 AM' },
+      { dir:'out', text:'That is the classic owner bottleneck. The business cannot grow faster than you. That is very fixable.', time:'Fri 9:19 AM' },
+      { dir:'in',  text:'I want to get to $1.5M without killing myself. Is that realistic in 12 months?', time:'Fri 9:21 AM' },
+      { dir:'out', text:'Very realistic. We have done it with similar companies. Let us get on a call this week.', time:'Fri 9:23 AM' }
+    ],
+    zoom: [
+      { speaker:'Jason Wright', text:'I wake up every morning and I am already behind. I have no systems — everything runs through me. If I take a vacation the business stops.', highlight:'Owner is the bottleneck — no systems, business cannot run without him' },
+      { speaker:'Jason Wright', text:'My margins are actually decent — around 34%. But I cannot scale because I do not trust anyone to estimate jobs the way I do.', highlight:'Good margins but cannot delegate estimating — scaling blocker' },
+      { speaker:'You', text:'That is actually great news. With 34% margins you have room to invest in systems. The estimating problem is solvable.', highlight:null },
+      { speaker:'Jason Wright', text:'I also have no sales process. I just answer calls and quote. I know I am leaving money on the table but I do not know how to fix it.', highlight:'No sales process — reactive quoting, revenue potential not being captured' }
+    ],
+    email: [
+      { from:'j.wright@wrightls.com', subj:'Business coaching question', date:'Apr 6', snippet:'Hi — Mark referred me. We are a landscaping company stuck at $800K. I want to scale but I am overwhelmed. What do you do exactly and what does it cost...' },
+      { from:'j.wright@wrightls.com', subj:'Re: Discovery call', date:'Apr 8', snippet:'I watched the video you sent. The part about owner bottleneck hit home. I literally cannot take a day off. Can we talk this week?' }
+    ],
+    smsOut: function(co, name) { return 'Hey Jason — based on our call I put together a quick growth roadmap for Wright Landscaping. The estimating system and sales process gaps are very fixable. With your 34% margins you have everything you need to hit $1.5M. Can we get on a call Thursday? — ' + co; },
+    emailOut: function(co, name) { return { to:'j.wright@wrightls.com', subj:'Wright Landscaping — Your Path to $1.5M', body:'Hi Jason,\n\nAfter our conversation I mapped out exactly how Wright Landscaping gets from $820K to $1.5M without you working more hours — actually fewer.\n\nThe three things we fix first:\n1. A delegatable estimating system (you stop being the only one who can do it)\n2. A simple repeatable sales process (stop leaving money on the table)\n3. A weekly ops rhythm your crew runs without you\n\nYou have 34% margins and 22 good people. The pieces are all there.\n\nLet\'s talk Thursday. I will show you the full roadmap.\n\n— ' + co + ' Team' }; }
+  },
+  agency: {
+    contact: { name:'Tanya Moore', co:'Moore Auto Group', phone:'(760) 555-0233', email:'t.moore@mooreautopd.com' },
+    sms: [
+      { dir:'in',  text:'Hey — our Google Ads have been running for 6 months and we are not getting results. Spending $4K a month.', time:'Mon 1:33 PM' },
+      { dir:'out', text:'Hi Tanya! $4K a month with no results is a real problem. What does your current setup look like — do you know your cost per lead?', time:'Mon 1:37 PM' },
+      { dir:'in',  text:'No idea honestly. Our last agency just sent reports I did not understand. We got leads but they were garbage.', time:'Mon 1:40 PM' },
+      { dir:'out', text:'That is very common — volume without quality. What type of buyer are you actually trying to reach?', time:'Mon 1:42 PM' },
+      { dir:'in',  text:'Certified pre-owned buyers. Financing rates hurt us with new cars. CPO is our best margin.', time:'Mon 1:45 PM' },
+      { dir:'out', text:'Perfect — that is a very targetable audience on Google. We can fix this quickly.', time:'Mon 1:47 PM' }
+    ],
+    zoom: [
+      { speaker:'Tanya Moore', text:'The last agency was just sending us vanity metrics. Impressions, clicks — but the leads were people with 500 credit scores looking for $2,000 cars. Total waste.', highlight:'Previous agency delivered low-quality leads — needs audience targeting fix' },
+      { speaker:'Tanya Moore', text:'We actually have great inventory right now — 47 CPO vehicles — and the margins on those are strong. I just need the right people in the door.', highlight:'47 CPO vehicles in stock, strong margins — ready to move volume' },
+      { speaker:'You', text:'With 47 CPO units you should be running inventory-specific ads, not generic dealership ads. That is probably your biggest issue.', highlight:null },
+      { speaker:'Tanya Moore', text:'Nobody told me that. My budget is flexible if we actually see results. Last agency never showed me what $1 in meant in $1 out.', highlight:'Budget flexible with clear ROI — wants transparent dollar-in dollar-out reporting' }
+    ],
+    email: [
+      { from:'t.moore@mooreautopd.com', subj:'Google Ads audit', date:'Apr 7', snippet:'Hi — I heard you do free ad audits. We are spending $4K/month on Google and not seeing the ROI. Previous agency was not transparent. Looking for someone who actually...' },
+      { from:'t.moore@mooreautopd.com', subj:'CPO inventory question', date:'Apr 9', snippet:'Quick question — can Google Ads actually target people specifically looking for CPO vehicles vs new? Our last agency never did that distinction...' }
+    ],
+    smsOut: function(co, name) { return 'Hi Tanya — I ran a quick audit on your setup based on what you shared. Found the core issue: your ads are targeting general car buyers, not CPO shoppers. With 47 CPO units ready to move we can fix this fast. Can we jump on a call tomorrow? — ' + co; },
+    emailOut: function(co, name) { return { to:'t.moore@mooreautopd.com', subj:'Moore Auto Audit — Found Your CPO Lead Problem', body:'Hi Tanya,\n\nAfter our call I did a deep dive into your current setup. Here is what I found:\n\nYour ads are targeting "new car buyers" and "general auto shoppers" — not certified pre-owned buyers specifically. That is why your leads have poor credit and low purchase intent.\n\nWith 47 CPO units in stock and strong margins, this is very fixable:\n— Inventory-specific ads tied to your actual CPO listings\n— In-market audience targeting (people actively researching CPO)\n— Transparent monthly reporting: cost per lead, lead quality score, attributed sales\n\nYour $4K/month can perform 3-4x better. Let\'s show you the numbers tomorrow.\n\n— ' + co + ' Team' }; }
+  },
+  construction: {
+    contact: { name:'Frank Navarro', co:'Navarro Commercial Props', phone:'(760) 555-0247', email:'f.navarro@navarroprop.com' },
+    sms: [
+      { dir:'in',  text:'Hi — looking for a contractor for a commercial office renovation. About 4,000 sq ft.', time:'Tue 2:01 PM' },
+      { dir:'out', text:'Hi Frank! That is right in our wheelhouse. What is the current state of the space and what is your target completion?', time:'Tue 2:05 PM' },
+      { dir:'in',  text:'It is raw commercial space. We need full buildout — offices, conference room, kitchen. Need it done by June.', time:'Tue 2:08 PM' },
+      { dir:'out', text:'June is tight but doable if we move quickly. Do permits need to be part of our scope?', time:'Tue 2:10 PM' },
+      { dir:'in',  text:'Yes — we need help with everything including permits. Also we had a bad experience with a contractor who went over budget badly.', time:'Tue 2:13 PM' },
+      { dir:'out', text:'We do fixed-price contracts — what you see in the proposal is what you pay. No surprises.', time:'Tue 2:15 PM' }
+    ],
+    zoom: [
+      { speaker:'Frank Navarro', text:'The last contractor we used went $40,000 over budget on a similar project. I am very cautious now. I need fixed pricing before I sign anything.', highlight:'Previously burned by $40K cost overrun — needs fixed-price guarantee' },
+      { speaker:'Frank Navarro', text:'We have 3 tenants moving in July 1st. If the space is not ready we are in breach of lease and that costs us $15,000 a month.', highlight:'Hard July 1 deadline — $15K/month exposure if missed' },
+      { speaker:'You', text:'We can write a completion date into the contract with a penalty clause. That protects you.', highlight:null },
+      { speaker:'Frank Navarro', text:'I also want weekly photo updates and a project manager I can call directly. My last guy was impossible to reach.', highlight:'Needs weekly updates and direct PM access — communication was a previous failure' }
+    ],
+    email: [
+      { from:'f.navarro@navarroprop.com', subj:'Office renovation RFP', date:'Apr 6', snippet:'Hi — looking for bids on a 4,000 sq ft commercial buildout in Palm Desert. Need it completed by June 30. Previous contractor experience was not good. Looking for someone with...' },
+      { from:'f.navarro@navarroprop.com', subj:'Fixed price question', date:'Apr 8', snippet:'Do you do fixed-price contracts? Last contractor had a T&M agreement and it ballooned. I will not sign anything without a hard number upfront...' }
+    ],
+    smsOut: function(co, name) { return 'Hi Frank — I have your scope mapped out. Based on the 4,000 sq ft, June 30 deadline, and your permits-included requirement, I put together a fixed-price proposal. We can also write your completion date directly into the contract. Can we meet Thursday? — ' + co; },
+    emailOut: function(co, name) { return { to:'f.navarro@navarroprop.com', subj:'Fixed-Price Proposal — 4,000 Sq Ft by June 30', body:'Hi Frank,\n\nBased on our conversation I have your proposal ready. Here is what makes this different from your last experience:\n\n— Fixed-price contract: what you see is what you pay. Period.\n— June 30 completion written into the agreement with a penalty clause (your $15K exposure is protected)\n— Dedicated project manager — direct line, weekly photo updates every Friday\n— Permits pulled within 5 business days of signing\n\nI know you have been burned before. This contract is built specifically to protect you.\n\nLet\'s meet Thursday to walk through it.\n\n— ' + co + ' Team' }; }
+  },
+  other: {
+    contact: { name:'Mark Davis', co:'Davis Enterprises', phone:'(760) 555-0201', email:'m.davis@davisent.com' },
+    sms: [
+      { dir:'in',  text:'Hi — I was referred by a colleague. Looking for help with my business operations.', time:'Mon 10:14 AM' },
+      { dir:'out', text:'Hi Mark! Happy to help. Tell me a bit about what is going on — what is the biggest challenge right now?', time:'Mon 10:17 AM' },
+      { dir:'in',  text:'We are growing but everything feels chaotic. 18 employees and I feel like things fall through the cracks constantly.', time:'Mon 10:20 AM' },
+      { dir:'out', text:'That is a classic scaling pain. The systems that worked at 5 people do not work at 18. Very solvable.', time:'Mon 10:22 AM' },
+      { dir:'in',  text:'Exactly. Also our client follow-up is inconsistent. We lose clients because nobody reached out.', time:'Mon 10:25 AM' },
+      { dir:'out', text:'That is actually one of the fastest wins we fix. Let us get on a call this week.', time:'Mon 10:27 AM' }
+    ],
+    zoom: [
+      { speaker:'Mark Davis', text:'I hired a GM last year to fix the operations problem but it did not really change anything. I am still the one putting out fires every day.', highlight:'Hired GM but still firefighting daily — management structure issue' },
+      { speaker:'Mark Davis', text:'Our best client just left because we did not follow up after their last project. That hurt. That was a $60,000 a year account.', highlight:'Lost $60K account due to no follow-up — client retention critical' },
+      { speaker:'You', text:'That is painful and very preventable. A simple follow-up system would have caught that.', highlight:null },
+      { speaker:'Mark Davis', text:'We do good work. Our reviews are great. We just do not stay in front of people. I know the revenue is there if we just communicate better.', highlight:'Good product, poor communication — knows revenue opportunity exists' }
+    ],
+    email: [
+      { from:'m.davis@davisent.com', subj:'Business operations help', date:'Apr 7', snippet:'Hi — Sarah Wong referred me. We are an 18-person company that is growing but feeling disorganized. Looking for help with systems and client retention...' },
+      { from:'m.davis@davisent.com', subj:'Lost a big client', date:'Apr 9', snippet:'Just lost our biggest client because we did not follow up. $60K account. I need to fix this now. Can we talk this week?' }
+    ],
+    smsOut: function(co, name) { return 'Hi Mark — I completely understand the frustration, especially after losing that $60K account. That should never happen again and it will not with the right follow-up system in place. I mapped out a simple fix. Can we talk Thursday? — ' + co; },
+    emailOut: function(co, name) { return { to:'m.davis@davisent.com', subj:'The $60K Account Problem — Here is the Fix', body:'Hi Mark,\n\nThat lost account hit home when you mentioned it. The good news: it is 100% preventable and easy to fix.\n\nHere is what happened: no systematic follow-up after project completion. Here is what we install:\n\n— Automated 30-day post-project check-in (feels personal, runs automatically)\n— Quarterly touchpoint sequence for all active clients\n— Reactivation campaign for anyone who has gone quiet\n\nWith 18 clients and good reviews, you are sitting on a retention goldmine. Let\'s stop leaving it on the table.\n\nFree call Thursday?\n\n— ' + co + ' Team' }; }
+  }
+};
+
+function renderCRM(v, co) {
+  var wrap = document.getElementById('richout');
+  wrap.style.display = 'block';
+  var src = CRM_SOURCES[vertKey] || CRM_SOURCES['other'];
+
+  wrap.innerHTML =
+    '<div class="crm-layout">' +
+    '<div class="crm-sidebar">' +
+    '<button class="crm-source-btn active" id="crm-src-sms" onclick="showCRMSource(\'sms\')">' +
+    '<span class="crm-source-icon">&#128172;</span>' +
+    '<span class="crm-source-name">SMS Thread</span>' +
+    '<span class="crm-source-preview">' + (src.sms[0] ? src.sms[0].text.substring(0,30)+'...' : '') + '</span>' +
+    '</button>' +
+    '<button class="crm-source-btn" id="crm-src-zoom" onclick="showCRMSource(\'zoom\')">' +
+    '<span class="crm-source-icon">&#127909;</span>' +
+    '<span class="crm-source-name">Zoom Notes</span>' +
+    '<span class="crm-source-preview">' + (src.zoom[0] ? src.zoom[0].text.substring(0,30)+'...' : '') + '</span>' +
+    '</button>' +
+    '<button class="crm-source-btn" id="crm-src-email" onclick="showCRMSource(\'email\')">' +
+    '<span class="crm-source-icon">&#128140;</span>' +
+    '<span class="crm-source-name">Email History</span>' +
+    '<span class="crm-source-preview">' + (src.email[0] ? src.email[0].snippet.substring(0,30)+'...' : '') + '</span>' +
+    '</button>' +
+    '<div style="margin-top:8px;background:var(--panel);border:1px solid var(--border2);border-radius:10px;padding:10px 12px">' +
+    '<span style="font-family:DM Mono,monospace;font-size:9px;letter-spacing:1px;color:var(--muted);text-transform:uppercase;display:block;margin-bottom:4px">Contact</span>' +
+    '<span style="font-family:Rajdhani,sans-serif;font-size:12px;font-weight:700;color:var(--bright);display:block">' + src.contact.name + '</span>' +
+    '<span style="font-size:10px;color:var(--muted);display:block">' + src.contact.co + '</span>' +
+    '<span style="font-size:10px;color:var(--muted);display:block;margin-top:4px">' + src.contact.phone + '</span>' +
+    '</div>' +
+    '</div>' +
+    '<div class="crm-content-panel">' +
+    '<div class="crm-content-header"><span class="crm-content-header-icon">&#128172;</span><span class="crm-content-header-title" id="crm-panel-title">SMS Thread</span></div>' +
+    '<div class="crm-content-body" id="crm-panel-body"></div>' +
+    '</div>' +
+    '</div>' +
+    '<button class="crm-generate-btn" id="crm-gen-btn" onclick="generateCRMOutreach()">Generate Personalized Outreach from All Sources &rarr;</button>' +
+    '<div class="crm-outputs" id="crm-outputs">' +
+    '<div class="crm-output-panel">' +
+    '<div class="crm-output-header"><span class="crm-output-header-icon">&#128172;</span><span class="crm-output-header-title">Text Message</span></div>' +
+    '<div class="crm-output-body" id="crm-out-sms"></div>' +
+    '</div>' +
+    '<div class="crm-output-panel">' +
+    '<div class="crm-output-header"><span class="crm-output-header-icon">&#128140;</span><span class="crm-output-header-title">Email Draft</span></div>' +
+    '<div class="crm-output-body" id="crm-out-email"></div>' +
+    '</div>' +
+    '</div>';
+
+  showCRMSource('sms');
+}
+
+function showCRMSource(type) {
+  var src = CRM_SOURCES[vertKey] || CRM_SOURCES['other'];
+  var btns = ['sms','zoom','email'];
+  btns.forEach(function(b) {
+    var el = document.getElementById('crm-src-' + b);
+    if (el) el.classList.toggle('active', b === type);
+  });
+  var title = document.getElementById('crm-panel-title');
+  var body = document.getElementById('crm-panel-body');
+  if (!title || !body) return;
+
+  if (type === 'sms') {
+    title.textContent = 'SMS Thread with ' + src.contact.name;
+    var html = '<div class="sms-thread">';
+    src.sms.forEach(function(m) {
+      html += '<div class="sms-time">' + m.time + '</div>';
+      html += '<div class="sms-bubble-row ' + (m.dir === 'out' ? 'out' : 'in') + '"><div class="sms-bubble">' + m.text + '</div></div>';
+    });
+    html += '</div>';
+    body.innerHTML = html;
+  } else if (type === 'zoom') {
+    title.textContent = 'Zoom Meeting Transcript';
+    var html = '<div class="zoom-notes">';
+    src.zoom.forEach(function(z) {
+      html += '<div class="zoom-note-block"><div class="zoom-note-speaker">' + z.speaker + '</div><div class="zoom-note-text">' + z.text + '</div>';
+      if (z.highlight) html += '<div class="zoom-note-highlight">AI captured: ' + z.highlight + '</div>';
+      html += '</div>';
+    });
+    html += '</div>';
+    body.innerHTML = html;
+  } else {
+    title.textContent = 'Email History';
+    var html = '<div class="email-thread">';
+    src.email.forEach(function(e) {
+      html += '<div class="email-thread-item"><div class="email-meta">FROM: ' + e.from + ' &nbsp;|&nbsp; ' + e.date + '</div><div class="email-subject">' + e.subj + '</div><div class="email-snippet">' + e.snippet + '</div></div>';
+    });
+    html += '</div>';
+    body.innerHTML = html;
+  }
+}
+
+function generateCRMOutreach() {
+  var btn = document.getElementById('crm-gen-btn');
+  if (btn) { btn.disabled = true; btn.textContent = 'AI is reading all sources...'; }
+
+  setTimeout(function() {
+    var outputs = document.getElementById('crm-outputs');
+    var smsPan = document.getElementById('crm-out-sms');
+    var emailPan = document.getElementById('crm-out-email');
+    if (!outputs || !smsPan || !emailPan) return;
+    outputs.classList.add('show');
+
+    var src = CRM_SOURCES[vertKey] || CRM_SOURCES['other'];
+    var smsText = src.smsOut(coName, src.contact.name);
+    var emailData = src.emailOut(coName, src.contact.name);
+
+    // iMessage preview
+    smsPan.innerHTML =
+      '<div class="imsg-preview">' +
+      '<div class="imsg-to">To: ' + src.contact.name + ' ' + src.contact.phone + '</div>' +
+      '<div class="imsg-bubble" id="sms-type-target"></div>' +
+      '<div class="imsg-sent">Delivered</div>' +
+      '</div>';
+
+    // Email draft
+    emailPan.innerHTML =
+      '<div class="email-draft">' +
+      '<div class="email-draft-field">TO: <span>' + emailData.to + '</span></div>' +
+      '<div class="email-draft-field">SUBJ: <span>' + emailData.subj + '</span></div>' +
+      '<div class="email-draft-body" id="email-type-target"></div>' +
+      '</div>';
+
+    typeOutput('sms-type-target', smsText, 18, function() {});
+    setTimeout(function() {
+      typeOutput('email-type-target', emailData.body, 8, function() { showSavings(); });
+    }, 400);
+
+    if (btn) btn.textContent = 'Outreach Generated';
+  }, 1800);
+}
+
+function typeOutput(elId, text, speed, cb) {
+  var el = document.getElementById(elId);
+  if (!el) return;
+  el.innerHTML = '<span class="typing-cursor"></span>';
+  var i = 0;
+  var chars = text.split('');
+  function next() {
+    if (i >= chars.length) {
+      el.innerHTML = text.replace(/\n/g, '<br>');
+      if (cb) cb();
+      return;
+    }
+    var cur = document.querySelector('#' + elId + ' .typing-cursor');
+    if (cur) {
+      el.insertBefore(document.createTextNode(chars[i]), cur);
+    }
+    i++;
+    setTimeout(next, speed);
+  }
+  next();
 }
 
 // ── LEADS ENGINE ─────────────────────────
