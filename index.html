@@ -1638,6 +1638,267 @@ color: var(–muted);
 margin-top: 2px;
 }
 
+/* ── LEADS UI ────────────────────────── */
+.leads-form {
+background: var(–panel);
+border: 1px solid var(–border2);
+border-radius: 12px;
+padding: 18px;
+margin-bottom: 14px;
+}
+
+.leads-form-title {
+font-family: ‘DM Mono’, monospace;
+font-size: 10px;
+letter-spacing: 3px;
+color: var(–blue);
+text-transform: uppercase;
+margin-bottom: 14px;
+}
+
+.leads-fields {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 10px;
+margin-bottom: 14px;
+}
+
+.leads-field { }
+
+.leads-field-label {
+font-family: ‘DM Mono’, monospace;
+font-size: 9px;
+letter-spacing: 2px;
+color: var(–muted);
+text-transform: uppercase;
+display: block;
+margin-bottom: 5px;
+}
+
+.leads-field-input {
+width: 100%;
+background: var(–surface);
+border: 1px solid var(–border2);
+border-radius: 8px;
+padding: 9px 12px;
+font-family: ‘DM Sans’, sans-serif;
+font-size: 13px;
+color: var(–bright);
+outline: none;
+-webkit-appearance: none;
+transition: border-color 0.2s;
+}
+
+.leads-field-input:focus { border-color: var(–blue); }
+
+.leads-search-btn {
+width: 100%;
+background: linear-gradient(135deg, var(–blue), var(–blue2));
+border: none;
+border-radius: 9px;
+padding: 13px;
+font-family: ‘Rajdhani’, sans-serif;
+font-size: 16px;
+font-weight: 700;
+color: #07090f;
+letter-spacing: 1px;
+cursor: pointer;
+-webkit-appearance: none;
+transition: all 0.2s;
+}
+
+.leads-search-btn:active { transform: scale(0.98); }
+.leads-search-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* Scraping progress */
+.scraping-progress {
+display: none;
+margin-bottom: 14px;
+}
+
+.scraping-progress.show { display: block; }
+
+.scraping-bar-track {
+height: 4px;
+background: var(–border);
+border-radius: 2px;
+overflow: hidden;
+margin-bottom: 8px;
+}
+
+.scraping-bar-fill {
+height: 100%;
+background: linear-gradient(90deg, var(–blue), var(–green));
+border-radius: 2px;
+width: 0%;
+transition: width 0.4s ease;
+}
+
+.scraping-status {
+font-family: ‘DM Mono’, monospace;
+font-size: 10px;
+color: var(–blue);
+letter-spacing: 1px;
+text-align: center;
+}
+
+/* Lead cards */
+.leads-results { margin-bottom: 14px; }
+
+.lead-card {
+background: var(–card);
+border: 1px solid var(–border2);
+border-radius: 10px;
+padding: 14px 16px;
+margin-bottom: 8px;
+display: flex;
+align-items: flex-start;
+gap: 14px;
+opacity: 0;
+transform: translateY(8px);
+transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.lead-card.visible {
+opacity: 1;
+transform: translateY(0);
+}
+
+.lead-score-badge {
+flex-shrink: 0;
+width: 48px;
+height: 48px;
+border-radius: 10px;
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+background: var(–surface);
+border: 1px solid var(–border2);
+}
+
+.lead-score-val {
+font-family: ‘Rajdhani’, sans-serif;
+font-size: 16px;
+font-weight: 700;
+line-height: 1;
+}
+
+.lead-score-lbl {
+font-family: ‘DM Mono’, monospace;
+font-size: 8px;
+color: var(–muted);
+margin-top: 2px;
+}
+
+.lead-body { flex: 1; min-width: 0; }
+
+.lead-top {
+display: flex;
+align-items: center;
+justify-content: space-between;
+margin-bottom: 4px;
+gap: 8px;
+}
+
+.lead-company {
+font-family: ‘Rajdhani’, sans-serif;
+font-size: 14px;
+font-weight: 700;
+color: var(–bright);
+white-space: nowrap;
+overflow: hidden;
+text-overflow: ellipsis;
+}
+
+.lead-priority {
+font-family: ‘DM Mono’, monospace;
+font-size: 9px;
+padding: 2px 7px;
+border-radius: 4px;
+letter-spacing: 1px;
+text-transform: uppercase;
+flex-shrink: 0;
+}
+
+.lead-priority.hot  { background: rgba(255,69,96,0.15); color: var(–red); border: 1px solid rgba(255,69,96,0.3); }
+.lead-priority.high { background: rgba(0,194,255,0.12); color: var(–blue); border: 1px solid rgba(0,194,255,0.25); }
+.lead-priority.med  { background: rgba(240,180,0,0.12); color: var(–gold); border: 1px solid rgba(240,180,0,0.25); }
+
+.lead-meta {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 2px 10px;
+margin-bottom: 6px;
+}
+
+.lead-meta-item {
+font-size: 11px;
+color: var(–muted);
+white-space: nowrap;
+overflow: hidden;
+text-overflow: ellipsis;
+}
+
+.lead-meta-item span { color: var(–text); }
+
+.lead-contact {
+font-size: 12px;
+color: var(–text);
+border-top: 1px solid var(–border);
+padding-top: 6px;
+margin-top: 4px;
+}
+
+.lead-contact strong { color: var(–bright); }
+
+/* CRM CTA */
+.leads-cta {
+display: none;
+background: var(–greendim);
+border: 1px solid rgba(0,229,160,0.25);
+border-radius: 10px;
+padding: 14px 16px;
+text-align: center;
+margin-bottom: 14px;
+}
+
+.leads-cta.show { display: block; }
+
+.leads-cta-title {
+font-family: ‘Rajdhani’, sans-serif;
+font-size: 15px;
+font-weight: 700;
+color: var(–green);
+margin-bottom: 4px;
+}
+
+.leads-cta-sub {
+font-size: 12px;
+color: var(–muted);
+margin-bottom: 12px;
+}
+
+.leads-cta-btn {
+display: inline-flex;
+align-items: center;
+gap: 8px;
+background: var(–green);
+border: none;
+border-radius: 8px;
+padding: 11px 24px;
+font-family: ‘Rajdhani’, sans-serif;
+font-size: 15px;
+font-weight: 700;
+color: #07090f;
+cursor: pointer;
+letter-spacing: 0.5px;
+-webkit-appearance: none;
+transition: all 0.2s;
+}
+
+.leads-cta-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px var(–greenglow); }
+
 /* ── PHONE CALL UI ───────────────────── */
 .call-launch {
 text-align: center;
@@ -2621,12 +2882,12 @@ function mo(annual){ return Math.round(annual/12); }
 function vd(){ return VERTS[vertKey] || VERTS['other']; }
 
 var TOOLS = [
-  { id:'leads', icon:'[*]', name:'Lead Scraping', color:'#00c2ff', richUI:false,
+  { id:'leads', icon:'[*]', name:'Lead Scraping', color:'#00c2ff', richUI:'leads',
     eyebrow:'STATION 01 — LEAD GENERATION', title:'AI Finds Your Leads While You Sleep',
     bb:['Manual Google, LinkedIn & directory searches','Hours wasted every week hunting contacts','Outdated leads, wrong numbers, dead ends','Best people doing busywork instead of selling'],
     ab:['Fresh targeted lead list delivered every morning','Name, phone, email & fit score — ready to call','Filtered by location, business size & specific need','Team starts every day ready to close deals'],
     qs:[{l:'Hours/week each person spends finding leads',u:'hrs/wk',k:'leadHrs'},{l:'How many people on your team do this?',u:'people',k:'leadPeople'}],
-    out:function(co){var v=vd();var c1=v.contact1,c2=v.contact2,c3=v.contact3;return'[*] AI LEAD SCRAPE — '+co+'\n                                 \n\n  LEAD #1 — FIT SCORE: '+c1.score+'/100  PRIORITY\n    Company:  '+c1.co+'\n    Contact:  '+c1.name+'\n    Phone:    '+c1.phone+'\n    Email:    '+c1.email+'\n    Need:     '+c1.need+'\n\n  LEAD #2 — FIT SCORE: '+c2.score+'/100  HIGH VALUE\n    Company:  '+c2.co+'\n    Contact:  '+c2.name+'\n    Phone:    '+c2.phone+'\n    Email:    '+c2.email+'\n    Need:     '+c2.need+'\n\n  LEAD #3 — FIT SCORE: '+c3.score+'/100\n    Company:  '+c3.co+'\n    Contact:  '+c3.name+'\n    Phone:    '+c3.phone+'\n    Email:    '+c3.email+'\n    Need:     '+c3.need+'\n\n                                 \n[*]  27 leads found · 3 priority · Delivered 6:00 AM';},
+
     hrs:function(d){return d.leadHrs;},
     annual:function(d){return Math.round(d.leadHrs*d.leadPeople*WAGE*52);},
     note:function(d){return d.leadPeople+' person'+(d.leadPeople>1?'s':'')+' × '+d.leadHrs+' hrs/wk = '+Math.round(d.leadHrs*d.leadPeople)+' hrs/wk reclaimed — closing deals, not chasing contacts.';}
@@ -2849,6 +3110,8 @@ function runDemo() {
     renderInvoice(v, coName);
   } else if (curTool.richUI === 'phone') {
     renderPhone(v, coName);
+  } else if (curTool.richUI === 'leads') {
+    renderLeads(v, coName);
   } else {
     var op = document.getElementById('outpanel');
     var ot = document.getElementById('outtext');
@@ -3032,8 +3295,199 @@ function renderInvoice(v, co) {
   showSavings();
 }
 
+// ── LEADS ENGINE ─────────────────────────
+var LEAD_DATA = {
+  home: [
+    { company:'Sunrise Property Management', size:'42 employees', revenue:'$3.2M/yr', location:'Palm Desert, CA', contact:'Karen Ellis', title:'Operations Manager', phone:'(760) 555-0182', email:'k.ellis@sunriseprop.com', need:'Annual HVAC maintenance contract', score:97, priority:'hot' },
+    { company:'Desert Palms HOA', size:'8 employees', revenue:'$1.1M/yr', location:'Rancho Mirage, CA', contact:'Tom Reyes', title:'Facilities Director', phone:'(760) 555-0341', email:'t.reyes@desertpalms.org', need:'Emergency plumbing + quarterly service', score:91, priority:'high' },
+    { company:'CV Medical Offices', size:'24 employees', revenue:'$4.8M/yr', location:'Indio, CA', contact:'Sandra Park', title:'Office Manager', phone:'(760) 555-0517', email:'s.park@cvmedoffice.com', need:'3-unit commercial HVAC replacement', score:88, priority:'high' },
+    { company:'Ironwood Country Club', size:'65 employees', revenue:'$6.2M/yr', location:'Palm Desert, CA', contact:'Greg Walsh', title:'Facilities Manager', phone:'(760) 555-0629', email:'g.walsh@ironwoodcc.com', need:'Full HVAC system audit + service plan', score:83, priority:'med' },
+    { company:'Desert Springs Resort', size:'180 employees', revenue:'$14M/yr', location:'Palm Desert, CA', contact:'Lisa Navarro', title:'Director of Engineering', phone:'(760) 555-0744', email:'l.navarro@desertsprings.com', need:'Preventative maintenance program', score:79, priority:'med' }
+  ],
+  legal: [
+    { company:'Torres Family Trust', size:'2 employees', revenue:'$2.4M/yr', location:'Palm Desert, CA', contact:'Michael Torres', title:'Principal', phone:'(760) 555-0291', email:'m.torres@torresgroup.com', need:'Estate planning & trust setup', score:96, priority:'hot' },
+    { company:'Kim & Associates RE', size:'12 employees', revenue:'$3.8M/yr', location:'Rancho Mirage, CA', contact:'Rachel Kim', title:'Managing Broker', phone:'(760) 555-0388', email:'r.kim@kimrelaw.com', need:'Commercial real estate closings', score:89, priority:'high' },
+    { company:'Ochoa Construction LLC', size:'28 employees', revenue:'$5.1M/yr', location:'Indio, CA', contact:'David Ochoa', title:'Owner', phone:'(760) 555-0445', email:'d.ochoa@ochoabuild.com', need:'Business formation + contract review', score:85, priority:'high' },
+    { company:'Valley Medical Group', size:'34 employees', revenue:'$7.2M/yr', location:'Palm Desert, CA', contact:'Dr. James Park', title:'Managing Partner', phone:'(760) 555-0512', email:'j.park@valleymed.com', need:'Partnership agreement update', score:81, priority:'med' },
+    { company:'Desert Star Hospitality', size:'56 employees', revenue:'$9.4M/yr', location:'Palm Springs, CA', contact:'Nina Castillo', title:'CEO', phone:'(760) 555-0638', email:'n.castillo@desertstar.com', need:'Employment law review + HR compliance', score:76, priority:'med' }
+  ],
+  dental: [
+    { company:'Santos Insurance Group', size:'18 employees', revenue:'$2.1M/yr', location:'Palm Desert, CA', contact:'Maria Santos', title:'HR Director', phone:'(760) 555-0499', email:'m.santos@sigpd.com', need:'Corporate dental plan — 18 employees', score:95, priority:'hot' },
+    { company:'Desert Tech Solutions', size:'31 employees', revenue:'$4.4M/yr', location:'Rancho Mirage, CA', contact:'Alan Brooks', title:'COO', phone:'(760) 555-0321', email:'a.brooks@deserttech.com', need:'Employee dental benefits package', score:90, priority:'high' },
+    { company:'Coachella Valley Schools FCU', size:'22 employees', revenue:'$1.8M/yr', location:'Indio, CA', contact:'Pam Wong', title:'Benefits Administrator', phone:'(760) 555-0417', email:'p.wong@cvsfcu.org', need:'Group dental plan renewal', score:86, priority:'high' },
+    { company:'Mesa Verde Senior Living', size:'45 employees', revenue:'$3.6M/yr', location:'Palm Desert, CA', contact:'Robert Chen', title:'Administrator', phone:'(760) 555-0533', email:'r.chen@mesaverde.com', need:'Staff dental coverage + resident care', score:82, priority:'med' },
+    { company:'Sunridge Auto Group', size:'28 employees', revenue:'$8.2M/yr', location:'Palm Springs, CA', contact:'Tony Garza', title:'GM', phone:'(760) 555-0649', email:'t.garza@sunridgeauto.com', need:'Full benefits overhaul including dental', score:77, priority:'med' }
+  ],
+  realestate: [
+    { company:'Cruz Family Trust', size:'2 employees', revenue:'$640K/yr', location:'Rancho Mirage, CA', contact:'Amanda Cruz', title:'Primary Buyer', phone:'(760) 555-0214', email:'a.cruz@gmail.com', need:'Buying $600K-$800K in the valley', score:97, priority:'hot' },
+    { company:'Hoffman Investments LLC', size:'4 employees', revenue:'$2.8M/yr', location:'Palm Desert, CA', contact:'Steve Hoffman', title:'Managing Partner', phone:'(760) 555-0362', email:'s.hoffman@hinvest.com', need:'Investment property — 4 to 8 units', score:92, priority:'hot' },
+    { company:'Lowe Estate Holdings', size:'3 employees', revenue:'$1.4M/yr', location:'PGA West, CA', contact:'Patricia Lowe', title:'Owner', phone:'(760) 555-0481', email:'p.lowe@loweestate.com', need:'Listing 3 properties in PGA West', score:94, priority:'hot' },
+    { company:'CV Relocation Services', size:'8 employees', revenue:'$890K/yr', location:'Palm Springs, CA', contact:'Dan Morey', title:'Director', phone:'(760) 555-0527', email:'d.morey@cvreloc.com', need:'Corporate relocation — 6 buyers', score:84, priority:'high' },
+    { company:'Desert Sun Realty Fund', size:'5 employees', revenue:'$3.2M/yr', location:'La Quinta, CA', contact:'Grace Kim', title:'Fund Manager', phone:'(760) 555-0643', email:'g.kim@desertsunfund.com', need:'Luxury portfolio acquisition planning', score:79, priority:'med' }
+  ],
+  consulting: [
+    { company:'Wright Landscaping', size:'22 employees', revenue:'$820K/yr', location:'Palm Desert, CA', contact:'Jason Wright', title:'Owner', phone:'(760) 555-0228', email:'j.wright@wrightls.com', need:'Scale from $800K to $2M — needs systems', score:96, priority:'hot' },
+    { company:'Patel Med Spa', size:'14 employees', revenue:'$1.4M/yr', location:'Rancho Mirage, CA', contact:'Nina Patel', title:'Owner', phone:'(760) 555-0349', email:'n.patel@patelspa.com', need:'Marketing + operations overhaul', score:91, priority:'high' },
+    { company:'Mendez Contracting', size:'18 employees', revenue:'$1.1M/yr', location:'Indio, CA', contact:'Carlos Mendez', title:'Owner', phone:'(760) 555-0472', email:'c.mendez@mendezco.com', need:'Business exit planning + valuation', score:88, priority:'high' },
+    { company:'Foster Financial Group', size:'6 employees', revenue:'$680K/yr', location:'Palm Springs, CA', contact:'Brian Foster', title:'Principal', phone:'(760) 555-0514', email:'b.foster@fosterfin.com', need:'Revenue growth + client acquisition', score:83, priority:'med' },
+    { company:'Desert Bloom Catering', size:'11 employees', revenue:'$540K/yr', location:'Palm Desert, CA', contact:'Rosa Martinez', title:'Owner', phone:'(760) 555-0637', email:'r.martinez@desertbloom.com', need:'Scaling catering ops + event pipeline', score:78, priority:'med' }
+  ],
+  agency: [
+    { company:'Moore Auto Group', size:'48 employees', revenue:'$12M/yr', location:'Palm Desert, CA', contact:'Tanya Moore', title:'Marketing Director', phone:'(760) 555-0233', email:'t.moore@mooreautopd.com', need:'Full digital overhaul — ads + SEO', score:94, priority:'hot' },
+    { company:'Sloan Med Spa', size:'16 employees', revenue:'$2.4M/yr', location:'Rancho Mirage, CA', contact:'Greg Sloan', title:'Owner', phone:'(760) 555-0356', email:'g.sloan@sloanmdspa.com', need:'Social media + paid ads management', score:90, priority:'high' },
+    { company:'Park Realty Group', size:'22 employees', revenue:'$3.8M/yr', location:'Palm Desert, CA', contact:'Lena Park', title:'Broker/Owner', phone:'(760) 555-0488', email:'l.park@parkrealty.com', need:'Google Ads + content strategy', score:87, priority:'high' },
+    { company:'Desert Roofing Co.', size:'34 employees', revenue:'$5.2M/yr', location:'Indio, CA', contact:'Mark Vega', title:'GM', phone:'(760) 555-0521', email:'m.vega@desertroofing.com', need:'Lead generation — contractor market', score:82, priority:'med' },
+    { company:'CV Health & Wellness', size:'12 employees', revenue:'$1.6M/yr', location:'Palm Springs, CA', contact:'Amy Chen', title:'Marketing Manager', phone:'(760) 555-0647', email:'a.chen@cvhealthwellness.com', need:'Email marketing + social content', score:77, priority:'med' }
+  ],
+  construction: [
+    { company:'Navarro Commercial Props', size:'8 employees', revenue:'$4.2M/yr', location:'Palm Desert, CA', contact:'Frank Navarro', title:'Principal', phone:'(760) 555-0247', email:'f.navarro@navarroprop.com', need:'Office renovation — 4,000 sq ft', score:95, priority:'hot' },
+    { company:'Simmons Resort Group', size:'42 employees', revenue:'$8.8M/yr', location:'Rancho Mirage, CA', contact:'Carol Simmons', title:'VP Operations', phone:'(760) 555-0368', email:'c.simmons@simmonsresort.com', need:'Pool house + outdoor kitchen build', score:92, priority:'hot' },
+    { company:'Patterson Development', size:'16 employees', revenue:'$6.4M/yr', location:'La Quinta, CA', contact:'Jim Patterson', title:'Developer', phone:'(760) 555-0491', email:'j.patterson@pattdev.com', need:'New construction — 6-unit residential', score:89, priority:'high' },
+    { company:'Desert Valley Church', size:'12 employees', revenue:'$2.1M/yr', location:'Palm Desert, CA', contact:'Pastor Dan Ellis', title:'Executive Director', phone:'(760) 555-0524', email:'d.ellis@desertvalleychurch.com', need:'Sanctuary expansion — 8,000 sq ft', score:84, priority:'high' },
+    { company:'Coachella Valley YMCA', size:'28 employees', revenue:'$3.4M/yr', location:'Indio, CA', contact:'Sarah Bloom', title:'Facilities Director', phone:'(760) 555-0641', email:'s.bloom@cvymca.org', need:'Gym renovation + ADA compliance', score:79, priority:'med' }
+  ],
+  other: [
+    { company:'Davis Enterprises', size:'18 employees', revenue:'$2.2M/yr', location:'Palm Desert, CA', contact:'Mark Davis', title:'CEO', phone:'(760) 555-0201', email:'m.davis@davisent.com', need:'Ongoing service contract', score:93, priority:'hot' },
+    { company:'Wong & Partners', size:'8 employees', revenue:'$1.4M/yr', location:'Rancho Mirage, CA', contact:'Sarah Wong', title:'Managing Partner', phone:'(760) 555-0342', email:'s.wong@wongpartners.com', need:'One-time project + potential retainer', score:88, priority:'high' },
+    { company:'Ortega Group', size:'24 employees', revenue:'$3.6M/yr', location:'Palm Springs, CA', contact:'Paul Ortega', title:'Owner', phone:'(760) 555-0468', email:'p.ortega@ortegagroup.com', need:'Referral — urgent turnaround needed', score:90, priority:'high' },
+    { company:'Valley Tech Partners', size:'14 employees', revenue:'$2.8M/yr', location:'Indio, CA', contact:'Lisa Chen', title:'Operations Director', phone:'(760) 555-0531', email:'l.chen@valleytechpd.com', need:'Quarterly service agreement', score:83, priority:'med' },
+    { company:'Desert Bloom Events', size:'6 employees', revenue:'$840K/yr', location:'Palm Desert, CA', contact:'Rosa Garcia', title:'Owner', phone:'(760) 555-0649', email:'r.garcia@desertbloom.com', need:'Exploring long-term partnership', score:77, priority:'med' }
+  ]
+};
+
+var VERTICAL_DEFAULTS = {
+  home:         { industry:'Home Services (HVAC, Plumbing, Roofing)', employees:'10-50', revenue:'$1M-$10M', location:'Palm Desert, CA' },
+  legal:        { industry:'Legal / Professional Services', employees:'2-20', revenue:'$500K-$5M', location:'Palm Desert, CA' },
+  dental:       { industry:'Dental / Medical Practices', employees:'5-50', revenue:'$500K-$8M', location:'Palm Desert, CA' },
+  realestate:   { industry:'Real Estate / Investment', employees:'2-10', revenue:'$500K-$5M', location:'Coachella Valley, CA' },
+  consulting:   { industry:'Consulting / Coaching / Services', employees:'5-25', revenue:'$500K-$2M', location:'Palm Desert, CA' },
+  agency:       { industry:'Marketing / Creative Agency', employees:'5-50', revenue:'$500K-$15M', location:'Palm Desert, CA' },
+  construction: { industry:'Contractors / Construction', employees:'10-50', revenue:'$2M-$10M', location:'Palm Desert, CA' },
+  other:        { industry:'Local Business / General Services', employees:'5-50', revenue:'$500K-$5M', location:'Palm Desert, CA' }
+};
+
+function renderLeads(v, co) {
+  var wrap = document.getElementById('richout');
+  wrap.style.display = 'block';
+  var defs = VERTICAL_DEFAULTS[vertKey] || VERTICAL_DEFAULTS['other'];
+  wrap.innerHTML =
+    '<div class="leads-form">' +
+    '<div class="leads-form-title">// Set Your Search Criteria</div>' +
+    '<div class="leads-fields">' +
+    '<div class="leads-field"><span class="leads-field-label">Industry / Vertical</span><input class="leads-field-input" id="lf-industry" value="' + defs.industry + '"></div>' +
+    '<div class="leads-field"><span class="leads-field-label">Number of Employees</span><input class="leads-field-input" id="lf-employees" value="' + defs.employees + '"></div>' +
+    '<div class="leads-field"><span class="leads-field-label">Annual Revenue Range</span><input class="leads-field-input" id="lf-revenue" value="' + defs.revenue + '"></div>' +
+    '<div class="leads-field"><span class="leads-field-label">Location / City</span><input class="leads-field-input" id="lf-location" value="' + defs.location + '"></div>' +
+    '</div>' +
+    '<button class="leads-search-btn" id="leads-search-btn" onclick="runLeadSearch()">SEARCH FOR LEADS &rarr;</button>' +
+    '</div>' +
+    '<div class="scraping-progress" id="scraping-progress">' +
+    '<div class="scraping-bar-track"><div class="scraping-bar-fill" id="scraping-bar"></div></div>' +
+    '<div class="scraping-status" id="scraping-status">Initializing search...</div>' +
+    '</div>' +
+    '<div class="leads-results" id="leads-results"></div>' +
+    '<div class="leads-cta" id="leads-cta">' +
+    '<div class="leads-cta-title">5 Qualified Leads Ready</div>' +
+    '<div class="leads-cta-sub">AI scored and ranked — highest fit delivered first. Next step: load into your CRM automatically.</div>' +
+    '<button class="leads-cta-btn" onclick="showLeadsCRMPrompt()">Load All into CRM &rarr;</button>' +
+    '</div>';
+}
+
+function runLeadSearch() {
+  var btn = document.getElementById('leads-search-btn');
+  if (btn) btn.disabled = true;
+  var prog = document.getElementById('scraping-progress');
+  var bar = document.getElementById('scraping-bar');
+  var status = document.getElementById('scraping-status');
+  if (prog) prog.classList.add('show');
+
+  var steps = [
+    [10, 'Scanning LinkedIn company database...'],
+    [25, 'Searching local business directories...'],
+    [42, 'Cross-referencing Yelp & Google Maps...'],
+    [58, 'Filtering by employee count and revenue...'],
+    [72, 'Scoring leads by fit and intent signals...'],
+    [88, 'Ranking by conversion probability...'],
+    [100, '5 high-fit leads identified — loading results...']
+  ];
+
+  var idx = 0;
+  function nextStep() {
+    if (idx >= steps.length) {
+      setTimeout(function() {
+        if (prog) prog.classList.remove('show');
+        showLeadResults();
+      }, 400);
+      return;
+    }
+    var s = steps[idx];
+    if (bar) bar.style.width = s[0] + '%';
+    if (status) status.textContent = s[1];
+    idx++;
+    setTimeout(nextStep, idx < steps.length ? 520 : 300);
+  }
+  nextStep();
+}
+
+function showLeadResults() {
+  var leads = LEAD_DATA[vertKey] || LEAD_DATA['other'];
+  var container = document.getElementById('leads-results');
+  if (!container) return;
+  container.innerHTML = '';
+
+  leads.forEach(function(lead, i) {
+    var scoreColor = lead.score >= 90 ? '#ff4560' : lead.score >= 85 ? '#00c2ff' : '#f0b400';
+    var card = document.createElement('div');
+    card.className = 'lead-card';
+    card.id = 'lead-card-' + i;
+    var priLabel = lead.priority === 'hot' ? 'PRIORITY' : lead.priority === 'high' ? 'HIGH FIT' : 'QUALIFIED';
+    card.innerHTML =
+      '<div class="lead-score-badge">' +
+      '<span class="lead-score-val" style="color:' + scoreColor + '">' + lead.score + '</span>' +
+      '<span class="lead-score-lbl">SCORE</span>' +
+      '</div>' +
+      '<div class="lead-body">' +
+      '<div class="lead-top">' +
+      '<span class="lead-company">' + lead.company + '</span>' +
+      '<span class="lead-priority ' + lead.priority + '">' + priLabel + '</span>' +
+      '</div>' +
+      '<div class="lead-meta">' +
+      '<div class="lead-meta-item">Employees: <span>' + lead.size + '</span></div>' +
+      '<div class="lead-meta-item">Revenue: <span>' + lead.revenue + '</span></div>' +
+      '<div class="lead-meta-item">Location: <span>' + lead.location + '</span></div>' +
+      '<div class="lead-meta-item">Need: <span>' + lead.need + '</span></div>' +
+      '</div>' +
+      '<div class="lead-contact"><strong>' + lead.contact + '</strong> · ' + lead.title + ' · ' + lead.phone + ' · ' + lead.email + '</div>' +
+      '</div>';
+    container.appendChild(card);
+
+    // Animate in with stagger
+    setTimeout(function(idx) {
+      return function() {
+        var el = document.getElementById('lead-card-' + idx);
+        if (el) el.classList.add('visible');
+      };
+    }(i), i * 220);
+  });
+
+  // Show CTA after last card
+  setTimeout(function() {
+    var cta = document.getElementById('leads-cta');
+    if (cta) cta.classList.add('show');
+    showSavings();
+  }, leads.length * 220 + 400);
+}
+
+function showLeadsCRMPrompt() {
+  var cta = document.getElementById('leads-cta');
+  if (cta) {
+    cta.innerHTML =
+      '<div class="leads-cta-title">Ready to Load into CRM</div>' +
+      '<div class="leads-cta-sub" style="color:#b8cce0">In a live system, all 5 leads would auto-populate into your CRM with one tap — contact info, score, notes, and next actions pre-filled. That is Station 2: AI Phone Agent + CRM.</div>';
+  }
+}
+
 // ── PHONE CALL ENGINE ─────────────────────
-// ── PHONE CALL ENGINE (Live Claude API + Web Speech) ─────────────────
 var callTimer = null;
 var callSeconds = 0;
 var callCoName = '';
