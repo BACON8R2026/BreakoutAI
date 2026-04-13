@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+!DOCTYPE html>
 
 <html lang="en">
 <head>
@@ -1359,7 +1359,7 @@ color: var(--text-dim);
  <div class="panel active" id="panel-home">
  <div class="home-hero">
  <h1>Your Business Runs on<br><span>Autopilot.</span></h1>
- <p>12 AI stations working together - from first contact to signed contract. Select a station below to see it live.</p>
+ <p>12 AI stations working together for an HVAC company in Palm Desert. Select a station below to see the canned demo flow.</p>
  </div>
 
 <!-- ROI STATS BAR -->
@@ -2681,26 +2681,126 @@ function copyRaw(pfx) {
 }
 
 function callAPI(systemPrompt, userMsg, callback) {
- fetch('https://api.anthropic.com/v1/messages', {
- method: 'POST',
- headers: { 'Content-Type': 'application/json' },
- body: JSON.stringify({
- model: 'claude-sonnet-4-20250514',
- max_tokens: 2200,
- system: systemPrompt,
- messages: [{ role: 'user', content: userMsg }]
- })
- })
- .then(function(r) { return r.json(); })
- .then(function(data) {
- if (data.error) { callback(null, data.error.message); return; }
- var text = '';
- if (data.content) for (var i = 0; i < data.content.length; i++) if (data.content[i].type === 'text') text += data.content[i].text;
- callback(text, null);
- })
- .catch(function(e) { callback(null, 'Connection error. Please try again.'); });
+ setTimeout(function() {
+   callback('Local demo mode only. No live API call was made.', null);
+ }, 300);
 }
 
+function buildCannedProposalText(client, biz, industry, type, notes, budget) {
+ var price = budget || '$4,500';
+ return [
+   'PROPOSAL TITLE: Palm Desert HVAC Automation Blueprint for ' + biz,
+   'PREPARED FOR: ' + client + ', ' + biz,
+   'EXECUTIVE SUMMARY: ' + biz + ' is already generating local HVAC demand, but too much of the workflow still depends on manual follow-up, manual proposal writing, and disconnected admin. This package gives the team a cleaner command center for lead intake, faster proposal turnaround, contract delivery, invoicing, and customer follow-up. The result is faster response time, better close rates, and less back office drag during peak service periods.',
+   'THE CHALLENGE: The company is balancing incoming estimates, active jobs, and local customer communication across Palm Desert and nearby cities. When follow-up and paperwork stay manual, leads cool off, proposal turnaround slows down, and the team loses time that should stay focused on booked work.',
+   'THE SOLUTION: Breakout AI Solutions will map the current Palm Desert HVAC workflow, tighten the handoff from inquiry to estimate, and build a polished customer-facing system that speeds up quoting, proposal generation, contract delivery, invoicing, and post-quote follow-up. The system is designed for HVAC operators who need a beautiful front end and less admin behind the scenes.',
+   'DELIVERABLES:',
+   '- Local HVAC workflow audit for Palm Desert AC Services',
+   '- Proposal template system with Palm Desert HVAC branding and scope structure',
+   '- Contract and e-sign setup for approved jobs',
+   '- Invoice trigger flow tied to signed proposals or completed work',
+   '- Follow-up email and SMS sequence for estimates that have gone quiet',
+   '- Dashboard view for proposals, jobs, follow-up status, and pipeline health',
+   'TIMELINE: Week 1 focuses on discovery, workflow mapping, and copy direction. Week 2 covers templates, automations, and client-facing assets. Week 3 is refinement, QA, and handoff with a working Palm Desert HVAC demo environment.',
+   'INVESTMENT: ' + price,
+   'INVESTMENT NOTE: 50% to begin, with the balance due at final delivery. Ongoing optimization and support can roll into a monthly retainer after launch.',
+   'NEXT STEP: Approve the scope so we can finalize the build order and begin with the Palm Desert HVAC workflow audit. Once approved, the first assets can be turned around immediately.',
+   'CTA: Approve and Launch',
+   'FOOTER: Prepared by Dave at Breakout AI Solutions\nHuman-First AI for Business\nbreakoutaisolutions.com'
+ ].join('\n');
+}
+
+function buildCannedFollowupText(name, biz, stage, seqType, context) {
+ var seq = [];
+ if (seqType !== 'SMS only') {
+   seq.push([
+     'TOUCH 1',
+     'TYPE: EMAIL',
+     'DELAY: Send now',
+     'SUBJECT: Quick follow up for ' + biz,
+     'BODY: Hi ' + name + ',\n\nWanted to circle back on the HVAC workflow system we discussed for ' + biz + '. Based on the Palm Desert service model, the fastest win is cleaning up estimate follow-up and proposal turnaround so jobs do not cool off while the team is out in the field.\n\nIf helpful, I can tighten the scope around the pieces that matter most first and keep phase one lean.\n\nDave'
+   ].join('\n'));
+ }
+ seq.push([
+   'TOUCH 2',
+   'TYPE: SMS',
+   'DELAY: 2 days later',
+   'BODY: Hey ' + name + ', just checking in. The Palm Desert HVAC demo is ready whenever you want to review the proposal, follow-up flow, and invoice automation.'
+ ].join('\n'));
+ if (seqType !== 'SMS only') {
+   seq.push([
+     'TOUCH 3',
+     'TYPE: EMAIL',
+     'DELAY: 4 days later',
+     'SUBJECT: Want me to tighten the first phase?',
+     'BODY: Hi ' + name + ',\n\nFollowing up one more time in case timing is the only thing holding this up. We can narrow phase one to the biggest HVAC bottlenecks first, which usually means proposal speed, estimate follow-up, and admin after approval.\n\nHappy to revise the rollout around your busiest service priorities.\n\nDave'
+   ].join('\n'));
+ }
+ if (seqType === 'Email + SMS Mixed') {
+   seq.push([
+     'TOUCH 4',
+     'TYPE: SMS',
+     'DELAY: 7 days later',
+     'BODY: Last quick nudge from me. If you want the Palm Desert AC Services demo tightened around one workflow first, I can do that and keep it simple.'
+   ].join('\n'));
+ }
+ return seq.join('\n---\n');
+}
+
+function buildCannedNewsletterText(topic, tone, industry, sections) {
+ var n = parseInt(sections, 10) || 5;
+ var titles = [
+   'The Real Bottleneck Is After the Estimate',
+   'Why Faster Proposal Turnaround Matters',
+   'Local HVAC Pages Help More Than Most Teams Think',
+   'Follow-Up Should Not Depend on Memory',
+   'What a Cleaner Customer Journey Looks Like',
+   'The Back Office Should Feel Lighter',
+   'Start With One Workflow and Build Out'
+ ];
+ var bodies = [
+   'Palm Desert HVAC teams are busy enough without rebuilding the same message every time someone asks for next steps. A tighter system makes the handoff from call to quote feel faster and more professional.',
+   'When a proposal arrives clearly and quickly, the company looks organized before anyone even compares price. That alone can improve trust with local homeowners.',
+   'City specific service pages help capture intent from places like Palm Desert, La Quinta, Rancho Mirage, and Indio. The key is making each page genuinely useful and locally relevant.',
+   'A short follow-up sequence keeps the company visible without asking the office to remember every lead by hand. That saves time and protects revenue.',
+   'Customers notice when scheduling, proposals, signatures, and invoicing all feel connected. The experience feels more premium even before the job begins.',
+   'Admin time is expensive. The more repeatable work that gets templated, the more time the team gets back for service, sales, and customer care.',
+   'The best rollout is not a giant rebuild. It is one strong workflow first, then expansion into the next bottleneck once the first system is working.'
+ ];
+ var blocks = [
+   'SUBJECT: Palm Desert HVAC growth without more admin',
+   'PREVIEW: Faster follow-up, better proposals, and cleaner HVAC operations.',
+   'ISSUE: Palm Desert HVAC Growth Brief',
+   'HOOK: Most HVAC companies do not have a lead problem. They have a speed problem. The calls come in, the estimates go out, and then too much money gets lost in the gap between interest and follow-up.'
+ ];
+ for (var i = 0; i < n && i < titles.length; i++) {
+   blocks.push('SECTION LABEL: SECTION ' + (i + 1));
+   blocks.push('SECTION TITLE: ' + titles[i]);
+   blocks.push('SECTION BODY: ' + bodies[i] + '\n\nFor HVAC operators in the desert, that usually means better response speed, more polished customer communication, and fewer deals slipping through the cracks during the busiest weeks.');
+ }
+ blocks.push('TIP: Start by fixing one repeated workflow this month. For most HVAC teams, estimate follow-up is the fastest win.');
+ blocks.push('CTA TEXT: Want to see how this would look for Palm Desert AC Services specifically? The demo can show the proposal, contract, invoice, and follow-up system in one flow.');
+ blocks.push('CTA LABEL: View HVAC Demo');
+ blocks.push('FOOTER: Dave Bacon\nBreakout AI Solutions\nHuman-First AI for Business');
+ return blocks.join('\n');
+}
+
+function buildCannedSocialText(topic, voice, audience, platforms) {
+ var dayMap = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+ var copy = {
+   linkedin: 'PLATFORM: LinkedIn\nDAY: Monday\nPOST: Most HVAC companies do not need more leads first. They need faster follow-up, cleaner proposals, and less admin drag once demand already exists. For Palm Desert AC Services, a tighter system means local SEO pages, better estimate follow-up, faster approvals, and less paperwork slowing the team down. The businesses that feel easiest to buy from usually win more often. What is the biggest workflow bottleneck your team would fix first?\nHASHTAGS: #HVAC #LocalSEO #ServiceBusiness #AI',
+   facebook: 'PLATFORM: Facebook\nDAY: Tuesday\nPOST: Palm Desert HVAC companies lose good jobs when estimates go out but follow-up gets delayed. A cleaner system fixes proposals, contracts, invoicing, and customer communication so the team can move faster without feeling buried in admin. Want to see what that looks like in one demo?\nHASHTAGS: #PalmDesert #HVAC #SmallBusiness',
+   instagram: 'PLATFORM: Instagram\nDAY: Wednesday\nPOST: Better HVAC growth is not always about more leads. Sometimes it is faster follow-up, cleaner proposals, and a smoother customer journey from quote to invoice. Palm Desert teams can win more just by tightening the gaps. ð¥âï¸\nHASHTAGS: #HVACLife #PalmDesertBusiness #ServiceGrowth',
+   'twitter/x': 'PLATFORM: Twitter/X\nDAY: Thursday\nPOST: HVAC growth tip. Faster estimate follow-up usually beats more complicated marketing. Clean local pages, quick proposals, and simple customer follow-up can move revenue faster in Palm Desert.\nHASHTAGS: #HVAC #SEO #Ops',
+   tiktok: 'PLATFORM: TikTok\nDAY: Friday\nPOST: Hook: HVAC companies are losing jobs after the estimate and not even realizing it.\nBreakdown: Show the gap between the quote, the follow-up, the contract, and the invoice. Then show how one cleaner system makes the whole customer experience feel faster and more premium.\nHASHTAGS: #HVACTok #BusinessSystems #PalmDesert'
+ };
+ var blocks = [];
+ for (var i = 0; i < platforms.length; i++) {
+   var key = platforms[i].toLowerCase();
+   if (copy[key]) blocks.push(copy[key]);
+ }
+ return blocks.join('\n---\n');
+}
 function getField(text, label) {
  var m = text.match(new RegExp('^' + label + ':\\s*([\\s\\S]*?)(?=\\n[A-Z][A-Z0-9 ]+:|$)', 'im'));
  return m ? m[1].trim() : '';
@@ -2873,36 +2973,14 @@ function runProposal() {
  showStatus('pr');
  document.getElementById('pr-approved').style.display = 'none';
 
- var inputDesc = prMode === 'email' ? 'email thread' : prMode === 'workorder' ? 'work order / job details' : 'discovery call notes';
-
- var sys = [
- 'You are a senior AI consultant at Breakout AI Solutions writing a client-facing proposal.',
- 'Engagement type: ' + type + '. Your proposals are warm, specific, and focused on ROI.',
- 'The input below is from a ' + inputDesc + '. Extract the key scope, pain points, and requirements, then build the full proposal.',
- 'Output exactly this structure:',
- 'PROPOSAL TITLE: [specific title referencing their business and goal]',
- 'PREPARED FOR: [client and business]',
- 'EXECUTIVE SUMMARY: [3-4 sentences: problem, solution, outcome]',
- 'THE CHALLENGE: [2-3 sentences in their language]',
- 'THE SOLUTION: [3-4 sentences on the approach]',
- 'DELIVERABLES: [4-6 items, one per line starting with -]',
- 'TIMELINE: [2-3 sentences on phases]',
- 'INVESTMENT: [price or range]',
- 'INVESTMENT NOTE: [1-2 sentences on terms]',
- 'NEXT STEP: [1-2 sentences, one clear action]',
- 'CTA: [button label 4 words max]',
- 'FOOTER: [closing, from Dave at Breakout AI Solutions, breakoutaisolutions.com]',
- 'No synergy, leverage, or cutting-edge. Use their specific language. No preamble.'
- ].join('\n');
-
- callAPI(sys, 'Client: ' + client + '\nBusiness: ' + biz + '\nIndustry: ' + industry + '\nBudget: ' + (budget||'not specified') + '\n' + inputDesc + ':\n' + notes, function(text, err) {
- hideStatus('pr');
- if (err) { showError('pr', err); return; }
- rawStore['pr'] = text;
- renderProposal(text, 'pr-body', client, biz);
- showOut('pr');
- demoComplete('proposal');
- });
+ setTimeout(function() {
+   hideStatus('pr');
+   var text = buildCannedProposalText(client, biz, industry, type, notes, budget);
+   rawStore['pr'] = text;
+   renderProposal(text, 'pr-body', client, biz);
+   showOut('pr');
+   demoComplete('proposal');
+ }, 900);
 }
 
 function renderProposal(text, bodyId, client, biz) {
@@ -2985,40 +3063,20 @@ function runFollowup() {
  var name = document.getElementById('fu-name').value.trim();
  var biz = document.getElementById('fu-biz').value.trim();
  var stage = document.getElementById('fu-stage').value;
- var type = document.getElementById('fu-type').value;
+ var seqType = document.getElementById('fu-type').value;
  var context = document.getElementById('fu-context').value.trim();
 
  if (!name) { document.getElementById('fu-name').focus(); return; }
  showStatus('fu');
 
- var typeNote = type === 'email + SMS mixed'
- ? 'Mix: Email, SMS, Email, SMS, Email. 5 touches total.'
- : type === 'SMS only' ? 'All SMS, each under 160 characters. 4 touches.'
- : 'All emails. 4 touches.';
-
- var sys = [
- 'You are an expert sales follow-up copywriter for Breakout AI Solutions.',
- 'Prospect stage: ' + stage + '. ' + typeNote,
- 'For each touch output:',
- 'TOUCH [n]',
- 'TYPE: [Email or SMS]',
- 'DELAY: [e.g. Day 1]',
- 'SUBJECT: [email subject - omit for SMS]',
- 'BODY: [message]',
- '---',
- 'SMS under 160 chars. Emails under 120 words. Each touch has a different angle.',
- 'No "just checking in". No "circling back". Sign from Dave at Breakout AI Solutions.',
- 'Output only the sequence. No preamble.'
- ].join('\n');
-
- callAPI(sys, 'Prospect: ' + name + '\nBusiness: ' + (biz||'not specified') + '\nContext: ' + (context||'No context.'), function(text, err) {
- hideStatus('fu');
- if (err) { showError('fu', err); return; }
- rawStore['fu'] = text;
- renderSequence(text, 'fu-body');
- showOut('fu');
- demoComplete('followup');
- });
+ setTimeout(function() {
+   hideStatus('fu');
+   var text = buildCannedFollowupText(name, biz, stage, seqType, context);
+   rawStore['fu'] = text;
+   renderSequence(text, 'fu-body');
+   showOut('fu');
+   demoComplete('followup');
+ }, 900);
 }
 
 function renderSequence(text, bodyId) {
@@ -3061,53 +3119,21 @@ function runNewsletter() {
  var nlSched = document.getElementById('nl-scheduled');
  if (nlSched) nlSched.style.display = 'none';
 
- // Build extras from checkboxes
- var extras = [];
- var tipEl = document.getElementById('nl-include-tip');
- var ctaEl = document.getElementById('nl-include-cta');
- var statsEl = document.getElementById('nl-include-stats');
- var storyEl = document.getElementById('nl-include-story');
- if (tipEl && tipEl.checked) extras.push('Include a quick win tip section');
- if (ctaEl && ctaEl.checked) extras.push('Include a strong CTA button at the end');
- if (statsEl && statsEl.checked) extras.push('Include at least one surprising statistic or data point');
- if (storyEl && storyEl.checked) extras.push('Open with a brief relatable story or scenario');
-
- var sys = [
- 'You are an expert newsletter writer for Breakout AI Solutions, a human-first AI consulting firm.',
- 'Voice: ' + tone + '. Audience: ' + industry + '.',
- extras.length > 0 ? 'Additional requirements: ' + extras.join('; ') + '.' : '',
- 'Output exactly this structure:',
- 'SUBJECT: [subject under 50 chars]',
- 'PREVIEW: [preview text under 90 chars]',
- 'ISSUE: [short descriptor]',
- 'HOOK: [2-3 sentence opening - stat, bold claim, or relatable scenario]',
- 'Then ' + sections + ' times:',
- 'SECTION LABEL: [all-caps label]',
- 'SECTION TITLE: [headline]',
- 'SECTION BODY: [2-3 paragraphs]',
- 'Then:',
- 'TIP: [1-2 sentence quick win]',
- 'CTA TEXT: [1-2 sentences]',
- 'CTA LABEL: [4 words max]',
- 'FOOTER: [sign-off, Breakout AI Solutions, Human-First AI for Business]',
- 'No "utilize" or "leverage". Output only the newsletter. No preamble.'
- ].filter(Boolean).join('\n');
-
- callAPI(sys, 'Write a newsletter about: ' + topic, function(text, err) {
- hideStatus('nl');
- if (err) { showError('nl', err); return; }
- rawStore['nl'] = text;
- nlShowingRaw = false;
- document.getElementById('nl-raw-btn').textContent = 'View Raw';
- document.getElementById('nl-body').style.display = 'block';
- document.getElementById('nl-raw').style.display = 'none';
- renderNewsletter(text, 'nl-body');
- var wc = text.split(/\s+/).filter(function(w){return w.length>0;}).length;
- document.getElementById('nl-meta').innerHTML = '<div class="meta-item">&#128221; <strong>' + wc + '</strong> words</div><div class="meta-item">&#9200; <strong>' + Math.ceil(wc/200) + ' min</strong> read</div>';
- document.getElementById('nl-raw').textContent = text;
- showOut('nl');
- demoComplete('newsletter');
- });
+ setTimeout(function() {
+   hideStatus('nl');
+   var text = buildCannedNewsletterText(topic, tone, industry, sections);
+   rawStore['nl'] = text;
+   nlShowingRaw = false;
+   document.getElementById('nl-raw-btn').textContent = 'View Raw';
+   document.getElementById('nl-body').style.display = 'block';
+   document.getElementById('nl-raw').style.display = 'none';
+   renderNewsletter(text, 'nl-body');
+   var wc = text.split(/\s+/).filter(function(w){return w.length>0;}).length;
+   document.getElementById('nl-meta').innerHTML = '<div class="meta-item">ð <strong>' + wc + '</strong> words</div><div class="meta-item">â° <strong>' + Math.ceil(wc/200) + ' min</strong> read</div>';
+   document.getElementById('nl-raw').textContent = text;
+   showOut('nl');
+   demoComplete('newsletter');
+ }, 900);
 }
 
 function parseNLSections(text) {
@@ -3204,30 +3230,14 @@ function runSocial() {
 
  showStatus('sm');
 
- var sys = [
- 'You are a social media strategist for Breakout AI Solutions.',
- 'Voice: ' + voice + '. Audience: ' + (audience||'small business owners') + '.',
- 'Write one post for each: ' + platforms.join(', ') + '. Spread across the week.',
- 'For each post:',
- 'PLATFORM: [name]',
- 'DAY: [day]',
- 'POST: [full copy]',
- 'HASHTAGS: [3-5 hashtags]',
- '---',
- 'LinkedIn: 150-200 words, end with question. Facebook: 80-120 words, one CTA.',
- 'Instagram: 60-80 words + emojis OK. Twitter/X: under 240 chars.',
- 'TikTok: script/hook format, scroll-stopper first line.',
- 'No "excited to share". First line stops the scroll. Output only posts. No preamble.'
- ].join('\n');
-
- callAPI(sys, 'Topic: ' + topic, function(text, err) {
- hideStatus('sm');
- if (err) { showError('sm', err); return; }
- rawStore['sm'] = text;
- renderPosts(text, 'sm-body');
- showOut('sm');
- demoComplete('social');
- });
+ setTimeout(function() {
+   hideStatus('sm');
+   var text = buildCannedSocialText(topic, voice, audience, platforms);
+   rawStore['sm'] = text;
+   renderPosts(text, 'sm-body');
+   showOut('sm');
+   demoComplete('social');
+ }, 900);
 }
 
 function renderPosts(text, bodyId) {
@@ -3591,22 +3601,22 @@ var prospect = {
 // Vertical config: one profile powers every station
 var verticalConfig = {
   homeservices: {
-    label: 'Home Services',
+    label: 'HVAC',
     city: 'Palm Desert, CA',
-    radius: '50',
-    primaryService: 'AC Repair',
-    ceRole: 'Owner, Home Services',
-    ceContext: 'High quote volume but follow-up is inconsistent. The team loses jobs to competitors who respond faster and stays buried in manual admin.',
-    prIndustry: 'Home Services',
-    prNotes: 'Runs a home services company. Biggest pain: manual follow-ups after estimates. Leads go cold while the team is on jobs. Wants one hub that handles lead flow, proposals, invoicing, and follow-up.',
+    radius: '35',
+    primaryService: 'HVAC Repair',
+    ceRole: 'Owner, HVAC Company',
+    ceContext: 'The company wins solid estimate volume, but office follow-up, proposal turnaround, and customer nurture are still manual. That slows response time and leaves revenue on the table during busy season.',
+    prIndustry: 'HVAC',
+    prNotes: 'Palm Desert AC Services is an HVAC company serving Palm Desert and nearby cities. Biggest pain: missed follow-ups after estimates, too much time spent building proposals by hand, and slow admin after a job is approved. Wants one polished system that handles local lead flow, proposals, contracts, invoicing, and follow-up.',
     nlAudience: 'trades and contractors',
-    smAudience: 'Homeowners and home service business owners',
+    smAudience: 'Homeowners in Palm Desert and nearby desert cities',
     lsType: 'HVAC companies',
     phIndustry: 'plumbing',
     phScript: 'discovery',
-    socialTopic: '5 ways AI saves time for home service teams',
-    newsletterTopic: 'How AI helps home service companies respond faster',
-    adsAudience: 'Homeowners age 30 to 65 in the local service area',
+    socialTopic: 'How Palm Desert HVAC companies can respond faster and close more jobs',
+    newsletterTopic: 'How smarter follow-up helps HVAC companies win more service work in Palm Desert',
+    adsAudience: 'Homeowners age 30 to 70 in Palm Desert, Rancho Mirage, La Quinta, and Indio',
     proposalType: 'AI Audit + Roadmap'
   },
   salesmarketing: {
@@ -3764,8 +3774,8 @@ function syncCriteriaToProspect() {
   var cVertical = document.getElementById('crit-vertical');
   var cTeam = document.getElementById('crit-teamsize');
 
-  prospect.contact = (cName && cName.value.trim()) || 'Marcus';
-  prospect.company = (cCompany && cCompany.value.trim()) || 'Rivera Home Services';
+  prospect.contact = (cName && cName.value.trim()) || 'Kelly';
+  prospect.company = (cCompany && cCompany.value.trim()) || 'Palm Desert AC Services';
   prospect.vertical = (cVertical && cVertical.value) || 'homeservices';
   prospect.teamSize = (cTeam && cTeam.value) || 'small';
 
@@ -4215,8 +4225,8 @@ document.addEventListener('DOMContentLoaded', function() {
  }
 
  var defaults = {
-   contact: 'Marcus',
-   company: 'Rivera Home Services',
+   contact: 'Kelly',
+   company: 'Palm Desert AC Services',
    vertical: 'homeservices',
    teamSize: 'small'
  };
