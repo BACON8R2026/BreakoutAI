@@ -466,6 +466,16 @@ max-height: 600px; overflow-y: auto;
 .touch-body { font-size: 13px; line-height: 1.75; color: #b8cde0; font-weight: 300; padding: 0 14px 14px; white-space: pre-wrap; }
 .touch-chars { font-size: 10px; color: var(–text-dimmer); padding: 0 14px 10px; }
 
+/* Proposal mode buttons */
+.pr-mode-btn { padding: 7px 13px; border-radius: 8px; border: 1px solid var(–glass-border); background: transparent; color: var(–text-dim); font-family: ‘DM Sans’, sans-serif; font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.18s; }
+.pr-mode-btn.active { border-color: var(–blue-border); background: var(–blue-glow); color: var(–blue-bright); }
+.pr-mode-btn:hover { border-color: var(–blue-border); color: var(–blue-bright); }
+
+/* Newsletter quick-select toggles */
+.nl-toggle { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(–text-dim); cursor: pointer; padding: 5px 11px; border-radius: 6px; border: 1px solid var(–glass-border); background: transparent; transition: all 0.18s; user-select: none; }
+.nl-toggle:hover { border-color: var(–blue-border); color: var(–text); }
+.nl-toggle input[type=“checkbox”] { accent-color: var(–blue); cursor: pointer; margin: 0; }
+
 /* Source chips */
 .source-chips { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 8px; }
 .source-chip { padding: 6px 13px; border-radius: 16px; border: 1px solid var(–glass-border); background: transparent; color: var(–text-dim); font-family: ‘DM Sans’, sans-serif; font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.18s; }
@@ -935,8 +945,7 @@ transition: opacity 0.4s ease;
     <div class="intro-field">
       <label>Industry / Vertical</label>
       <select class="intro-sel" id="intro-vertical">
-        <option value="">Select industry…</option>
-        <option value="trades">Trades &amp; Contractors</option>
+        <option value="trades" selected>Trades &amp; Contractors</option>
         <option value="realestate">Real Estate</option>
         <option value="medspa">Med Spa / Healthcare</option>
         <option value="restaurant">Restaurant &amp; Hospitality</option>
@@ -1217,8 +1226,8 @@ transition: opacity 0.4s ease;
   <div class="panel" id="panel-proposal">
     <div class="section-hero">
       <div class="section-eyebrow">Station 5 · Live Agent</div>
-      <div class="section-title">Discovery notes in.<br><span>Winning proposal out.</span></div>
-      <div class="section-sub">Paste your call notes and get a complete scoped proposal with deliverables, timeline, and investment — in seconds.</div>
+      <div class="section-title">Raw notes in.<br><span>Winning proposal out.</span></div>
+      <div class="section-sub">Paste call notes, an email thread, or a work order. AI reads it and builds a complete client-ready proposal — ready to approve and send.</div>
     </div>
 
 ```
@@ -1238,10 +1247,16 @@ transition: opacity 0.4s ease;
       </select>
     </div>
   </div>
-  <div class="field"><label>Discovery Call Notes</label>
-    <textarea class="inp" id="pr-notes" placeholder="e.g. Marcus runs a 12-person HVAC company. Biggest pain: missed follow-ups after estimates. Loses 30% of quoted jobs to competitors who respond faster. Budget: $2-5k. Wants something in 60 days…"></textarea>
+  <div style="display:flex;gap:8px;margin-bottom:10px">
+    <button class="pr-mode-btn active" id="pr-mode-notes" onclick="setPrMode('notes')">&#128221; Paste Notes</button>
+    <button class="pr-mode-btn" id="pr-mode-email" onclick="setPrMode('email')">&#128231; Paste Email</button>
+    <button class="pr-mode-btn" id="pr-mode-workorder" onclick="setPrMode('workorder')">&#128203; Work Order</button>
   </div>
-  <div class="field"><label>Investment Range (optional)</label>
+  <div class="field">
+    <label id="pr-input-label">Discovery Call Notes</label>
+    <textarea class="inp" id="pr-notes" rows="5" placeholder="e.g. Marcus runs a 12-person HVAC company. Biggest pain: missed follow-ups after estimates. Loses 30% of quoted jobs to competitors who respond faster. Budget: $2–5k. Wants something in 60 days…"></textarea>
+  </div>
+  <div class="field" style="margin-top:8px"><label>Investment Range (optional)</label>
     <input class="inp" id="pr-budget" type="text" placeholder="e.g. $3,500 – $5,000" />
   </div>
   <button class="btn-primary" id="pr-btn" onclick="runProposal()">
@@ -1250,18 +1265,24 @@ transition: opacity 0.4s ease;
   </button>
 </div>
 
-<div class="status-bar" id="pr-status"><div class="spinner"></div><span>Scoping and writing your proposal…</span></div>
+<div class="status-bar" id="pr-status"><div class="spinner"></div><span>Reading your input and building the proposal…</span></div>
 <div class="error-bar" id="pr-error"></div>
 
 <div class="out-card" id="pr-out">
   <div class="out-header">
     <div class="out-title">Proposal Ready</div>
     <div class="out-actions">
+      <button class="btn-sm" style="background:var(--blue-glow);border-color:var(--blue-border);color:var(--blue-bright)" onclick="approveProposal()">&#10003; Approve &amp; Send</button>
       <button class="btn-sm" id="pr-copy" onclick="copyRaw('pr')">Copy Text</button>
       <button class="btn-sm" onclick="resetOut('pr')">New Proposal</button>
     </div>
   </div>
   <div class="out-body" id="pr-body"></div>
+</div>
+
+<div class="out-card" id="pr-approved" style="display:none;margin-top:12px">
+  <div class="out-header"><div class="out-title">Proposal Sent</div></div>
+  <div class="out-body" id="pr-approved-body"></div>
 </div>
 ```
 
@@ -1273,9 +1294,9 @@ transition: opacity 0.4s ease;
 
   <div class="panel" id="panel-followup">
     <div class="section-hero">
-      <div class="section-eyebrow">Station 7 · Live Agent</div>
-      <div class="section-title">Never let a hot lead<br><span>go cold again.</span></div>
-      <div class="section-sub">Tell the agent where you are in the deal. Get a perfectly timed email + SMS sequence to close the gap.</div>
+      <div class="section-eyebrow">Station 8 · Live Agent</div>
+      <div class="section-title">Smart messages sent<br><span>at exactly the right time.</span></div>
+      <div class="section-sub">Pick a trigger — service completed, quote gone quiet, win-back, referral request and more. AI writes personalized SMS and email sequences that feel human.</div>
     </div>
 
 ```
@@ -1286,7 +1307,7 @@ transition: opacity 0.4s ease;
   </div>
   <div class="row2">
     <div class="field"><label>Deal Stage</label>
-      <select class="sel" id="fu-stage">
+      <select class="sel" id="fu-stage" onchange="updateFuContext()">
         <option value="sent a proposal, waiting to hear back">Proposal Sent — No Response</option>
         <option value="had a discovery call, needs follow-up">Post Discovery Call</option>
         <option value="gave a quote, prospect went quiet">Quote Sent — Gone Quiet</option>
@@ -1334,70 +1355,78 @@ transition: opacity 0.4s ease;
 
   <div class="panel" id="panel-newsletter">
     <div class="section-hero">
-      <div class="section-eyebrow">Station 10 · Live Agent</div>
-      <div class="section-title">Turn any topic into a<br><span>publish-ready newsletter.</span></div>
-      <div class="section-sub">Enter a topic, keyword, or URL. Get a complete newsletter — subject, hook, sections, CTA, and footer — instantly.</div>
+      <div class="section-eyebrow">Station 11 · Live Agent</div>
+      <div class="section-title">Pick a topic.<br><span>Approve. Schedule. Done.</span></div>
+      <div class="section-sub">Answer a few quick questions and AI writes your complete newsletter. Review it, approve, and it goes out on your schedule.</div>
     </div>
-
-```
-<div class="card">
-  <div class="field"><label>Topic or URL</label>
-    <input class="inp" id="nl-topic" type="text" placeholder="e.g. 'How AI is changing hiring' or paste a URL…" />
-  </div>
-  <div class="row2" style="margin-top:12px">
-    <div class="field"><label>Tone</label>
-      <select class="sel" id="nl-tone">
-        <option value="conversational">Conversational</option>
-        <option value="professional">Professional</option>
-        <option value="bold and punchy">Bold & Punchy</option>
-        <option value="educational">Educational</option>
-        <option value="inspiring">Inspiring</option>
-      </select>
+    <div class="card">
+      <div class="field"><label>Topic or Subject</label>
+        <input class="inp" id="nl-topic" type="text" placeholder="e.g. '3 ways AI saves businesses 10 hours a week'" />
+      </div>
+      <div class="row2" style="margin-top:12px">
+        <div class="field"><label>Tone</label>
+          <select class="sel" id="nl-tone">
+            <option value="conversational">Conversational</option>
+            <option value="professional">Professional</option>
+            <option value="bold and punchy">Bold &amp; Punchy</option>
+            <option value="educational">Educational</option>
+            <option value="inspiring">Inspiring</option>
+          </select>
+        </div>
+        <div class="field"><label>Audience</label>
+          <select class="sel" id="nl-industry">
+            <option value="general business owners">General Business</option>
+            <option value="real estate professionals">Real Estate</option>
+            <option value="healthcare providers">Healthcare</option>
+            <option value="e-commerce store owners">E-Commerce</option>
+            <option value="professional services firms">Professional Services</option>
+            <option value="restaurant and hospitality operators">Restaurants &amp; Hospitality</option>
+            <option value="trades and contractors">Trades &amp; Contractors</option>
+            <option value="startup founders and tech teams">Startups &amp; Tech</option>
+          </select>
+        </div>
+        <div class="field"><label>Length</label>
+          <select class="sel" id="nl-length">
+            <option value="3">Short — 3 sections</option>
+            <option value="5" selected>Standard — 5 sections</option>
+            <option value="7">Long — 7 sections</option>
+          </select>
+        </div>
+      </div>
+      <div style="margin-top:14px">
+        <div style="font-size:11px;font-weight:500;color:var(--text-dim);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.5px">Quick selections</div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px">
+          <label class="nl-toggle"><input type="checkbox" id="nl-include-tip" checked> Include quick win tip</label>
+          <label class="nl-toggle"><input type="checkbox" id="nl-include-cta" checked> Include CTA button</label>
+          <label class="nl-toggle"><input type="checkbox" id="nl-include-stats"> Include stats / data</label>
+          <label class="nl-toggle"><input type="checkbox" id="nl-include-story"> Open with a story</label>
+        </div>
+      </div>
+      <button class="btn-primary" id="nl-btn" onclick="runNewsletter()" style="margin-top:18px">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        Generate Newsletter
+      </button>
     </div>
-    <div class="field"><label>Industry / Audience</label>
-      <select class="sel" id="nl-industry">
-        <option value="general business owners">General Business</option>
-        <option value="real estate professionals">Real Estate</option>
-        <option value="healthcare providers">Healthcare</option>
-        <option value="e-commerce store owners">E-Commerce</option>
-        <option value="professional services firms">Professional Services</option>
-        <option value="restaurant and hospitality operators">Restaurants & Hospitality</option>
-        <option value="trades and contractors">Trades & Contractors</option>
-        <option value="startup founders and tech teams">Startups & Tech</option>
-      </select>
+    <div class="status-bar" id="nl-status"><div class="spinner"></div><span>Writing your newsletter…</span></div>
+    <div class="error-bar" id="nl-error"></div>
+    <div class="out-card" id="nl-out">
+      <div class="out-header">
+        <div class="out-title">Newsletter Ready</div>
+        <div class="out-actions">
+          <button class="btn-sm" id="nl-raw-btn" onclick="toggleNlRaw()">View Raw</button>
+          <button class="btn-sm" id="nl-copy" onclick="copyRaw('nl')">Copy</button>
+          <button class="btn-sm" style="background:var(--blue-glow);border-color:var(--blue-border);color:var(--blue-bright)" onclick="scheduleNewsletter()">&#128197; Schedule Send</button>
+          <button class="btn-sm" onclick="resetOut('nl')">New</button>
+        </div>
+      </div>
+      <div class="out-body" id="nl-body"></div>
+      <div id="nl-raw" style="display:none;padding:24px 32px;font-size:12px;line-height:1.9;color:var(--text-dim);white-space:pre-wrap;font-family:monospace;border-top:1px solid var(--glass-border);max-height:400px;overflow-y:auto"></div>
+      <div class="meta-strip" id="nl-meta"></div>
     </div>
-    <div class="field"><label>Length</label>
-      <select class="sel" id="nl-length">
-        <option value="3">Short — 3 sections</option>
-        <option value="5" selected>Standard — 5 sections</option>
-        <option value="7">Long — 7 sections</option>
-      </select>
+    <div class="out-card" id="nl-scheduled" style="display:none;margin-top:12px">
+      <div class="out-header"><div class="out-title">Newsletter Scheduled</div></div>
+      <div class="out-body" id="nl-scheduled-body"></div>
     </div>
-  </div>
-  <button class="btn-primary" id="nl-btn" onclick="runNewsletter()">
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-    Generate Newsletter
-  </button>
-</div>
-
-<div class="status-bar" id="nl-status"><div class="spinner"></div><span>Writing your newsletter…</span></div>
-<div class="error-bar" id="nl-error"></div>
-
-<div class="out-card" id="nl-out">
-  <div class="out-header">
-    <div class="out-title">Newsletter Ready</div>
-    <div class="out-actions">
-      <button class="btn-sm" id="nl-raw-btn" onclick="toggleNlRaw()">View Raw</button>
-      <button class="btn-sm" id="nl-copy" onclick="copyRaw('nl')">Copy Text</button>
-      <button class="btn-sm" onclick="resetOut('nl')">New Newsletter</button>
-    </div>
-  </div>
-  <div class="out-body" id="nl-body"></div>
-  <div id="nl-raw" style="display:none;padding:24px 32px;font-size:12px;line-height:1.9;color:var(--text-dim);white-space:pre-wrap;font-family:monospace;border-top:1px solid var(--glass-border);max-height:400px;overflow-y:auto"></div>
-  <div class="meta-strip" id="nl-meta"></div>
-</div>
-```
-
   </div>
 
   <!-- ══════════════════════════════════════════
@@ -1406,7 +1435,7 @@ transition: opacity 0.4s ease;
 
   <div class="panel" id="panel-social">
     <div class="section-hero">
-      <div class="section-eyebrow">Station 10 · Live Agent</div>
+      <div class="section-eyebrow">Station 9 · Live Agent</div>
       <div class="section-title">One topic.<br><span>A week of posts.</span></div>
       <div class="section-sub">Enter a topic and your audience. Get platform-optimized posts for every channel — ready to schedule.</div>
     </div>
@@ -1468,7 +1497,7 @@ transition: opacity 0.4s ease;
 
   <div class="panel" id="panel-seo">
     <div class="section-hero">
-      <div class="section-eyebrow">Station 11 · Live Agent</div>
+      <div class="section-eyebrow">Station 2 · Live Agent</div>
       <div class="section-title">Get found on Google.<br><span>Get cited by AI.</span></div>
       <div class="section-sub">Keywords, meta tags, FAQ schema, and optimized content — built for both search engines and AI answer tools.</div>
     </div>
@@ -1529,7 +1558,7 @@ transition: opacity 0.4s ease;
 
   <div class="panel" id="panel-find-leads">
     <div class="section-hero">
-      <div class="section-eyebrow">Station 1 · Live AI Agent</div>
+      <div class="section-eyebrow">Station 1 · Live Agent</div>
       <div class="section-title">Find your perfect leads<br><span>while you sleep.</span></div>
       <div class="section-sub">AI scans multiple sources simultaneously — Clay, Apollo, Google Maps, LinkedIn and more — returning verified, enriched, scored leads ready for outreach.</div>
     </div>
@@ -1630,7 +1659,7 @@ transition: opacity 0.4s ease;
 
   <div class="panel" id="panel-phone-agent">
     <div class="section-hero">
-      <div class="section-eyebrow">Station 2 · Integration Demo</div>
+      <div class="section-eyebrow">Station 4 · Live Agent</div>
       <div class="section-title">AI calls your lead<br><span>in 60 seconds.</span></div>
       <div class="section-sub">A new lead fills out your form. The AI dials instantly, qualifies them with your script, and logs everything to your CRM — no human required.</div>
     </div>
@@ -1692,7 +1721,7 @@ transition: opacity 0.4s ease;
 
   <div class="panel" id="panel-contracts">
     <div class="section-hero">
-      <div class="section-eyebrow">Station 6 · Integration Demo</div>
+      <div class="section-eyebrow">Station 6 · Live Agent</div>
       <div class="section-title">Proposal accepted.<br><span>Contract sent in seconds.</span></div>
       <div class="section-sub">The moment a client says yes, AI generates the contract, sends it for e-signature, and notifies your team — zero manual steps.</div>
     </div>
@@ -1728,7 +1757,7 @@ transition: opacity 0.4s ease;
 
   <div class="panel" id="panel-ads">
     <div class="section-hero">
-      <div class="section-eyebrow">Station 10 · Live AI Agent</div>
+      <div class="section-eyebrow">Station 10 · Live Agent</div>
       <div class="section-title">AI-managed ads that<br><span>actually convert.</span></div>
       <div class="section-sub">Connect your Facebook or Google Ads account. AI writes the copy, sets the targeting, monitors performance, and adjusts spend automatically.</div>
     </div>
@@ -1925,6 +1954,11 @@ function showOut(pfx) {
 function resetOut(pfx) {
   document.getElementById(pfx+'-out').style.display = 'none';
   rawStore[pfx] = '';
+  // Clear secondary result cards
+  var approved = document.getElementById(pfx+'-approved');
+  if (approved) approved.style.display = 'none';
+  var scheduled = document.getElementById(pfx+'-scheduled');
+  if (scheduled) scheduled.style.display = 'none';
 }
 
 function copyRaw(pfx) {
@@ -2033,6 +2067,64 @@ function renderEmails(text, bodyId) {
 }
 
 // ── PROPOSAL ──
+// ── PROPOSAL MODE ──
+var prMode = 'notes';
+var prModeConfig = {
+  notes:     { label: 'Discovery Call Notes',      placeholder: 'e.g. Marcus runs a 12-person HVAC company. Biggest pain: missed follow-ups after estimates. Loses 30% of quoted jobs to faster competitors. Budget: $2\u20135k. Wants something in 60 days\u2026' },
+  email:     { label: 'Email Thread',              placeholder: 'Paste the email thread here \u2014 AI will extract the key details, scope, and any pricing discussed\u2026' },
+  workorder: { label: 'Work Order / Job Details',  placeholder: 'Paste the work order, job description, or scope of work here \u2014 AI will format it into a professional proposal\u2026' }
+};
+
+function setPrMode(mode) {
+  prMode = mode;
+  var btns = document.querySelectorAll('.pr-mode-btn');
+  for (var i = 0; i < btns.length; i++) btns[i].classList.remove('active');
+  var active = document.getElementById('pr-mode-' + mode);
+  if (active) active.classList.add('active');
+  var cfg = prModeConfig[mode];
+  if (cfg) {
+    document.getElementById('pr-input-label').textContent = cfg.label;
+    document.getElementById('pr-notes').placeholder = cfg.placeholder;
+  }
+}
+
+function approveProposal() {
+  var client = document.getElementById('pr-client').value || 'the client';
+  var biz = document.getElementById('pr-biz').value || 'their business';
+  var now = new Date();
+  document.getElementById('pr-approved').style.display = 'block';
+  document.getElementById('pr-approved-body').innerHTML =
+    '<div style="display:flex;flex-direction:column;gap:8px">' +
+    '<div class="crm-field"><div class="crm-key">Sent To</div><div class="crm-val">' + esc(client) + ' \u00b7 ' + esc(biz) + '</div></div>' +
+    '<div class="crm-field"><div class="crm-key">Delivery</div><div class="crm-val">Email + PDF attachment via DocuSign</div></div>' +
+    '<div class="crm-field"><div class="crm-key">Follow-Up</div><div class="crm-val"><span class="crm-val tag qualified">&#10003; 3-day SMS reminder sequence armed</span></div></div>' +
+    '<div class="crm-field"><div class="crm-key">CRM</div><div class="crm-val">Proposal logged to HubSpot \u2014 stage: Proposal Sent</div></div>' +
+    '<div class="crm-field"><div class="crm-key">Sent At</div><div class="crm-val">' + now.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}) + ' \u00b7 ' + now.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) + '</div></div>' +
+    '</div>';
+  document.getElementById('pr-approved').scrollIntoView({ behavior:'smooth', block:'nearest' });
+  liveActivityFeed.unshift({ dot:'green', text:'Proposal sent \u2014 ' + client + ' at ' + biz, time:'just now' });
+}
+
+// ── NEWSLETTER SCHEDULE ──
+function scheduleNewsletter() {
+  if (!rawStore['nl']) return;
+  var days = ['Monday','Tuesday','Wednesday','Thursday','Friday'];
+  var times = ['7:00 AM','8:00 AM','9:00 AM','10:00 AM','12:00 PM'];
+  var day = days[Math.floor(Math.random()*days.length)];
+  var time = times[Math.floor(Math.random()*times.length)];
+  var subs = 400 + Math.floor(Math.random()*700);
+  document.getElementById('nl-scheduled').style.display = 'block';
+  document.getElementById('nl-scheduled-body').innerHTML =
+    '<div style="display:flex;flex-direction:column;gap:8px">' +
+    '<div class="crm-field"><div class="crm-key">Scheduled For</div><div class="crm-val">Next ' + day + ' at ' + time + '</div></div>' +
+    '<div class="crm-field"><div class="crm-key">Send To</div><div class="crm-val">' + subs.toLocaleString() + ' subscribers</div></div>' +
+    '<div class="crm-field"><div class="crm-key">Platform</div><div class="crm-val">Mailchimp \u00b7 Verified list</div></div>' +
+    '<div class="crm-field"><div class="crm-key">Status</div><div class="crm-val"><span class="crm-val tag qualified">&#10003; Scheduled \u2014 awaiting send window</span></div></div>' +
+    '</div>';
+  document.getElementById('nl-scheduled').scrollIntoView({ behavior:'smooth', block:'nearest' });
+  liveActivityFeed.unshift({ dot:'blue', text:'Newsletter scheduled \u2014 ' + subs.toLocaleString() + ' subscribers, ' + day + ' ' + time, time:'just now' });
+}
+
 function runProposal() {
   var client = document.getElementById('pr-client').value.trim();
   var biz = document.getElementById('pr-biz').value.trim();
@@ -2043,12 +2135,16 @@ function runProposal() {
 
   if (!client || !notes) { document.getElementById('pr-notes').focus(); return; }
   showStatus('pr');
+  document.getElementById('pr-approved').style.display = 'none';
+
+  var inputDesc = prMode === 'email' ? 'email thread' : prMode === 'workorder' ? 'work order / job details' : 'discovery call notes';
 
   var sys = [
     'You are a senior AI consultant at Breakout AI Solutions writing a client-facing proposal.',
     'Engagement type: ' + type + '. Your proposals are warm, specific, and focused on ROI.',
+    'The input below is from a ' + inputDesc + '. Extract the key scope, pain points, and requirements, then build the full proposal.',
     'Output exactly this structure:',
-    'PROPOSAL TITLE: [specific title]',
+    'PROPOSAL TITLE: [specific title referencing their business and goal]',
     'PREPARED FOR: [client and business]',
     'EXECUTIVE SUMMARY: [3-4 sentences: problem, solution, outcome]',
     'THE CHALLENGE: [2-3 sentences in their language]',
@@ -2063,7 +2159,7 @@ function runProposal() {
     'No synergy, leverage, or cutting-edge. Use their specific language. No preamble.'
   ].join('\n');
 
-  callAPI(sys, 'Client: ' + client + '\nBusiness: ' + biz + '\nIndustry: ' + industry + '\nBudget: ' + (budget||'not specified') + '\nNotes:\n' + notes, function(text, err) {
+  callAPI(sys, 'Client: ' + client + '\nBusiness: ' + biz + '\nIndustry: ' + industry + '\nBudget: ' + (budget||'not specified') + '\n' + inputDesc + ':\n' + notes, function(text, err) {
     hideStatus('pr');
     if (err) { showError('pr', err); return; }
     rawStore['pr'] = text;
@@ -2130,6 +2226,25 @@ function renderProposal(text, bodyId, client, biz) {
 }
 
 // ── FOLLOW-UP ──
+var fuContextHints = {
+  'sent a proposal, waiting to hear back':        'e.g. Sent the proposal 3 days ago, no response yet. They seemed interested on the call. Main concern was budget.',
+  'gave a quote, prospect went quiet':            'e.g. Quoted $2,400 for the job, they said they\'d think about it. Haven\'t heard back in a week.',
+  'just completed a service job':                 'e.g. Completed a full HVAC replacement yesterday. Customer seemed very happy. Mentioned their neighbor might need work too.',
+  'appointment reminder for upcoming service tomorrow': 'e.g. Service scheduled for tomorrow at 10am. Customer confirmed last week.',
+  'win-back: hasn\'t engaged in 90+ days':        'e.g. Was a regular customer, last job was 4 months ago. No contact since. Had a good relationship.',
+  'thank you after receiving a 5-star review':    'e.g. Customer left a 5-star Google review this morning mentioning the tech by name.',
+  'referral request after a successful completed job': 'e.g. Just finished a big job, customer was thrilled. Good time to ask for referrals.',
+  'just signed a contract, onboarding starts now': 'e.g. Contract signed this morning for the AI Audit + Roadmap package. Onboarding call is being scheduled.'
+};
+
+function updateFuContext() {
+  var stage = document.getElementById('fu-stage').value;
+  var hint = fuContextHints[stage];
+  if (hint) {
+    document.getElementById('fu-context').placeholder = hint;
+  }
+}
+
 function runFollowup() {
   var name = document.getElementById('fu-name').value.trim();
   var biz = document.getElementById('fu-biz').value.trim();
@@ -2207,15 +2322,29 @@ function runNewsletter() {
 
   if (!topic) { document.getElementById('nl-topic').focus(); return; }
   showStatus('nl');
+  var nlSched = document.getElementById('nl-scheduled');
+  if (nlSched) nlSched.style.display = 'none';
+
+  // Build extras from checkboxes
+  var extras = [];
+  var tipEl = document.getElementById('nl-include-tip');
+  var ctaEl = document.getElementById('nl-include-cta');
+  var statsEl = document.getElementById('nl-include-stats');
+  var storyEl = document.getElementById('nl-include-story');
+  if (tipEl && tipEl.checked) extras.push('Include a quick win tip section');
+  if (ctaEl && ctaEl.checked) extras.push('Include a strong CTA button at the end');
+  if (statsEl && statsEl.checked) extras.push('Include at least one surprising statistic or data point');
+  if (storyEl && storyEl.checked) extras.push('Open with a brief relatable story or scenario');
 
   var sys = [
     'You are an expert newsletter writer for Breakout AI Solutions, a human-first AI consulting firm.',
     'Voice: ' + tone + '. Audience: ' + industry + '.',
+    extras.length > 0 ? 'Additional requirements: ' + extras.join('; ') + '.' : '',
     'Output exactly this structure:',
     'SUBJECT: [subject under 50 chars]',
     'PREVIEW: [preview text under 90 chars]',
     'ISSUE: [short descriptor]',
-    'HOOK: [2-3 sentence opening — stat, bold claim, or relatable pain]',
+    'HOOK: [2-3 sentence opening — stat, bold claim, or relatable scenario]',
     'Then ' + sections + ' times:',
     'SECTION LABEL: [all-caps label]',
     'SECTION TITLE: [headline]',
@@ -2226,7 +2355,7 @@ function runNewsletter() {
     'CTA LABEL: [4 words max]',
     'FOOTER: [sign-off, Breakout AI Solutions, Human-First AI for Business]',
     'No "utilize" or "leverage". Output only the newsletter. No preamble.'
-  ].join('\n');
+  ].filter(Boolean).join('\n');
 
   callAPI(sys, 'Write a newsletter about: ' + topic, function(text, err) {
     hideStatus('nl');
@@ -2858,12 +2987,11 @@ function countUp(elId, target, prefix, suffix, duration) {
 }
 
 function initROI() {
-  // Start everything at zero — stats build as demos run
   document.getElementById('statHours').textContent = '0';
   document.getElementById('statRevenue').textContent = '$0';
   document.getElementById('statLeads').textContent = '0';
   document.getElementById('statROI').textContent = '0x';
-  document.getElementById('roiResult').innerHTML = '<span style="color:var(--text-dimmer)">Run the demos above — each one adds real numbers here.</span>';
+  document.getElementById('roiResult').innerHTML = '<span style="color:var(--text-dimmer)">Run any demo above — each station adds real numbers here as you go.</span>';
 }
 
 // Trigger recalc when returning home
