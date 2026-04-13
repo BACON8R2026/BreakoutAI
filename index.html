@@ -480,8 +480,16 @@ color: var(--text-dimmer);
 .post-hd { display: flex; align-items: center; justify-content: space-between; padding: 9px 14px; border-bottom: 1px solid var(--glass-border); }
 .post-platform { font-family: 'Syne', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--blue-bright); }
 .post-day { font-size: 10px; color: var(--text-dimmer); }
+.post-image-wrap { padding: 12px 12px 0; }
+.post-image { width: 100%; aspect-ratio: 1 / 1; object-fit: cover; border-radius: 12px; border: 1px solid var(--glass-border); display: block; background: var(--navy2); }
 .post-body { padding: 12px 14px; font-size: 13px; line-height: 1.7; color: #b8cde0; font-weight: 300; flex: 1; white-space: pre-wrap; }
 .post-tags { padding: 0 14px 12px; font-size: 11px; color: var(--blue-bright); opacity: 0.65; }
+.post-actions { display: flex; gap: 8px; padding: 0 12px 12px; flex-wrap: wrap; }
+.post-action-btn { flex: 1; min-width: 110px; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--glass-border); background: transparent; color: var(--text-dim); font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.18s; }
+.post-action-btn:hover { border-color: var(--blue-border); background: var(--blue-glow); color: var(--text); }
+.post-action-btn.approve { border-color: rgba(52,211,153,0.28); color: var(--success); background: rgba(52,211,153,0.08); }
+.post-action-btn.edit { border-color: var(--blue-border); color: var(--blue-bright); background: var(--blue-glow); }
+.post-action-btn.reject { border-color: rgba(239,68,68,0.22); color: #fca5a5; background: rgba(239,68,68,0.07); }
 
 /* SEO */
 .kw-grid { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 4px; }
@@ -2738,9 +2746,22 @@ function buildCannedProposalText(client, biz, industry, type, notes, budget) {
  return [
    'PROPOSAL TITLE: Palm Desert HVAC Automation Blueprint for ' + biz,
    'PREPARED FOR: ' + client + ', ' + biz,
-   'EXECUTIVE SUMMARY: ' + biz + ' is already generating local HVAC demand, but too much of the workflow still depends on manual follow-up, manual proposal writing, and disconnected admin. This package gives the team a cleaner command center for lead intake, faster proposal turnaround, contract delivery, invoicing, and customer follow-up. The result is faster response time, better close rates, and less back office drag during peak service periods.',
-   'THE CHALLENGE: The company is balancing incoming estimates, active jobs, and local customer communication across Palm Desert and nearby cities. When follow-up and paperwork stay manual, leads cool off, proposal turnaround slows down, and the team loses time that should stay focused on booked work.',
-   'THE SOLUTION: Breakout AI Solutions will map the current Palm Desert HVAC workflow, tighten the handoff from inquiry to estimate, and build a polished customer-facing system that speeds up quoting, proposal generation, contract delivery, invoicing, and post-quote follow-up. The system is designed for HVAC operators who need a beautiful front end and less admin behind the scenes.',
+   'EXECUTIVE SUMMARY:',
+   '- Built for a Palm Desert HVAC operator that needs faster response time and cleaner sales follow-up',
+   '- Replaces manual proposal drafting, scattered paperwork, and inconsistent customer communication',
+   '- Gives the team a more polished front end while reducing admin drag behind the scenes',
+   '- Designed to improve close rate, turnaround speed, and overall client experience',
+   'THE CHALLENGE:',
+   '- Incoming estimates, booked jobs, and customer messages are competing for the same team attention',
+   '- Manual follow-up causes quoted work to cool off before the customer commits',
+   '- Proposal and contract turnaround can slow down when the office is busy or techs are in the field',
+   '- Leadership needs a clearer view of what is pending, what is approved, and what needs action',
+   'THE SOLUTION:',
+   '- Map the current Palm Desert HVAC workflow from lead to signed job',
+   '- Create a branded proposal system that is fast, clean, and easy for the customer to review',
+   '- Trigger contracts and invoicing from the same flow so nothing gets missed',
+   '- Add email and SMS follow-up for open estimates and quiet opportunities',
+   '- Give the team a lightweight dashboard view for proposal status, pipeline movement, and next steps',
    'DELIVERABLES:',
    '- Local HVAC workflow audit for Palm Desert AC Services',
    '- Proposal template system with Palm Desert HVAC branding and scope structure',
@@ -2748,10 +2769,16 @@ function buildCannedProposalText(client, biz, industry, type, notes, budget) {
    '- Invoice trigger flow tied to signed proposals or completed work',
    '- Follow-up email and SMS sequence for estimates that have gone quiet',
    '- Dashboard view for proposals, jobs, follow-up status, and pipeline health',
-   'TIMELINE: Week 1 focuses on discovery, workflow mapping, and copy direction. Week 2 covers templates, automations, and client-facing assets. Week 3 is refinement, QA, and handoff with a working Palm Desert HVAC demo environment.',
+   'TIMELINE:',
+   '- Week 1: discovery, workflow mapping, and copy direction',
+   '- Week 2: templates, automations, and client-facing assets',
+   '- Week 3: refinement, QA, and handoff with a working Palm Desert HVAC demo environment',
    'INVESTMENT: ' + price,
    'INVESTMENT NOTE: 50% to begin, with the balance due at final delivery. Ongoing optimization and support can roll into a monthly retainer after launch.',
-   'NEXT STEP: Approve the scope so we can finalize the build order and begin with the Palm Desert HVAC workflow audit. Once approved, the first assets can be turned around immediately.',
+   'NEXT STEP:',
+   '- Approve the scope so we can lock the build order',
+   '- Start with the Palm Desert HVAC workflow audit and branded proposal system',
+   '- Turn around the first client-facing assets immediately after kickoff',
    'CTA: Approve and Launch',
    'FOOTER: Prepared by Dave at Breakout AI Solutions\nHuman-First AI for Business\nbreakoutaisolutions.com'
  ].join('\n');
@@ -3067,6 +3094,22 @@ function runProposal() {
  }, 900);
 }
 
+function renderPropSectionContent(value) {
+ if (!value) return '';
+ var lines = value.split('\n').map(function(line){ return line.trim(); }).filter(function(line){ return line; });
+ var bulletLines = lines.filter(function(line){ return /^[-â¢*]\s+/.test(line); });
+ if (bulletLines.length >= Math.max(1, lines.length - 1)) {
+   var html = '<div class="deliv-list">';
+   for (var i = 0; i < bulletLines.length; i++) {
+     var item = bulletLines[i].replace(/^[-â¢*]\s*/, '').trim();
+     if (item) html += '<div class="deliv-item">' + esc(item) + '</div>';
+   }
+   html += '</div>';
+   return html;
+ }
+ return '<div class="prop-sec-body">' + esc(value).replace(/\n/g,'<br>') + '</div>';
+}
+
 function renderProposal(text, bodyId, client, biz) {
  var title = getField(text, 'PROPOSAL TITLE');
  var prepFor = getField(text, 'PREPARED FOR');
@@ -3091,9 +3134,9 @@ function renderProposal(text, bodyId, client, biz) {
  html += '<div class="prop-title">' + esc(title || 'AI Engagement Proposal') + '</div>';
  html += '<div class="prop-for">Prepared for ' + esc(prepFor || (client + (biz ? ', ' + biz : ''))) + '</div></div>';
 
- if (summary) { html += '<div class="prop-sec"><div class="prop-sec-lbl">Executive Summary</div><div class="prop-sec-body">' + esc(summary) + '</div></div><div class="divider"></div>'; }
- if (challenge) { html += '<div class="prop-sec"><div class="prop-sec-lbl">The Challenge</div><div class="prop-sec-body">' + esc(challenge) + '</div></div>'; }
- if (solution) { html += '<div class="prop-sec"><div class="prop-sec-lbl">The Solution</div><div class="prop-sec-body">' + esc(solution) + '</div></div><div class="divider"></div>'; }
+ if (summary) { html += '<div class="prop-sec"><div class="prop-sec-lbl">Executive Summary</div>' + renderPropSectionContent(summary) + '</div><div class="divider"></div>'; }
+ if (challenge) { html += '<div class="prop-sec"><div class="prop-sec-lbl">The Challenge</div>' + renderPropSectionContent(challenge) + '</div>'; }
+ if (solution) { html += '<div class="prop-sec"><div class="prop-sec-lbl">The Solution</div>' + renderPropSectionContent(solution) + '</div><div class="divider"></div>'; }
 
  if (deliverables) {
  html += '<div class="prop-sec"><div class="prop-sec-lbl">What You Get</div><div class="deliv-list">';
@@ -3105,7 +3148,7 @@ function renderProposal(text, bodyId, client, biz) {
  html += '</div></div>';
  }
 
- if (timeline) { html += '<div class="divider"></div><div class="prop-sec"><div class="prop-sec-lbl">Timeline</div><div class="prop-sec-body">' + esc(timeline) + '</div></div>'; }
+ if (timeline) { html += '<div class="divider"></div><div class="prop-sec"><div class="prop-sec-lbl">Timeline</div>' + renderPropSectionContent(timeline) + '</div>'; }
 
  if (investment) {
  html += '<div class="divider"></div><div class="price-box"><div class="price-lbl">Investment</div>';
@@ -3116,8 +3159,8 @@ function renderProposal(text, bodyId, client, biz) {
 
  if (nextStep || cta) {
  html += '<div class="prop-sec">';
- if (nextStep) html += '<div class="prop-sec-body" style="margin-bottom:12px">' + esc(nextStep) + '</div>';
- if (cta) html += '<span class="prop-cta">' + esc(cta) + '</span>';
+ if (nextStep) html += renderPropSectionContent(nextStep);
+ if (cta) html += '<div style="margin-top:12px"><span class="prop-cta">' + esc(cta) + '</span></div>';
  html += '</div>';
  }
 
@@ -3354,14 +3397,95 @@ function renderPosts(text, bodyId) {
  var post = b.match(/POST:\s*([\s\S]*?)(?=\nHASHTAGS:|$)/i);
  var tags = getLine(b, 'HASHTAGS');
  if (!platform || !post) continue;
- html += '<div class="post-card"><div class="post-hd"><span class="post-platform">' + esc(platform) + '</span><span class="post-day">' + esc(day) + '</span></div>';
+ var imageSrc = buildSocialPreviewImage(platform, day, post[1].trim(), tags);
+ html += '<div class="post-card">';
+ html += '<div class="post-hd"><span class="post-platform">' + esc(platform) + '</span><span class="post-day">' + esc(day) + '</span></div>';
+ html += '<div class="post-image-wrap"><img class="post-image" src="' + imageSrc + '" alt="' + esc(platform + ' post preview') + '"></div>';
  html += '<div class="post-body">' + esc(post[1].trim()) + '</div>';
  if (tags) html += '<div class="post-tags">' + esc(tags) + '</div>';
+ html += '<div class="post-actions">';
+ html += '<button type="button" class="post-action-btn approve" onclick="socialPostAction(\'approve\', \''
+      + escJs(platform) + '\', \''
+      + escJs(day) + '\')">â Push to Schedule</button>';
+ html += '<button type="button" class="post-action-btn edit" onclick="socialPostAction(\'edit\', \''
+      + escJs(platform) + '\', \''
+      + escJs(day) + '\')">âï¸ Edit Post</button>';
+ html += '<button type="button" class="post-action-btn reject" onclick="socialPostAction(\'reject\', \''
+      + escJs(platform) + '\', \''
+      + escJs(day) + '\')">ð« Decline</button>';
+ html += '</div>';
  html += '</div>';
  count++;
  }
  html += '</div>';
  document.getElementById(bodyId).innerHTML = count > 0 ? html : '<p style="color:var(--text-dim);padding:12px">Parsing issue - use Copy All.</p>';
+}
+
+function buildSocialPreviewImage(platform, day, postText, tags) {
+ var company = (window.prospect && prospect.company) ? prospect.company : 'Palm Desert AC Services';
+ var headline = company;
+ var subhead = platform + ' â¢ ' + day;
+ var hook = (postText || '').split('\n')[0].slice(0, 72);
+ var footer = (tags || '#HVAC #PalmDesert').slice(0, 52);
+ var svg =
+   '<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1080" viewBox="0 0 1080 1080">' +
+   '<defs>' +
+   '<linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">' +
+   '<stop offset="0%" stop-color="#0f172a"/>' +
+   '<stop offset="100%" stop-color="#1d4ed8"/>' +
+   '</linearGradient>' +
+   '</defs>' +
+   '<rect width="1080" height="1080" fill="url(#bg)"/>' +
+   '<rect x="56" y="56" width="968" height="968" rx="36" fill="rgba(8,12,24,0.28)" stroke="rgba(255,255,255,0.18)"/>' +
+   '<circle cx="860" cy="220" r="120" fill="rgba(255,255,255,0.08)"/>' +
+   '<text x="96" y="160" font-family="Arial, Helvetica, sans-serif" font-size="42" fill="#93c5fd">' + svgEscape(subhead.toUpperCase()) + '</text>' +
+   '<text x="96" y="290" font-family="Arial, Helvetica, sans-serif" font-weight="700" font-size="78" fill="#ffffff">' + svgEscape(company) + '</text>' +
+   '<text x="96" y="390" font-family="Arial, Helvetica, sans-serif" font-size="52" fill="#dbeafe">FAST HVAC HELP IN PALM DESERT</text>' +
+   '<foreignObject x="96" y="460" width="840" height="260">' +
+   '<div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Arial, Helvetica, sans-serif;color:#e2e8f0;font-size:44px;line-height:1.25;font-weight:600;">' + htmlEscape(hook) + '</div>' +
+   '</foreignObject>' +
+   '<rect x="96" y="860" width="390" height="84" rx="18" fill="#ffffff"/>' +
+   '<text x="130" y="914" font-family="Arial, Helvetica, sans-serif" font-size="36" font-weight="700" fill="#1d4ed8">BOOK SERVICE TODAY</text>' +
+   '<text x="96" y="996" font-family="Arial, Helvetica, sans-serif" font-size="28" fill="#93c5fd">' + svgEscape(footer) + '</text>' +
+   '</svg>';
+ return 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svg);
+}
+
+function svgEscape(str) {
+ return String(str || '')
+   .replace(/&/g, '&amp;')
+   .replace(/</g, '&lt;')
+   .replace(/>/g, '&gt;')
+   .replace(/"/g, '&quot;')
+   .replace(/'/g, '&#39;');
+}
+
+function htmlEscape(str) {
+ return String(str || '')
+   .replace(/&/g, '&amp;')
+   .replace(/</g, '&lt;')
+   .replace(/>/g, '&gt;');
+}
+
+function escJs(str) {
+ return String(str || '')
+   .replace(/\\/g, '\\\\')
+   .replace(/'/g, "\\'")
+   .replace(/\n/g, ' ');
+}
+
+function socialPostAction(action, platform, day) {
+ var messages = {
+   approve: 'Scheduled demo post for ' + platform + ' on ' + day + '.',
+   edit: 'Opened ' + platform + ' post editor for ' + day + '.',
+   reject: 'Declined ' + platform + ' post for ' + day + '.'
+ };
+ var label = messages[action] || 'Social action captured.';
+ if (typeof showToast === 'function') {
+   showToast(label);
+ } else {
+   alert(label);
+ }
 }
 
 // ââ SEO ââ
