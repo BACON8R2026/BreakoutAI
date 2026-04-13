@@ -3006,6 +3006,7 @@ function runColdEmail() {
 
    rawStore['ce'] = raw.join('\n\n');
    document.getElementById('ce-body').innerHTML = html;
+   prependSavingsSummary('ce-body', 'cold-email', 'Estimated savings from smart CRM follow-up');
    showOut('ce');
    demoComplete('cold-email');
  }, 900);
@@ -3096,6 +3097,7 @@ function runProposal() {
      var text = buildCannedProposalText(client, biz, industry, type, notes, budget);
      rawStore['pr'] = text;
      renderProposal(text, 'pr-body', client, biz);
+     prependSavingsSummary('pr-body', 'proposal', 'Estimated savings from AI proposal creation');
      hideStatus('pr');
      showOut('pr');
      demoComplete('proposal');
@@ -3217,6 +3219,7 @@ function runFollowup() {
    var text = buildCannedFollowupText(name, biz, stage, seqType, context);
    rawStore['fu'] = text;
    renderSequence(text, 'fu-body');
+   prependSavingsSummary('fu-body', 'followup', 'Estimated savings from automated follow-up');
    showOut('fu');
    demoComplete('followup');
  }, 900);
@@ -3271,6 +3274,7 @@ function runNewsletter() {
    document.getElementById('nl-body').style.display = 'block';
    document.getElementById('nl-raw').style.display = 'none';
    renderNewsletter(text, 'nl-body');
+   prependSavingsSummary('nl-body', 'newsletter', 'Estimated savings from newsletter creation');
    var wc = text.split(/\s+/).filter(function(w){return w.length>0;}).length;
    document.getElementById('nl-meta').innerHTML = '<div class="meta-item">ð <strong>' + wc + '</strong> words</div><div class="meta-item">â° <strong>' + Math.ceil(wc/200) + ' min</strong> read</div>';
    document.getElementById('nl-raw').textContent = text;
@@ -3387,6 +3391,7 @@ function runSocial() {
      var text = buildCannedSocialText(topic, voice, audience, platforms);
      rawStore['sm'] = text;
      renderPosts(text, 'sm-body');
+     prependSavingsSummary('sm-body', 'social', 'Estimated savings from social media production');
      hideStatus('sm');
      showOut('sm');
      demoComplete('social');
@@ -3531,6 +3536,7 @@ function runSEO() {
 
       rawStore['seo'] = buildSeoRawText(data);
       renderSEO(data, 'seo-body');
+      prependSavingsSummary('seo-body', 'seo', 'Estimated savings from SEO and AEO research');
       hideStatus('seo');
       showOut('seo');
       demoComplete('seo');
@@ -4567,6 +4573,92 @@ var stationHoursInputs = {
  'dashboard-station': 'db-hours-input'
 };
 
+var stationRateInputs = {
+ 'find-leads': 'ls-hourly-rate',
+ 'seo': 'seo-hourly-rate',
+ 'cold-email': 'crm-hourly-rate',
+ 'phone-agent': 'ph-hourly-rate',
+ 'proposal': 'pr-hourly-rate',
+ 'contracts': 'ct-hourly-rate',
+ 'invoicing': 'iv-hourly-rate',
+ 'followup': 'fu-hourly-rate',
+ 'social': 'sm-hourly-rate',
+ 'ads': 'ads-hourly-rate',
+ 'newsletter': 'nl-hourly-rate',
+ 'dashboard-station': 'db-hourly-rate'
+};
+
+function getConfiguredRateForStation(stationId) {
+ var inputId = stationRateInputs[stationId];
+ var el = inputId ? document.getElementById(inputId) : null;
+ var parsed = el ? parseFloat(el.value || '0') : NaN;
+ return (!isNaN(parsed) && parsed > 0) ? parsed : 0;
+}
+
+function getConfiguredSavingsForStation(stationId) {
+ var hours = getConfiguredHoursForStation(stationId);
+ var rate = getConfiguredRateForStation(stationId);
+ return {
+   hours: hours,
+   rate: rate,
+   weekly: Math.round(hours * rate),
+   annual: Math.round(hours * rate * 52)
+ };
+}
+
+function buildSavingsSummaryCard(stationId, title) {
+ var s = getConfiguredSavingsForStation(stationId);
+ return '' +
+ '<div class="content-block" style="margin-bottom:16px;border-color:rgba(52,211,153,0.22);background:rgba(52,211,153,0.04)">' +
+ '<div class="seo-lbl" style="color:var(--success)">Task Cost Snapshot</div>' +
+ '<h3 style="margin-bottom:8px">' + esc(title || 'Estimated savings from this workflow') + '</h3>' +
+ '<p><strong style="color:var(--text)">Hours saved per week:</strong> ' + (Math.round(s.hours * 10) / 10) + '</p>' +
+ '<p><strong style="color:var(--text)">Labor savings per week:</strong> $' + s.weekly.toLocaleString() + '</p>' +
+ '<p><strong style="color:var(--text)">Annualized labor savings:</strong> $' + s.annual.toLocaleString() + '</p>' +
+ '</div>';
+}
+
+function prependSavingsSummary(bodyId, stationId, title) {
+ var bodyEl = document.getElementById(bodyId);
+ if (!bodyEl) return;
+ bodyEl.innerHTML = buildSavingsSummaryCard(stationId, title) + bodyEl.innerHTML;
+}
+
+function recomputeOverviewTotals() {
+ demoStats.hoursSaved = 0;
+ demoStats.revenue = 0;
+ demoStats.leads = 0;
+ demoStats.demosRun = 0;
+ for (var stationId in completedDemos) {
+   if (!completedDemos[stationId]) continue;
+   var contrib = demoContributions[stationId];
+   if (!contrib) continue;
+   demoStats.hoursSaved += getConfiguredHoursForStation(stationId);
+   demoStats.revenue += contrib.revenue;
+   demoStats.leads += contrib.leads;
+   demoStats.demosRun++;
+ }
+ var roi = demoStats.demosRun > 0 ? Math.round((demoStats.revenue / (demoStats.demosRun * 1500)) * 10) / 10 : 0;
+ if (roi < 1) roi = demoStats.demosRun > 0 ? 1.5 : 0;
+ countUp('statHours', demoStats.hoursSaved, '', '', 900);
+ countUp('statRevenue', demoStats.revenue, '$', '', 1100);
+ countUp('statLeads', demoStats.leads, '', '', 800);
+ countUp('statROI', roi, '', 'x', 1000);
+ var resultEl = document.getElementById('roiResult');
+ if (resultEl) {
+   if (demoStats.demosRun === 0) {
+     resultEl.innerHTML = '<span style="color:var(--text-dimmer)">Run any demo above - each station adds real numbers here as you go.</span>';
+   } else {
+     resultEl.innerHTML =
+      'Across <strong>' + demoStats.demosRun + ' station' + (demoStats.demosRun > 1 ? 's' : '') + '</strong> demonstrated so far, this system saves ' +
+      '<span class="roi-highlight">' + (Math.round(demoStats.hoursSaved * 10) / 10) + ' hours per week</span>, ' +
+      'generates <span class="roi-highlight">$' + demoStats.revenue.toLocaleString() + ' in monthly revenue potential</span>, ' +
+      'and surfaces <span class="roi-highlight">' + demoStats.leads + ' new leads</span> - all automatically.';
+   }
+ }
+ if (dashInited) refreshDash();
+}
+
 function getConfiguredHoursForStation(stationId) {
  var inputId = stationHoursInputs[stationId];
  var el = inputId ? document.getElementById(inputId) : null;
@@ -4580,18 +4672,14 @@ var completedDemos = {};
 var liveActivityFeed = [];
 
 function demoComplete(stationId) {
- if (completedDemos[stationId]) return; // only count each once
+ if (completedDemos[stationId]) {
+   recomputeOverviewTotals();
+   return;
+ }
  completedDemos[stationId] = true;
 
  var contrib = demoContributions[stationId];
  if (!contrib) return;
-
- var effectiveHours = getConfiguredHoursForStation(stationId);
-
- demoStats.hoursSaved += effectiveHours;
- demoStats.revenue += contrib.revenue;
- demoStats.leads += contrib.leads;
- demoStats.demosRun++;
 
  // Mark nav tab as completed
  var tabs = document.querySelectorAll('.nav-tab');
@@ -4627,31 +4715,7 @@ function demoComplete(stationId) {
  liveActivityFeed.unshift({ text: contrib.activity, time: 'just now', dot: 'green' });
  if (liveActivityFeed.length > 8) liveActivityFeed.pop();
 
- // Animate ROI stats bar up
- var roi = demoStats.demosRun > 0 ? Math.round((demoStats.revenue / (demoStats.demosRun * 1500)) * 10) / 10 : 0;
- if (roi < 1) roi = demoStats.demosRun > 0 ? 1.5 : 0;
-
- countUp('statHours', demoStats.hoursSaved, '', '', 900);
- countUp('statRevenue', demoStats.revenue, '$', '', 1100);
- countUp('statLeads', demoStats.leads, '', '', 800);
- countUp('statROI', roi, '', 'x', 1000);
-
- // Update ROI result text
- var resultEl = document.getElementById('roiResult');
- if (resultEl) {
- if (demoStats.demosRun === 0) {
- resultEl.innerHTML = '<span style="color:var(--text-dimmer)">Run the demos above - each one adds real numbers here.</span>';
- } else {
- resultEl.innerHTML =
- 'Across <strong>' + demoStats.demosRun + ' station' + (demoStats.demosRun > 1 ? 's' : '') + '</strong> demonstrated so far, this system saves ' +
- '<span class="roi-highlight">' + (Math.round(demoStats.hoursSaved * 10) / 10) + ' hours per week</span>, ' +
- 'generates <span class="roi-highlight">$' + demoStats.revenue.toLocaleString() + ' in monthly revenue potential</span>, ' +
- 'and surfaces <span class="roi-highlight">' + demoStats.leads + ' new leads</span> - all automatically.';
- }
- }
-
- // Refresh dashboard if it's been opened
- if (dashInited) refreshDash();
+ recomputeOverviewTotals();
 }
 
 // Override countUp to start FROM current value not zero
@@ -5000,7 +5064,8 @@ function showCRMLog(name, biz) {
  '<div class="crm-field"><div class="crm-key">Next Action</div><div class="crm-val">Dave to call within 1 hour - send audit proposal</div></div>' +
  '<div class="crm-field"><div class="crm-key">Logged</div><div class="crm-val">' + dateStr + ' at ' + timeStr + '</div></div>';
  document.getElementById('ph-crm').style.display = 'block';
- document.getElementById('ph-meta').innerHTML = '<div class="meta-item">&#128222; Logged to <strong>HubSpot</strong></div><div class="meta-item">&#128179; Follow-up task created</div><div class="meta-item">&#128140; Email sequence triggered</div>';
+ var savings = getConfiguredSavingsForStation('phone-agent');
+ document.getElementById('ph-meta').innerHTML = '<div class="meta-item">&#128222; Logged to <strong>HubSpot</strong></div><div class="meta-item">&#128179; Follow-up task created</div><div class="meta-item">&#9201; <strong>' + (Math.round(savings.hours * 10) / 10) + ' hrs</strong> saved / week</div><div class="meta-item">&#128176; <strong>$' + savings.weekly.toLocaleString() + '</strong> labor saved / week</div>';
  document.getElementById('ph-meta').style.display = 'flex';
  demoComplete('phone-agent');
 }
@@ -5038,7 +5103,7 @@ function runContract() {
  html += '</div></div>';
  html += '<button class="btn-primary" style="margin-top:0" onclick="sendContractForSigning()">&#9993; Approve &amp; Send for E-Signature via DocuSign</button>';
 
- document.getElementById('ct-body').innerHTML = html;
+ document.getElementById('ct-body').innerHTML = buildSavingsSummaryCard('contracts', 'Estimated savings from automated contracts') + html;
  document.getElementById('ct-out').style.display = 'block';
  document.getElementById('ct-out').scrollIntoView({ behavior:'smooth', block:'nearest' });
  document.getElementById('ct-btn').disabled = false;
@@ -5093,7 +5158,7 @@ function runInvoicing() {
   html += '<div class="pipe-step done"><div class="pipe-dot">&#128231;</div><div class="pipe-content"><div class="pipe-title">Sent to Client</div><div class="pipe-detail">' + esc(via) + ' triggered automatically for ' + esc(client) + '.</div><div class="pipe-time">In under 10 seconds</div></div></div>';
   html += '<div class="pipe-step active"><div class="pipe-dot">&#9201;</div><div class="pipe-content"><div class="pipe-title">Reminder Sequence Armed</div><div class="pipe-detail">Automatic payment reminders scheduled until paid.</div><div class="pipe-time">Monitoring</div></div></div>';
   html += '</div>';
-  document.getElementById('inv-body').innerHTML = html;
+  document.getElementById('inv-body').innerHTML = buildSavingsSummaryCard('invoicing', 'Estimated savings from automated invoicing') + html;
   document.getElementById('inv-out').style.display = 'block';
   document.getElementById('inv-out').scrollIntoView({ behavior:'smooth', block:'nearest' });
   demoComplete('invoicing');
@@ -5112,7 +5177,7 @@ function runAdCampaign() {
     html += '<div class="content-block" style="margin-bottom:16px"><div class="seo-lbl">Targeting</div><p><strong style="color:var(--text)">Audience:</strong> ' + esc(audience) + '</p><p><strong style="color:var(--text)">Monthly Budget:</strong> $' + Number(budget).toLocaleString() + '</p><p><strong style="color:var(--text)">Optimization Goal:</strong> ' + esc(goal) + '</p></div>';
     html += '<div class="row2"><div class="content-block"><div class="seo-lbl">Primary Hook</div><p>Stop losing revenue to slow follow-up. This campaign positions ' + esc(prospect.company || 'your team') + ' as the faster, smarter option.</p></div><div class="content-block"><div class="seo-lbl">Offer Angle</div><p>Free audit, fast response, and a clear next step that gets prospects into the pipeline immediately.</p></div></div>';
     html += '<div class="divider"></div><div class="content-block"><div class="seo-lbl">Sample Ad Copy</div><p><strong>Headline:</strong> Turn More Leads Into Revenue</p><p><strong>Body:</strong> Manual follow-up is costing you deals. See how an AI powered growth system can capture, qualify, and convert more leads without adding headcount.</p><p style="color:var(--blue-bright);font-weight:600;margin-top:10px">Call to Action: Book Your Demo</p></div>';
-    document.getElementById('ads-body').innerHTML = html;
+    document.getElementById('ads-body').innerHTML = buildSavingsSummaryCard('ads', 'Estimated savings from ad campaign setup') + html;
     document.getElementById('ads-out').style.display = 'block';
     document.getElementById('ads-out').scrollIntoView({ behavior:'smooth', block:'nearest' });
     demoComplete('ads');
@@ -5284,7 +5349,25 @@ function setupTaskCalculators() {
     var hoursEl = document.getElementById(cfg[0]);
     var rateEl = document.getElementById(cfg[1]);
     if (!hoursEl || !rateEl) return;
-    var fn = function(){ updateTaskImpact(cfg[0], cfg[1], cfg[2], cfg[3]); };
+    var fn = function(){
+      updateTaskImpact(cfg[0], cfg[1], cfg[2], cfg[3]);
+      var stationByHours = {
+        'ls-hours-input':'find-leads',
+        'seo-hours-input':'seo',
+        'crm-hours-input':'cold-email',
+        'ph-hours-input':'phone-agent',
+        'pr-hours-input':'proposal',
+        'ct-hours-input':'contracts',
+        'iv-hours-input':'invoicing',
+        'fu-hours-input':'followup',
+        'sm-hours-input':'social',
+        'ads-hours-input':'ads',
+        'nl-hours-input':'newsletter',
+        'db-hours-input':'dashboard-station'
+      };
+      var stationId = stationByHours[cfg[0]];
+      if (stationId && completedDemos[stationId]) recomputeOverviewTotals();
+    };
     hoursEl.addEventListener('input', fn);
     rateEl.addEventListener('change', fn);
     fn();
