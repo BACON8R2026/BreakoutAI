@@ -2706,8 +2706,17 @@ function hideStatus(pfx) {
  document.getElementById(pfx+'-btn').disabled = false;
 }
 
+function hideError(pfx) {
+ var bar = document.getElementById(pfx+'-error');
+ if (bar) {
+   bar.textContent = '';
+   bar.style.display = 'none';
+ }
+}
+
 function showError(pfx, msg) {
  var bar = document.getElementById(pfx+'-error');
+ if (!bar) return;
  bar.textContent = 'Error: ' + msg;
  bar.style.display = 'block';
 }
@@ -5254,116 +5263,3 @@ function setupTaskCalculators() {
 setupTaskCalculators();
 </script>
 
-
-<script>
-(function(){
-  var defaults = {
-    contact: 'Kelly',
-    company: 'Palm Desert AC Services',
-    vertical: 'homeservices',
-    teamSize: 'small'
-  };
-
-  function byId(id){ return document.getElementById(id); }
-  function setIfPossible(id, value){ var el = byId(id); if (el) el.value = value; }
-  function setText(sel, value){ var el = typeof sel === 'string' ? document.querySelector(sel) : sel; if (el) el.textContent = value; }
-
-  function applyDefaults(){
-    setIfPossible('crit-contact', defaults.contact);
-    setIfPossible('crit-company', defaults.company);
-    setIfPossible('crit-vertical', defaults.vertical);
-    setIfPossible('crit-teamsize', defaults.teamSize);
-
-    var summary = byId('criteria-summary');
-    if (summary) summary.textContent = defaults.company + ' â¢ HVAC';
-
-    var hero = document.querySelector('#panel-home .home-hero p');
-    if (hero) hero.textContent = '12 AI stations customized for ' + defaults.company + ' (HVAC). Select a station below to see it live.';
-
-    var badge = byId('prospectBadge');
-    var badgeText = byId('prospectBadgeText');
-    if (badge) badge.style.display = 'flex';
-    if (badgeText) badgeText.textContent = defaults.contact + ' - ' + defaults.company;
-
-    if (typeof window.prospect === 'object' && window.prospect) {
-      window.prospect.contact = defaults.contact;
-      window.prospect.company = defaults.company;
-      window.prospect.vertical = defaults.vertical;
-      window.prospect.teamSize = defaults.teamSize;
-    }
-
-    if (typeof window.applyVerticalDefaults === 'function') {
-      try { window.applyVerticalDefaults(defaults.vertical); } catch (e) {}
-    }
-    if (typeof window.updateCriteriaSummary === 'function') {
-      try { window.updateCriteriaSummary(); } catch (e) {}
-    }
-  }
-
-  function activatePanel(id){
-    if (!id) return false;
-    var panel = byId('panel-' + id);
-    if (!panel) return false;
-
-    var panels = document.querySelectorAll('.panel');
-    for (var i = 0; i < panels.length; i++) panels[i].classList.remove('active');
-
-    var tabs = document.querySelectorAll('.nav-tab');
-    for (var j = 0; j < tabs.length; j++) tabs[j].classList.remove('active');
-
-    panel.classList.add('active');
-
-    var activeTab = document.querySelector('.nav-tab[data-panel="' + id + '"]');
-    if (activeTab) activeTab.classList.add('active');
-
-    try { window.scrollTo({ top: 0, behavior: 'auto' }); } catch (e) {}
-    return true;
-  }
-
-  window.showPanel = activatePanel;
-
-  function inferPanelName(el){
-    if (!el) return '';
-    var direct = el.getAttribute('data-panel');
-    if (direct) return direct;
-    var onclickAttr = el.getAttribute('onclick') || '';
-    var m = onclickAttr.match(/showPanel\('([^']+)'\)/);
-    return m ? m[1] : '';
-  }
-
-  function bindStations(){
-    var nodes = document.querySelectorAll('.station-tile, .nav-tab');
-    for (var i = 0; i < nodes.length; i++) {
-      (function(node){
-        var panelId = inferPanelName(node);
-        if (!panelId) return;
-        node.style.cursor = 'pointer';
-        node.addEventListener('click', function(ev){
-          ev.preventDefault();
-          ev.stopPropagation();
-          activatePanel(panelId);
-        }, true);
-      })(nodes[i]);
-    }
-  }
-
-  function boot(){
-    applyDefaults();
-    bindStations();
-    activatePanel('home');
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', boot);
-  } else {
-    boot();
-  }
-
-  setTimeout(boot, 50);
-  setTimeout(boot, 250);
-  setTimeout(boot, 750);
-})();
-</script>
-
-</body>
-</html>
