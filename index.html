@@ -1381,7 +1381,7 @@ color: var(--text-dim);
 <div class="roi-bar" id="roiBar">
  <div class="roi-stat">
  <div class="roi-num" id="statHours">0</div>
- <div class="roi-label">hrs saved / week</div>
+ <div class="roi-label">hrs saved / year</div>
  </div>
  <div class="roi-divider"></div>
  <div class="roi-stat">
@@ -4651,22 +4651,23 @@ function recomputeOverviewTotals() {
    demoStats.leads += contrib.leads;
    demoStats.demosRun++;
  }
+ var annualHoursSaved = Math.round(demoStats.hoursSaved * 52 * 10) / 10;
  var roi = demoStats.demosRun > 0 ? Math.round((demoStats.revenue / (demoStats.demosRun * 1500)) * 10) / 10 : 0;
  if (roi < 1) roi = demoStats.demosRun > 0 ? 1.5 : 0;
- countUp('statHours', demoStats.hoursSaved, '', '', 900);
+ countUp('statHours', annualHoursSaved, '', '', 900);
  countUp('statRevenue', demoStats.revenue, '$', '', 1100);
  countUp('statLeads', demoStats.leads, '', '', 800);
  countUp('statROI', roi, '', 'x', 1000);
  var resultEl = document.getElementById('roiResult');
  if (resultEl) {
    if (demoStats.demosRun === 0) {
-     resultEl.innerHTML = '<span style="color:var(--text-dimmer)">Run any demo above - each station adds real numbers here as you go.</span>';
+     resultEl.innerHTML = '<span style="color:var(--text-dimmer)">Run any demo above. Each station adds real numbers here as you go.</span>';
    } else {
      resultEl.innerHTML =
       'Across <strong>' + demoStats.demosRun + ' station' + (demoStats.demosRun > 1 ? 's' : '') + '</strong> demonstrated so far, this system saves ' +
-      '<span class="roi-highlight">' + (Math.round(demoStats.hoursSaved * 10) / 10) + ' hours per week</span>, ' +
+      '<span class="roi-highlight">' + annualHoursSaved + ' hours annually</span> based on weekly workflow inputs, ' +
       'generates <span class="roi-highlight">$' + demoStats.revenue.toLocaleString() + ' in monthly revenue potential</span>, ' +
-      'and surfaces <span class="roi-highlight">' + demoStats.leads + ' new leads</span> - all automatically.';
+      'and surfaces <span class="roi-highlight">' + demoStats.leads + ' new leads</span> automatically.';
    }
  }
  if (dashInited) refreshDash();
