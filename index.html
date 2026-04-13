@@ -2603,23 +2603,47 @@ var nlShowingRaw = false;
 
 // ââ NAV ââ
 function showPanel(id) {
+ var panelId = 'panel-' + id;
+ var target = document.getElementById(panelId);
+ if (!target) {
+  console.warn('Missing panel:', panelId);
+  return false;
+ }
+
  var panels = document.querySelectorAll('.panel');
  for (var i = 0; i < panels.length; i++) panels[i].classList.remove('active');
+
  var tabs = document.querySelectorAll('.nav-tab');
  for (var j = 0; j < tabs.length; j++) tabs[j].classList.remove('active');
 
- document.getElementById('panel-' + id).classList.add('active');
+ target.classList.add('active');
 
- // Activate matching tab
  for (var k = 0; k < tabs.length; k++) {
- if (tabs[k].getAttribute('data-panel') === id) {
- tabs[k].classList.add('active');
- // Scroll tab into view
- tabs[k].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
- }
+  if (tabs[k].getAttribute('data-panel') === id) {
+   tabs[k].classList.add('active');
+   try {
+    tabs[k].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+   } catch (e) {}
+  }
  }
 
- window.scrollTo(0, 0);
+ if (id === 'dashboard-station') {
+  try {
+   if (typeof refreshDash === 'function') refreshDash();
+   if (typeof demoComplete === 'function') demoComplete('dashboard-station');
+  } catch (e) {
+   console.warn('Dashboard refresh skipped:', e);
+  }
+ }
+
+ if (id === 'home') {
+  try {
+   if (typeof initROI === 'function') initROI();
+  } catch (e) {}
+ }
+
+ try { window.scrollTo(0, 0); } catch (e) {}
+ return true;
 }
 
 // ââ HELPERS ââ
@@ -4682,4 +4706,19 @@ function refreshDash() {
  for (var j = 0; j < t.items.length; j++) {
  html += '<div class="dash-item"><div class="dash-item-dot ' + t.items[j].dot + '"></div><span>' + esc(t.items[j].text) + '</span></div>';
  }
- html +=
+ html += '</div>';
+ html += '<div class="dash-tile-footer ' + t.footer.color + '">' + esc(t.footer.text) + '</div>';
+ html += '</div>';
+ }
+ document.getElementById('dashGrid').innerHTML = html;
+
+ var combined = liveActivityFeed.concat(dashActivities).slice(0, 10);
+ var existAct = document.getElementById('dashActivity');
+ if (existAct) existAct.remove();
+ var actDiv = document.createElement('div');
+ actDiv.id = 'dashActivity';
+ actDiv.className = 'dash-activity';
+ var actHtml = '<div class="dash-activity-title">Live Activity Feed</div>';
+ for (var k = 0; k < combined.length; k++) {
+ var a = combined[k];
+ actHtml += '<div class="activity-row"><div class="activity-dot ' + a.dot + '"></div><div class="a
