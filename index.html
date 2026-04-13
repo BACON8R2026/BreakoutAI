@@ -4794,14 +4794,14 @@ function runLeadScan() {
  var hot = leads.filter(function(l) { return l.score === 'hot'; }).length;
  var warm = leads.filter(function(l) { return l.score === 'warm'; }).length;
 
- document.getElementById('ls-count').textContent = leads.length + ' leads | ' + hot + ' hot | ' + warm + ' warm | ' + radius + ' mi radius | ' + hoursSaved + ' hrs saved | $' + moneySaved.toLocaleString() + ' labor saved per week';
-
  // Pull the user's weekly assumptions directly from the task snapshot
  var configuredHoursEl = document.getElementById('ls-hours-input');
  var configuredRateEl = document.getElementById('ls-hourly-rate');
  var hoursSaved = configuredHoursEl ? (parseFloat(configuredHoursEl.value || '0') || 0) : 0;
  var hourlyRate = configuredRateEl ? (parseFloat(configuredRateEl.value || '0') || 0) : 0;
  var moneySaved = Math.round(hoursSaved * hourlyRate);
+
+ document.getElementById('ls-count').textContent = leads.length + ' leads | ' + hot + ' hot | ' + warm + ' warm | ' + radius + ' mi radius | ' + hoursSaved + ' hrs saved | $' + moneySaved.toLocaleString() + ' labor saved per week';
 
  // Animate savings bar
  document.getElementById('ls-savings').style.display = 'flex';
