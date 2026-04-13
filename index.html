@@ -559,7 +559,7 @@ color: var(--text-dimmer);
 .home-hero { text-align: center; padding: 12px 20px 12px; }
 .home-hero h1 { font-family: 'Syne', sans-serif; font-size: 40px; font-weight: 800; letter-spacing: -1.5px; line-height: 1.1; margin-bottom: 8px; }
 .home-hero h1 span { background: linear-gradient(90deg, var(--blue-bright), #93c5fd); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-.home-hero p { font-size: 15px; color: var(--text-dim); font-weight: 300; max-width: 520px; margin: 0 auto; line-height: 1.55; }
+.home-hero p { display:none; }
 
 /* ROI STATS BAR */
 .roi-bar {
@@ -4031,7 +4031,7 @@ function syncCriteriaToProspect() {
 
   var cfg = verticalConfig[prospect.vertical] || verticalConfig.homeservices;
   var heroP = document.querySelector('#panel-home .home-hero p');
-  if (heroP) heroP.textContent = '12 AI stations - customized for ' + prospect.company + ' (' + cfg.label + '). Select any station to see it live.';
+  if (heroP) heroP.textContent = '';
 
   var badgeText = document.getElementById('prospectBadgeText');
   if (badgeText) badgeText.textContent = prospect.contact + ' - ' + prospect.company;
@@ -5419,7 +5419,7 @@ setupTaskCalculators();
     if (summary) summary.textContent = defaults.company + ' â¢ HVAC';
 
     var hero = document.querySelector('#panel-home .home-hero p');
-    if (hero) hero.textContent = '12 AI stations customized for ' + defaults.company + ' (HVAC). Select a station below to see it live.';
+    if (hero) hero.textContent = '';
 
     var badge = byId('prospectBadge');
     var badgeText = byId('prospectBadgeText');
