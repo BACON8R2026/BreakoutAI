@@ -907,60 +907,6 @@ opacity: 0; pointer-events: none;
 transition: opacity 0.4s ease;
 }
 
-
-/* Persistent demo criteria panel */
-#introScreen { display: none !important; }
-
-.criteria-wrap {
-max-width: 960px;
-margin: 18px auto 0;
-padding: 0 32px;
-position: relative;
-z-index: 2;
-}
-.criteria-card {
-background: var(--navy2);
-border: 1px solid var(--glass-border);
-border-radius: 16px;
-padding: 18px 20px;
-margin-bottom: 14px;
-position: relative;
-overflow: hidden;
-}
-.criteria-card::before {
-content: '';
-position: absolute; top: 0; left: 0; right: 0; height: 1px;
-background: linear-gradient(90deg, transparent, var(--blue), transparent);
-opacity: 0.45;
-}
-.criteria-head {
-display: flex; align-items: center; justify-content: space-between; gap: 12px;
-margin-bottom: 12px; flex-wrap: wrap;
-}
-.criteria-title {
-font-family: 'Syne', sans-serif;
-font-size: 14px; font-weight: 700; color: var(--text);
-}
-.criteria-sub {
-font-size: 12px; color: var(--text-dimmer);
-}
-.criteria-grid {
-display: grid;
-grid-template-columns: 1.1fr 1.2fr 1fr 0.8fr;
-gap: 10px;
-}
-.criteria-note {
-margin-top: 10px;
-font-size: 12px;
-color: var(--text-dim);
-}
-.criteria-note strong { color: var(--blue-bright); }
-
-@media (max-width: 768px) {
-.criteria-wrap { padding: 0 16px; }
-.criteria-grid { grid-template-columns: 1fr; }
-}
-
 </style>
 </head>
 <body>
@@ -999,8 +945,8 @@ color: var(--text-dim);
  <label>Industry / Vertical</label>
  <select class="intro-sel" id="intro-vertical">
         <option value="homeservices" selected>Home Services</option>
-        <option value="salesmarketing">Sales and Marketing</option>
-        <option value="ecommerce">E Commerce</option>
+        <option value="salesmarketing">Sales &amp; Marketing</option>
+        <option value="ecommerce">E-Commerce</option>
         <option value="professionalservices">Professional Services</option>
         <option value="realestate">Real Estate</option>
       </select>
@@ -1027,7 +973,7 @@ color: var(--text-dim);
  </div>
 </div>
 
-<div class="topnav" id="topNav">
+<div class="topnav" id="topNav" style="display:none">
  <div class="topnav-main">
  <div class="brand-row">
  <div class="brand-icon">â¡</div>
@@ -1090,52 +1036,7 @@ color: var(--text-dim);
 
 <!-- MAIN -->
 
-<div class="main" id="mainContent">
-
-<div class="criteria-wrap">
-  <div class="criteria-card">
-    <div class="criteria-head">
-      <div>
-        <div class="criteria-title">Demo Criteria</div>
-        <div class="criteria-sub">Edit once. Defaults flow across the platform automatically.</div>
-      </div>
-      <div class="criteria-sub">No launch step needed</div>
-    </div>
-    <div class="criteria-grid">
-      <div class="field">
-        <label>Prospect First Name</label>
-        <input class="inp" id="crit-contact" type="text" placeholder="e.g. Marcus" />
-      </div>
-      <div class="field">
-        <label>Company Name</label>
-        <input class="inp" id="crit-company" type="text" placeholder="e.g. Rivera Home Services" />
-      </div>
-      <div class="field">
-        <label>Vertical</label>
-        <select class="sel" id="crit-vertical">
-          <option value="homeservices" selected>Home Services</option>
-          <option value="salesmarketing">Sales and Marketing</option>
-          <option value="ecommerce">E Commerce</option>
-          <option value="professionalservices">Professional Services</option>
-          <option value="realestate">Real Estate</option>
-        </select>
-      </div>
-      <div class="field">
-        <label>Team Size</label>
-        <select class="sel" id="crit-teamsize">
-          <option value="solo">Solo / 1 person</option>
-          <option value="small" selected>2-5 people</option>
-          <option value="medium">6-15 people</option>
-          <option value="large">16-50 people</option>
-        </select>
-      </div>
-    </div>
-    <div class="criteria-note">
-      Showing a live demo configured for <strong id="criteria-summary">Home Services</strong>. Update any field and the station defaults refresh automatically.
-    </div>
-  </div>
-</div>
-
+<div class="main" id="mainContent" style="display:none">
 
  <!-- ââââââââââââââââââââââââââââââââââââââââââ
  HOME
@@ -2880,82 +2781,56 @@ function applyVerticalDefaults(key) {
   if (typeof updateLeadImpact === 'function') updateLeadImpact();
 }
 
-function updateCriteriaSummary() {
-  var cfg = verticalConfig[prospect.vertical] || verticalConfig.homeservices;
-  var summary = document.getElementById('criteria-summary');
-  if (summary) summary.textContent = prospect.company + ' â¢ ' + cfg.label;
-}
-
-function syncCriteriaToProspect() {
-  var cName = document.getElementById('crit-contact');
-  var cCompany = document.getElementById('crit-company');
-  var cVertical = document.getElementById('crit-vertical');
-  var cTeam = document.getElementById('crit-teamsize');
-
-  prospect.contact = (cName && cName.value.trim()) || 'Marcus';
-  prospect.company = (cCompany && cCompany.value.trim()) || 'Rivera Home Services';
-  prospect.vertical = (cVertical && cVertical.value) || 'homeservices';
-  prospect.teamSize = (cTeam && cTeam.value) || 'small';
-
-  applyVerticalDefaults(prospect.vertical);
-
-  var cfg = verticalConfig[prospect.vertical] || verticalConfig.homeservices;
-  var heroP = document.querySelector('#panel-home .home-hero p');
-  if (heroP) heroP.textContent = '12 AI stations - customized for ' + prospect.company + ' (' + cfg.label + '). Select any station to see it live.';
-
-  var badgeText = document.getElementById('prospectBadgeText');
-  if (badgeText) badgeText.textContent = prospect.contact + ' - ' + prospect.company;
-  var badge = document.getElementById('prospectBadge');
-  if (badge) badge.style.display = 'flex';
-
-  var calcSub = document.querySelector('.roi-calc-sub');
-  if (calcSub) calcSub.textContent = 'Numbers build as you run each station for ' + prospect.company;
-
-  updateCriteriaSummary();
-}
-
-
 // Update button label as contact name is typed
 document.addEventListener('DOMContentLoaded', function() {
  var contactInput = document.getElementById('intro-contact');
  if (contactInput) {
-   contactInput.addEventListener('input', function() {
-     var name = this.value.trim();
-     var btnName = document.getElementById('intro-btn-name');
-     if (btnName) btnName.textContent = name ? name : 'This Prospect';
-   });
- }
-
- var defaults = {
-   contact: 'Marcus',
-   company: 'Rivera Home Services',
-   vertical: 'homeservices',
-   teamSize: 'small'
- };
-
- var cName = document.getElementById('crit-contact');
- var cCompany = document.getElementById('crit-company');
- var cVertical = document.getElementById('crit-vertical');
- var cTeam = document.getElementById('crit-teamsize');
-
- if (cName && !cName.value) cName.value = defaults.contact;
- if (cCompany && !cCompany.value) cCompany.value = defaults.company;
- if (cVertical && !cVertical.value) cVertical.value = defaults.vertical;
- if (cTeam && !cTeam.value) cTeam.value = defaults.teamSize;
-
- ['crit-contact','crit-company','crit-vertical','crit-teamsize'].forEach(function(id){
-   var el = document.getElementById(id);
-   if (el) el.addEventListener('input', syncCriteriaToProspect);
-   if (el) el.addEventListener('change', syncCriteriaToProspect);
+ contactInput.addEventListener('input', function() {
+ var name = this.value.trim();
+ document.getElementById('intro-btn-name').textContent = name ? name : 'This Prospect';
  });
-
- syncCriteriaToProspect();
- initROI();
- applyPackageView();
+ }
 });
 
 function startDemo() {
-  syncCriteriaToProspect();
+  try {
+    prospect.contact = (document.getElementById('intro-contact') && document.getElementById('intro-contact').value.trim()) || 'the prospect';
+    prospect.company = (document.getElementById('intro-company') && document.getElementById('intro-company').value.trim()) || 'their business';
+    prospect.vertical = (document.getElementById('intro-vertical') && document.getElementById('intro-vertical').value) || 'homeservices';
+    prospect.teamSize = (document.getElementById('intro-teamsize') && document.getElementById('intro-teamsize').value) || 'small';
+
+    var cfg = verticalConfig[prospect.vertical] || verticalConfig.homeservices;
+    applyVerticalDefaults(prospect.vertical);
+
+    var heroP = document.querySelector('#panel-home .home-hero p');
+    if (heroP) heroP.textContent = '12 AI stations - customized for ' + prospect.company + ' (' + cfg.label + '). Select any station to see it live.';
+
+    var badgeText = document.getElementById('prospectBadgeText');
+    if (badgeText) badgeText.textContent = prospect.contact + ' - ' + prospect.company;
+    var badge = document.getElementById('prospectBadge');
+    if (badge) badge.style.display = 'flex';
+
+    var calcSub = document.querySelector('.roi-calc-sub');
+    if (calcSub) calcSub.textContent = 'Numbers build as you run each station for ' + prospect.company;
+
+    var screen = document.getElementById('introScreen');
+    if (screen) {
+      screen.classList.add('hidden');
+      setTimeout(function() {
+        screen.style.display = 'none';
+        var topNav = document.getElementById('topNav');
+        var mainContent = document.getElementById('mainContent');
+        if (topNav) topNav.style.display = 'block';
+        if (mainContent) mainContent.style.display = 'block';
+      }, 400);
+    }
+
+    applyPackageView();
+    initROI();
+  } catch (err) {
+    console.error('startDemo failed', err);
+    alert('The demo hit a setup error. Please reload and try again.');
+  }
 }
 
 function applyPackageView(activeList) {
@@ -2971,8 +2846,11 @@ function applyPackageView(activeList) {
 }
 
 function resetIntro() {
-  var top = document.getElementById('mainContent');
-  if (top) top.scrollIntoView({ behavior: 'smooth', block: 'start' });
+ document.getElementById('topNav').style.display = 'none';
+ document.getElementById('mainContent').style.display = 'none';
+ var screen = document.getElementById('introScreen');
+ screen.style.display = 'flex';
+ setTimeout(function() { screen.classList.remove('hidden'); }, 10);
 }
 
 
