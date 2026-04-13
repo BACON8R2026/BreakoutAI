@@ -4341,4 +4341,22 @@ var dashInited = false;
 var _sp = showPanel;
 showPanel = function(id) {
  _sp(id);
- if (id === 'dashboard-
+ if (id === 'dashboard-station') {
+ if (!dashInited) { dashInited = true; }
+ refreshDash();
+ demoComplete('dashboard-station');
+ }
+};
+
+document.addEventListener('keydown', function(e) {
+ if (e.key !== 'Enter' || e.shiftKey || e.target.tagName === 'TEXTAREA') return;
+ var active = document.querySelector('.panel.active');
+ if (!active) return;
+ var id = active.id.replace('panel-','');
+ var map = { 'cold-email': runColdEmail, 'proposal': runProposal, 'followup': runFollowup, 'newsletter': runNewsletter, 'social': runSocial, 'seo': runSEO, 'find-leads': runLeadScan, 'ads': runAdCampaign, 'invoicing': runInvoicing };
+ if (map[id]) map[id]();
+});
+</script>
+
+</body>
+</html>
