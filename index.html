@@ -453,6 +453,94 @@ box-shadow: 0 10px 24px rgba(59,130,246,0.14);
 flex-shrink: 0;
 }
 
+.doc-logo.has-image {
+background: rgba(255,255,255,0.04);
+padding: 6px;
+overflow: hidden;
+}
+
+.doc-logo img {
+width: 100%;
+height: 100%;
+object-fit: contain;
+display: block;
+border-radius: 10px;
+background: rgba(255,255,255,0.96);
+}
+
+.criteria-logo-row {
+margin-top: 14px;
+}
+
+.logo-upload-wrap {
+display: flex;
+align-items: center;
+gap: 14px;
+flex-wrap: wrap;
+}
+
+.logo-preview-box {
+width: 68px;
+height: 68px;
+border-radius: 16px;
+border: 1px solid var(--glass-border);
+background: var(--navy3);
+display: flex;
+align-items: center;
+justify-content: center;
+overflow: hidden;
+flex-shrink: 0;
+}
+
+.logo-preview-box img {
+width: 100%;
+height: 100%;
+object-fit: contain;
+background: rgba(255,255,255,0.96);
+}
+
+.logo-preview-placeholder {
+font-family: 'Syne', sans-serif;
+font-size: 22px;
+font-weight: 800;
+color: var(--blue-bright);
+}
+
+.logo-upload-meta {
+flex: 1;
+min-width: 220px;
+}
+
+.logo-upload-name {
+font-size: 12px;
+color: var(--text-dim);
+margin-top: 8px;
+}
+
+.logo-upload-help {
+font-size: 11px;
+color: var(--text-dimmer);
+margin-top: 4px;
+line-height: 1.5;
+}
+
+.logo-clear-btn {
+margin-top: 10px;
+padding: 6px 12px;
+border-radius: 8px;
+border: 1px solid var(--glass-border);
+background: transparent;
+color: var(--text-dim);
+font-size: 11px;
+cursor: pointer;
+}
+
+.logo-clear-btn:hover {
+border-color: var(--blue-border);
+color: var(--blue-bright);
+background: var(--blue-glow);
+}
+
 .doc-shell {
 background: var(--navy3);
 border: 1px solid var(--glass-border);
@@ -3703,8 +3791,9 @@ function buildSocialPreviewImage(platform, day, postText, tags) {
    '<rect width="1080" height="1080" fill="url(#bg)"/>' +
    '<rect x="56" y="56" width="968" height="968" rx="36" fill="rgba(8,12,24,0.28)" stroke="rgba(255,255,255,0.18)"/>' +
    '<circle cx="860" cy="220" r="120" fill="rgba(255,255,255,0.08)"/>' +
-   '<text x="96" y="160" font-family="Arial, Helvetica, sans-serif" font-size="42" fill="#93c5fd">' + svgEscape(subhead.toUpperCase()) + '</text>' +
-   '<text x="96" y="290" font-family="Arial, Helvetica, sans-serif" font-weight="700" font-size="78" fill="#ffffff">' + svgEscape(company) + '</text>' +
+   logoMarkup +
+   '<text x="220" y="160" font-family="Arial, Helvetica, sans-serif" font-size="42" fill="#93c5fd">' + svgEscape(subhead.toUpperCase()) + '</text>' +
+   '<text x="96" y="300" font-family="Arial, Helvetica, sans-serif" font-weight="700" font-size="78" fill="#ffffff">' + svgEscape(company) + '</text>' +
    '<text x="96" y="390" font-family="Arial, Helvetica, sans-serif" font-size="52" fill="#dbeafe">FAST HVAC HELP IN PALM DESERT</text>' +
    '<foreignObject x="96" y="460" width="840" height="260">' +
    '<div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Arial, Helvetica, sans-serif;color:#e2e8f0;font-size:44px;line-height:1.25;font-weight:600;">' + htmlEscape(hook) + '</div>' +
@@ -3931,7 +4020,7 @@ function renderSEO(data, bodyId) {
   var html = '';
 
   html += '<div style="display:flex;align-items:center;gap:14px;margin-bottom:18px;flex-wrap:wrap">';
-  html += '<div class="doc-logo">' + esc(buildFakeBrand(data.biz)) + '</div>';
+  html += getDocumentLogoMarkup(data.biz);
   html += '<div><div style="font-family:Syne,sans-serif;font-size:20px;font-weight:800;color:var(--text)">' + esc(data.biz) + ' SEO + AEO Package</div>';
   html += '<div style="font-size:12px;color:var(--text-dimmer);margin-top:4px">Local expansion system built around city landing pages</div></div></div>';
 
@@ -4087,7 +4176,9 @@ var prospect = {
  company: '',
  vertical: '',
  teamSize: 'small',
- pain: ''
+ pain: '',
+ logoDataUrl: '',
+ logoName: ''
 };
 
 // Vertical config: one profile powers every station
@@ -4211,8 +4302,24 @@ function buildFakeBrand(name) {
   return initials || 'BA';
 }
 
+function escAttr(s) {
+  return String(s == null ? '' : s)
+    .replace(/&/g, '&amp;')
+    .replace(/"/g, '&quot;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
+
+function getCompanyLogoMarkup(name, extraClass) {
+  var cls = 'doc-logo' + (prospect.logoDataUrl ? ' has-image' : '') + (extraClass ? ' ' + extraClass : '');
+  if (prospect.logoDataUrl) {
+    return '<div class="' + cls + '"><img src="' + escAttr(prospect.logoDataUrl) + '" alt="' + escAttr((name || prospect.company || 'Company') + ' logo') + '"></div>';
+  }
+  return '<div class="' + cls + '">' + esc(buildFakeBrand(name)) + '</div>';
+}
+
 function getDocumentLogoMarkup(name) {
-  return '<div class="doc-logo">' + esc(buildFakeBrand(name)) + '</div>';
+  return getCompanyLogoMarkup(name);
 }
 
 function getDocumentBrandLine(name) {
@@ -4269,6 +4376,38 @@ function updateCriteriaSummary() {
   if (summary) summary.textContent = prospect.company + ' â¢ ' + cfg.label;
 }
 
+function updateLogoPreview() {
+  var preview = document.getElementById('crit-logo-preview');
+  var nameEl = document.getElementById('crit-logo-name');
+  if (!preview) return;
+  if (prospect.logoDataUrl) {
+    preview.innerHTML = '<img src="' + escAttr(prospect.logoDataUrl) + '" alt="' + escAttr((prospect.company || 'Company') + ' logo preview') + '">';
+  } else {
+    preview.innerHTML = '<div class="logo-preview-placeholder">' + esc(buildFakeBrand(prospect.company || 'Palm Desert AC Services')) + '</div>';
+  }
+  if (nameEl) nameEl.textContent = prospect.logoName || 'No logo uploaded yet';
+}
+
+function handleLogoUpload(evt) {
+  var file = evt && evt.target && evt.target.files ? evt.target.files[0] : null;
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    prospect.logoDataUrl = e.target && e.target.result ? String(e.target.result) : '';
+    prospect.logoName = file.name || 'Uploaded logo';
+    updateLogoPreview();
+  };
+  reader.readAsDataURL(file);
+}
+
+function clearLogoUpload() {
+  prospect.logoDataUrl = '';
+  prospect.logoName = '';
+  var input = document.getElementById('crit-logo');
+  if (input) input.value = '';
+  updateLogoPreview();
+}
+
 function syncCriteriaToProspect() {
   var cName = document.getElementById('crit-contact');
   var cCompany = document.getElementById('crit-company');
@@ -4295,6 +4434,7 @@ function syncCriteriaToProspect() {
   if (calcSub) calcSub.textContent = 'Numbers build as you run each station for ' + prospect.company;
 
   updateCriteriaSummary();
+  updateLogoPreview();
 }
 
 
@@ -5799,6 +5939,17 @@ setupTaskCalculators();
       backdrop.dataset.criteriaBound = '1';
       backdrop.addEventListener('click', closeCriteriaModal);
     }
+    var logoInput = byId('crit-logo');
+    if (logoInput && !logoInput.dataset.criteriaBound) {
+      logoInput.dataset.criteriaBound = '1';
+      logoInput.addEventListener('change', handleLogoUpload);
+    }
+    var logoClear = byId('crit-logo-clear');
+    if (logoClear && !logoClear.dataset.criteriaBound) {
+      logoClear.dataset.criteriaBound = '1';
+      logoClear.addEventListener('click', clearLogoUpload);
+    }
+    updateLogoPreview();
     document.addEventListener('keydown', function(e){
       if (e.key === 'Escape') closeCriteriaModal();
     });
@@ -5813,49 +5964,4 @@ setupTaskCalculators();
 </script>
 <div class="criteria-modal" id="criteriaModal" aria-hidden="true">
   <div class="criteria-modal-backdrop" id="criteriaBackdrop"></div>
-  <div class="criteria-modal-card">
-    <button class="criteria-close" id="criteriaClose" type="button" aria-label="Save and close">Ã</button>
-    <div class="criteria-head">
-      <div>
-        <div class="criteria-title">Demo Criteria</div>
-        <div class="criteria-sub">Edit once. Defaults flow across the platform automatically.</div>
-      </div>
-      <div class="criteria-sub">No launch step needed</div>
-    </div>
-    <div class="criteria-grid">
-      <div class="field">
-        <label>Prospect First Name</label>
-        <input class="inp" id="crit-contact" type="text" placeholder="e.g. Marcus" value="Kelly" />
-      </div>
-      <div class="field">
-        <label>Company Name</label>
-        <input class="inp" id="crit-company" type="text" placeholder="e.g. Rivera Home Services" value="Palm Desert AC Services" />
-      </div>
-      <div class="field">
-        <label>Vertical</label>
-        <select class="sel" id="crit-vertical">
-          <option value="homeservices" selected>Home Services</option>
-          <option value="salesmarketing">Sales and Marketing</option>
-          <option value="ecommerce">E Commerce</option>
-          <option value="professionalservices">Professional Services</option>
-          <option value="realestate">Real Estate</option>
-        </select>
-      </div>
-      <div class="field">
-        <label>Team Size</label>
-        <select class="sel" id="crit-teamsize">
-          <option value="solo">Solo / 1 person</option>
-          <option value="small" selected>2-5 people</option>
-          <option value="medium">6-15 people</option>
-          <option value="large">16-50 people</option>
-        </select>
-      </div>
-    </div>
-    <div class="criteria-note">
-      Showing a live demo configured for <strong id="criteria-summary">Palm Desert AC Services â¢ HVAC</strong>. Update any field and the station defaults refresh automatically.
-    </div>
-    </div>
-</div>
-
-</body>
-</html>
+  <div clas
