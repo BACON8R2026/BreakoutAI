@@ -597,6 +597,26 @@ color: var(--text-dimmer);
 .home-hero h1 span { background: linear-gradient(90deg, var(--blue-bright), #93c5fd); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
 .home-hero p { display:none; }
 
+.roi-wrap {
+position: relative;
+max-width: 960px;
+margin: 28px auto 12px;
+padding-top: 18px;
+}
+
+.prospect-badge-overlay {
+position: absolute;
+left: 50%;
+top: 0;
+transform: translateX(-50%);
+z-index: 3;
+top: 0;
+}
+
+.prospect-badge-overlay:hover {
+transform: translateX(-50%);
+}
+
 /* ROI STATS BAR */
 .roi-bar {
 display: flex; align-items: center; justify-content: center;
@@ -1406,7 +1426,7 @@ font-weight: 500; white-space: nowrap;
 cursor: pointer;
 transition: all 0.18s;
 position: relative;
-top: 10px;
+top: 0;
 }
 
 .prospect-badge:hover { background: rgba(59,130,246,0.2); }
@@ -1675,10 +1695,6 @@ display: none;
 </div>
 
 <div class="topnav-right">
- <div id="prospectBadge" style="display:none" class="prospect-badge" onclick="resetIntro()">
- <div class="prospect-badge-dot"></div>
- <span id="prospectBadgeText">Demo Active</span>
- </div>
  <div class="status-dot"><span>AI Online</span></div>
 </div>
 
@@ -1705,6 +1721,11 @@ display: none;
  </div>
 
 <!-- ROI STATS BAR -->
+<div class="roi-wrap">
+<div id="prospectBadge" style="display:none" class="prospect-badge prospect-badge-overlay" onclick="resetIntro()">
+ <div class="prospect-badge-dot"></div>
+ <span id="prospectBadgeText">Demo Active</span>
+ </div>
 <div class="roi-bar" id="roiBar">
  <div class="roi-stat">
  <div class="roi-num" id="statHours">0</div>
@@ -1725,6 +1746,7 @@ display: none;
  <div class="roi-num" id="statROI">0x</div>
  <div class="roi-label">saved / year</div>
  </div>
+</div>
 </div>
 
 <div class="stations-grid">
@@ -5747,4 +5769,219 @@ setupTaskCalculators();
     if (summary) summary.textContent = defaults.company + ' â¢ HVAC';
 
     var hero = document.querySelector('#panel-home .home-hero p');
-    if (her
+    if (hero) hero.textContent = '';
+
+    var badge = byId('prospectBadge');
+    var badgeText = byId('prospectBadgeText');
+    if (badge) badge.style.display = 'flex';
+    if (badgeText) badgeText.textContent = defaults.contact + ' - ' + defaults.company;
+
+    if (typeof window.prospect === 'object' && window.prospect) {
+      window.prospect.contact = defaults.contact;
+      window.prospect.company = defaults.company;
+      window.prospect.vertical = defaults.vertical;
+      window.prospect.teamSize = defaults.teamSize;
+    }
+
+    if (typeof window.applyVerticalDefaults === 'function') {
+      try { window.applyVerticalDefaults(defaults.vertical); } catch (e) {}
+    }
+    if (typeof window.updateCriteriaSummary === 'function') {
+      try { window.updateCriteriaSummary(); } catch (e) {}
+    }
+  }
+
+  function activatePanel(id){
+    if (!id) return false;
+    var panel = byId('panel-' + id);
+    if (!panel) return false;
+
+    var panels = document.querySelectorAll('.panel');
+    for (var i = 0; i < panels.length; i++) panels[i].classList.remove('active');
+
+    var tabs = document.querySelectorAll('.nav-tab');
+    for (var j = 0; j < tabs.length; j++) tabs[j].classList.remove('active');
+
+    panel.classList.add('active');
+
+    var activeTab = document.querySelector('.nav-tab[data-panel="' + id + '"]');
+    if (activeTab) activeTab.classList.add('active');
+
+    try { window.scrollTo({ top: 0, behavior: 'auto' }); } catch (e) {}
+    return true;
+  }
+
+  window.showPanel = activatePanel;
+
+  function inferPanelName(el){
+    if (!el) return '';
+    var direct = el.getAttribute('data-panel');
+    if (direct) return direct;
+    var onclickAttr = el.getAttribute('onclick') || '';
+    var m = onclickAttr.match(/showPanel\('([^']+)'\)/);
+    return m ? m[1] : '';
+  }
+
+  function bindStations(){
+    var nodes = document.querySelectorAll('.station-tile, .nav-tab');
+    for (var i = 0; i < nodes.length; i++) {
+      (function(node){
+        var panelId = inferPanelName(node);
+        if (!panelId) return;
+        node.style.cursor = 'pointer';
+        node.addEventListener('click', function(ev){
+          ev.preventDefault();
+          ev.stopPropagation();
+          activatePanel(panelId);
+        }, true);
+      })(nodes[i]);
+    }
+  }
+
+  function boot(){
+    applyDefaults();
+    bindStations();
+    activatePanel('home');
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', boot);
+  } else {
+    boot();
+  }
+
+  setTimeout(boot, 50);
+  setTimeout(boot, 250);
+  setTimeout(boot, 750);
+})();
+</script>
+
+
+<script>
+(function(){
+  function byId(id){ return document.getElementById(id); }
+  function openCriteriaModal(){
+    var modal = byId('criteriaModal');
+    if (!modal) return;
+    modal.classList.add('open');
+    modal.setAttribute('aria-hidden', 'false');
+    var first = byId('crit-contact');
+    if (first) setTimeout(function(){ try { first.focus(); first.select(); } catch(e){} }, 20);
+  }
+  function closeCriteriaModal(){
+    var modal = byId('criteriaModal');
+    if (!modal) return;
+    if (typeof window.syncCriteriaToProspect === 'function') {
+      try { window.syncCriteriaToProspect(); } catch(e){}
+    }
+    modal.classList.remove('open');
+    modal.setAttribute('aria-hidden', 'true');
+  }
+  function bindCriteriaModal(){
+    var trigger = byId('autopilotTrigger');
+    var closeBtn = byId('criteriaClose');
+    var backdrop = byId('criteriaBackdrop');
+    if (trigger && !trigger.dataset.criteriaBound) {
+      trigger.dataset.criteriaBound = '1';
+      trigger.addEventListener('click', openCriteriaModal);
+      trigger.addEventListener('keydown', function(e){
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          openCriteriaModal();
+        }
+      });
+    }
+    if (closeBtn && !closeBtn.dataset.criteriaBound) {
+      closeBtn.dataset.criteriaBound = '1';
+      closeBtn.addEventListener('click', closeCriteriaModal);
+    }
+    if (backdrop && !backdrop.dataset.criteriaBound) {
+      backdrop.dataset.criteriaBound = '1';
+      backdrop.addEventListener('click', closeCriteriaModal);
+    }
+    var logoInput = byId('crit-logo');
+    if (logoInput && !logoInput.dataset.criteriaBound) {
+      logoInput.dataset.criteriaBound = '1';
+      logoInput.addEventListener('click', function(){ this.value = ''; });
+      logoInput.addEventListener('change', handleLogoUpload);
+    }
+    var logoClear = byId('crit-logo-clear');
+    if (logoClear && !logoClear.dataset.criteriaBound) {
+      logoClear.dataset.criteriaBound = '1';
+      logoClear.addEventListener('click', clearLogoUpload);
+    }
+    updateLogoPreview();
+    document.addEventListener('keydown', function(e){
+      if (e.key === 'Escape') closeCriteriaModal();
+    });
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', bindCriteriaModal);
+  } else {
+    bindCriteriaModal();
+  }
+  setTimeout(bindCriteriaModal, 100);
+})();
+</script>
+<div class="criteria-modal" id="criteriaModal" aria-hidden="true">
+  <div class="criteria-modal-backdrop" id="criteriaBackdrop"></div>
+  <div class="criteria-modal-card">
+    <button class="criteria-close" id="criteriaClose" type="button" aria-label="Save and close">Ã</button>
+    <div class="criteria-head">
+      <div>
+        <div class="criteria-title">Demo Criteria</div>
+        <div class="criteria-sub">Edit once. Defaults flow across the platform automatically.</div>
+      </div>
+      <div class="criteria-sub">No launch step needed</div>
+    </div>
+    <div class="criteria-grid">
+      <div class="field">
+        <label>Prospect First Name</label>
+        <input class="inp" id="crit-contact" type="text" placeholder="e.g. Marcus" value="Kelly" />
+      </div>
+      <div class="field">
+        <label>Company Name</label>
+        <input class="inp" id="crit-company" type="text" placeholder="e.g. Rivera Home Services" value="Palm Desert AC Services" />
+      </div>
+      <div class="field">
+        <label>Vertical</label>
+        <select class="sel" id="crit-vertical">
+          <option value="homeservices" selected>Home Services</option>
+          <option value="salesmarketing">Sales and Marketing</option>
+          <option value="ecommerce">E Commerce</option>
+          <option value="professionalservices">Professional Services</option>
+          <option value="realestate">Real Estate</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Team Size</label>
+        <select class="sel" id="crit-teamsize">
+          <option value="solo">Solo / 1 person</option>
+          <option value="small" selected>2-5 people</option>
+          <option value="medium">6-15 people</option>
+          <option value="large">16-50 people</option>
+        </select>
+      </div>
+    </div>
+    <div class="criteria-logo-row">
+      <div class="field">
+        <label>Company Logo</label>
+        <div class="logo-upload-wrap">
+          <div class="logo-preview-box" id="crit-logo-preview"><div class="logo-preview-placeholder">PD</div></div>
+          <div class="logo-upload-meta">
+            <input class="inp" id="crit-logo" type="file" accept="image/*" />
+            <div class="logo-upload-name" id="crit-logo-name">No logo uploaded yet</div>
+            <div class="logo-upload-help">Upload a logo once and it will appear across proposals, contracts, invoices, social previews, and other rendered demos.</div>
+            <button class="logo-clear-btn" id="crit-logo-clear" type="button">Remove logo</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="criteria-note">
+      Showing a live demo configured for <strong id="criteria-summary">Palm Desert AC Services â¢ HVAC</strong>. Update any field and the station defaults refresh automatically.
+    </div>
+    </div>
+</div>
+
+</body>
+</html>
