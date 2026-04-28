@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Breakout AI Core Demo</title>
+<title>Breakout AI Core Industry Demo</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -28,6 +28,10 @@
 
 * {
   box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
@@ -77,12 +81,19 @@ body:before {
   gap: 14px;
 }
 
-.brand img {
+.logo-mark {
   width: 48px;
   height: 48px;
-  object-fit: contain;
   border-radius: 50%;
-  box-shadow: 0 0 24px rgba(39,216,255,0.26);
+  display: grid;
+  place-items: center;
+  font-family: "Syne", sans-serif;
+  font-weight: 800;
+  font-size: 18px;
+  color: var(--cyan2);
+  border: 1px solid rgba(39,216,255,0.35);
+  background: radial-gradient(circle at 30% 30%, rgba(39,216,255,0.22), rgba(7,17,31,0.95));
+  box-shadow: 0 0 24px rgba(39,216,255,0.22);
 }
 
 .brand-name {
@@ -100,6 +111,47 @@ body:before {
   margin-top: 2px;
 }
 
+.top-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.industry-switcher {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.industry-btn {
+  border: 1px solid rgba(255,255,255,0.10);
+  color: var(--text);
+  background: rgba(255,255,255,0.04);
+  border-radius: 999px;
+  padding: 8px 12px;
+  font-size: 12px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.22s ease;
+}
+
+.industry-btn:hover,
+.industry-btn.active {
+  border-color: rgba(39,216,255,0.38);
+  background: rgba(39,216,255,0.10);
+  color: var(--cyan2);
+  box-shadow: 0 0 0 1px rgba(39,216,255,0.12) inset;
+}
+
+.industry-btn svg {
+  width: 14px;
+  height: 14px;
+  display: block;
+}
+
 .top-pill {
   border: 1px solid rgba(39,216,255,0.32);
   color: var(--cyan2);
@@ -108,6 +160,8 @@ body:before {
   padding: 8px 14px;
   font-size: 12px;
   font-weight: 700;
+  text-align: center;
+  min-width: 152px;
 }
 
 .main {
@@ -118,7 +172,7 @@ body:before {
 
 .hero {
   text-align: center;
-  max-width: 880px;
+  max-width: 920px;
   margin: 0 auto 34px;
 }
 
@@ -153,7 +207,7 @@ body:before {
 
 .hero p {
   margin: 0 auto;
-  max-width: 700px;
+  max-width: 760px;
   color: var(--muted);
   font-size: 18px;
   line-height: 1.65;
@@ -170,14 +224,12 @@ body:before {
   border: 1px solid var(--border);
   background: linear-gradient(180deg, rgba(255,255,255,0.055), rgba(255,255,255,0.018));
   border-radius: 18px;
-  padding: 18px;
-  min-height: 168px;
+  padding: 20px 18px;
+  min-height: 152px;
   cursor: pointer;
   transition: all 0.22s ease;
   position: relative;
   overflow: hidden;
-  display: flex;
-  flex-direction: column;
 }
 
 .engine-tile:before {
@@ -189,30 +241,31 @@ body:before {
   transition: opacity 0.22s ease;
 }
 
-.engine-tile:hover, .engine-tile.active {
+.engine-tile:hover,
+.engine-tile.active {
   transform: translateY(-4px);
   border-color: rgba(39,216,255,0.45);
   box-shadow: 0 20px 46px rgba(0,0,0,0.28), 0 0 30px rgba(39,216,255,0.10);
 }
 
-.engine-tile:hover:before, .engine-tile.active:before {
+.engine-tile:hover:before,
+.engine-tile.active:before {
   opacity: 1;
 }
 
-.tile-number {
-  width: 34px;
-  height: 34px;
+.tile-step {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid rgba(39,216,255,0.28);
-  background: rgba(39,216,255,0.08);
+  min-width: 32px;
+  height: 32px;
   border-radius: 999px;
+  background: rgba(39,216,255,0.10);
+  border: 1px solid rgba(39,216,255,0.26);
   color: var(--cyan2);
-  font-family: "Syne", sans-serif;
-  font-size: 12px;
   font-weight: 800;
-  margin-bottom: 16px;
+  font-size: 12px;
+  margin-bottom: 14px;
   position: relative;
 }
 
@@ -226,7 +279,7 @@ body:before {
 .engine-tile p {
   color: var(--muted);
   font-size: 13px;
-  line-height: 1.45;
+  line-height: 1.48;
   margin: 0;
   position: relative;
 }
@@ -242,7 +295,8 @@ body:before {
   display: grid;
 }
 
-.demo-panel, .coach-panel {
+.demo-panel,
+.coach-panel {
   border: 1px solid var(--border);
   background: rgba(11,20,36,0.9);
   border-radius: 22px;
@@ -260,17 +314,10 @@ body:before {
   gap: 12px;
 }
 
-.panel-head .badge {
-  min-width: 118px;
-  height: 30px;
-  flex: 0 0 auto;
-}
-
 .panel-title {
   font-family: "Syne", sans-serif;
   font-size: 20px;
   font-weight: 800;
-  line-height: 1.2;
 }
 
 .panel-label {
@@ -320,16 +367,13 @@ body:before {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 64px;
-  height: 28px;
-  padding: 5px 11px;
+  min-width: 90px;
+  padding: 5px 10px;
   border-radius: 999px;
   font-size: 11px;
   font-weight: 800;
   letter-spacing: 0.3px;
-  line-height: 1;
   text-align: center;
-  white-space: nowrap;
 }
 
 .hot {
@@ -457,12 +501,37 @@ body:before {
   margin-bottom: 4px;
 }
 
+.footer-note {
+  margin-top: 12px;
+  color: var(--dim);
+  text-align: center;
+  font-size: 12px;
+}
+
+@media (max-width: 1100px) {
+  .engine-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
 @media (max-width: 980px) {
+  .topbar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+  }
+
+  .top-actions {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
   .engine-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 
-  .engine-view, .close-screen {
+  .engine-view,
+  .close-screen {
     grid-template-columns: 1fr;
   }
 }
@@ -472,8 +541,17 @@ body:before {
     padding: 14px 16px;
   }
 
+  .main {
+    padding: 34px 16px 60px;
+  }
+
+  .industry-switcher {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
   .top-pill {
-    display: none;
+    min-width: 0;
   }
 
   .engine-grid {
@@ -490,246 +568,441 @@ body:before {
 <div class="app">
   <header class="topbar">
     <div class="brand">
-      <img src="logo.png" alt="Breakout AI Solutions logo">
+      <div class="logo-mark">BAI</div>
       <div>
         <div class="brand-name">Breakout AI Core</div>
         <div class="brand-sub">AI Operating Layer</div>
       </div>
     </div>
-    <div class="top-pill">Fractional AI Officer Demo</div>
+    <div class="top-actions">
+      <div class="industry-switcher">
+        <button class="industry-btn active" data-industry="attorney" aria-label="Switch to attorney presentation">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 3v3"></path>
+            <path d="M6 6h12"></path>
+            <path d="M8 6L5 12h6L8 6z"></path>
+            <path d="M16 6l-3 6h6l-3-6z"></path>
+            <path d="M12 6v11"></path>
+            <path d="M8 20h8"></path>
+          </svg>
+          <span>Attorney</span>
+        </button>
+        <button class="industry-btn" data-industry="hvac" aria-label="Switch to HVAC presentation">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M3 10.5L12 3l9 7.5"></path>
+            <path d="M5 9.5V21h14V9.5"></path>
+            <path d="M9 21v-6h6v6"></path>
+          </svg>
+          <span>HVAC</span>
+        </button>
+      </div>
+      <div class="top-pill" id="industryPill">Attorney Demo</div>
+    </div>
   </header>
 
   <main class="main">
     <section class="hero">
-      <div class="kicker">Breakout AI Solutions</div>
-      <h1>Your Business. <span>Running on AI.</span></h1>
-      <p>We install and manage the AI systems that replace manual work across your business. Strategy, transformation, education, and the operating layer to make it stick.</p>
+      <div class="kicker" id="heroKicker">Breakout AI Solutions</div>
+      <h1 id="heroTitle">Your Law Firm. <span>Running on AI.</span></h1>
+      <p id="heroCopy"></p>
     </section>
 
-    <section class="engine-grid" id="engineGrid">
-      <div class="engine-tile active" data-engine="growth">
-        <div class="tile-number">01</div>
-        <h3>Growth Engine</h3>
-        <p>Find, enrich, qualify, and route new leads automatically.</p>
-      </div>
-      <div class="engine-tile" data-engine="sales">
-        <div class="tile-number">02</div>
-        <h3>Sales Engine</h3>
-        <p>Move prospects from conversation to proposal to payment.</p>
-      </div>
-      <div class="engine-tile" data-engine="operations">
-        <div class="tile-number">03</div>
-        <h3>Operations Engine</h3>
-        <p>Automate scheduling, customer updates, tasks, and handoffs.</p>
-      </div>
-      <div class="engine-tile" data-engine="marketing">
-        <div class="tile-number">04</div>
-        <h3>Marketing Engine</h3>
-        <p>Create campaigns, content, website updates, SEO, and GEO.</p>
-      </div>
-      <div class="engine-tile" data-engine="intelligence">
-        <div class="tile-number">05</div>
-        <h3>Intelligence Engine</h3>
-        <p>Turn disconnected business activity into clear decisions.</p>
-      </div>
-    </section>
+    <section class="engine-grid" id="engineGrid"></section>
 
-    <section id="growth" class="engine-view active">
+    <section id="engineView" class="engine-view active">
       <div class="demo-panel">
         <div class="panel-head">
           <div>
-            <div class="panel-label">Demo System One</div>
-            <div class="panel-title">AI Lead Generation and Qualification</div>
+            <div class="panel-label" id="panelLabel"></div>
+            <div class="panel-title" id="panelTitle"></div>
           </div>
-          <span class="badge info">Live Flow</span>
+          <span class="badge info" id="panelBadge"></span>
         </div>
-        <div class="panel-body">
-          <div class="flow">
-            <div class="flow-card">
-              <div class="flow-top"><div class="flow-title">New Local Leads Found</div><span class="badge hot">Hot</span></div>
-              <div class="flow-text">AC repair request in Palm Desert. Estimated job value $850. Customer needs service today.</div>
-            </div>
-            <div class="flow-card">
-              <div class="flow-top"><div class="flow-title">AI Qualification</div><span class="badge warm">Qualified</span></div>
-              <div class="flow-text">AI confirms location, urgency, budget range, service type, and decision maker status.</div>
-            </div>
-            <div class="flow-card">
-              <div class="flow-top"><div class="flow-title">Next Action Triggered</div><span class="badge ready">Booked</span></div>
-              <div class="flow-text">Appointment booked for tomorrow at 10am. CRM updated. Owner notified. Follow up sequence prepared.</div>
-            </div>
-          </div>
-        </div>
+        <div class="panel-body" id="panelBody"></div>
       </div>
       <aside class="coach-panel">
-        <div class="panel-head"><div class="panel-title">What This Means For Your Business</div></div>
-        <div class="coach-section"><h4>Where Money Gets Lost</h4><p class="coach-quote">Most businesses lose money before the sale ever starts. Leads come in, but nobody responds fast enough or qualifies them properly.</p></div>
-        <div class="coach-section"><h4>Visibility Check</h4><p>You get clear visibility into how many leads come in, how fast they are handled, and how many opportunities are falling through the cracks.</p></div>
-        <div class="coach-section"><h4>What Breakout AI Adds</h4><p>This engine gives you speed. It finds leads, qualifies them, and moves them into action before a competitor gets there.</p></div>
-      </aside>
-    </section>
-
-    <section id="sales" class="engine-view">
-      <div class="demo-panel">
-        <div class="panel-head">
-          <div>
-            <div class="panel-label">Demo System Two</div>
-            <div class="panel-title">AI Sales Flow</div>
-          </div>
-          <span class="badge info">Revenue Flow</span>
-        </div>
-        <div class="panel-body">
-          <div class="flow">
-            <div class="flow-card">
-              <div class="flow-top"><div class="flow-title">Proposal Generated</div><span class="badge info">$6,800</span></div>
-              <div class="flow-text">AI creates a clean proposal for a commercial HVAC installation with scope, timeline, price, and next step.</div>
-            </div>
-            <div class="flow-card">
-              <div class="flow-top"><div class="flow-title">Follow Up Sequence</div><span class="badge warm">Active</span></div>
-              <div class="flow-text">Email and SMS reminders are scheduled automatically until the client responds.</div>
-            </div>
-            <div class="flow-card">
-              <div class="flow-top"><div class="flow-title">Invoice Created</div><span class="badge ready">Ready</span></div>
-              <div class="flow-text">Once approved, the invoice is generated, sent, and tracked inside the system.</div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <aside class="coach-panel">
-        <div class="panel-head"><div class="panel-title">What This Means For Your Business</div></div>
-        <div class="coach-section"><h4>Where Money Gets Lost</h4><p class="coach-quote">This is where a lot of companies slow down. The lead is good, but the proposal, follow up, and paperwork take too long.</p></div>
-        <div class="coach-section"><h4>Visibility Check</h4><p>Your team gets a faster path from first conversation to proposal, follow up, approval, and payment.</p></div>
-        <div class="coach-section"><h4>What Breakout AI Adds</h4><p>This does not just create documents. It creates momentum from interest to signed proposal to payment.</p></div>
-      </aside>
-    </section>
-
-    <section id="operations" class="engine-view">
-      <div class="demo-panel">
-        <div class="panel-head">
-          <div>
-            <div class="panel-label">Demo System Three</div>
-            <div class="panel-title">AI Operations and Scheduling</div>
-          </div>
-          <span class="badge info">Admin Flow</span>
-        </div>
-        <div class="panel-body">
-          <div class="flow">
-            <div class="flow-card">
-              <div class="flow-top"><div class="flow-title">Job Scheduled</div><span class="badge ready">Confirmed</span></div>
-              <div class="flow-text">AI checks availability, assigns the job, and updates the calendar.</div>
-            </div>
-            <div class="flow-card">
-              <div class="flow-top"><div class="flow-title">Customer Updated</div><span class="badge info">Sent</span></div>
-              <div class="flow-text">Customer receives arrival window, prep instructions, and confirmation.</div>
-            </div>
-            <div class="flow-card">
-              <div class="flow-top"><div class="flow-title">Internal Tasks Created</div><span class="badge warm">Queued</span></div>
-              <div class="flow-text">Parts, technician notes, reminders, and completion steps are pushed into the workflow.</div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <aside class="coach-panel">
-        <div class="panel-head"><div class="panel-title">What This Means For Your Business</div></div>
-        <div class="coach-section"><h4>Where Money Gets Lost</h4><p class="coach-quote">After the sale is where things usually get messy. Scheduling, updates, tasks, reminders, and handoffs all compete for attention.</p></div>
-        <div class="coach-section"><h4>Visibility Check</h4><p>The system shows where mistakes usually happen after a customer says yes, then helps remove those gaps from the workflow.</p></div>
-        <div class="coach-section"><h4>What Breakout AI Adds</h4><p>This engine removes friction from the back office so the team can focus on delivery instead of chasing details.</p></div>
-      </aside>
-    </section>
-
-    <section id="marketing" class="engine-view">
-      <div class="demo-panel">
-        <div class="panel-head">
-          <div>
-            <div class="panel-label">Demo System Four</div>
-            <div class="panel-title">AI Marketing and Digital Presence</div>
-          </div>
-          <span class="badge info">Content Flow</span>
-        </div>
-        <div class="panel-body">
-          <div class="flow">
-            <div class="flow-card">
-              <div class="flow-top"><div class="flow-title">Website Refresh</div><span class="badge ready">Preview</span></div>
-              <div class="flow-text">AI creates a mobile first landing page tailored to the business, offer, location, and customer type.</div>
-            </div>
-            <div class="flow-card">
-              <div class="flow-top"><div class="flow-title">Content Created</div><span class="badge info">Drafted</span></div>
-              <div class="flow-text">Social posts, email campaigns, and local service pages are drafted from one strategy brief.</div>
-            </div>
-            <div class="flow-card">
-              <div class="flow-top"><div class="flow-title">SEO and GEO Setup</div><span class="badge warm">Optimized</span></div>
-              <div class="flow-text">The system prepares search friendly and AI search friendly content so the business is easier to find.</div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <aside class="coach-panel">
-        <div class="panel-head"><div class="panel-title">What This Means For Your Business</div></div>
-        <div class="coach-section"><h4>Where Money Gets Lost</h4><p class="coach-quote">A lot of businesses have outdated websites and inconsistent marketing. AI can fix both if it is guided correctly.</p></div>
-        <div class="coach-section"><h4>Visibility Check</h4><p>Your website and marketing become active business drivers instead of static assets that simply exist online.</p></div>
-        <div class="coach-section"><h4>What Breakout AI Adds</h4><p>This engine turns your digital presence into an active sales asset, not just an online brochure.</p></div>
-      </aside>
-    </section>
-
-    <section id="intelligence" class="engine-view">
-      <div class="demo-panel">
-        <div class="panel-head">
-          <div>
-            <div class="panel-label">Demo System Five</div>
-            <div class="panel-title">AI Business Intelligence Dashboard</div>
-          </div>
-          <span class="badge info">Command Center</span>
-        </div>
-        <div class="panel-body">
-          <div class="mini-dashboard">
-            <div class="metric"><div class="metric-num">42</div><div class="metric-label">Leads Handled</div></div>
-            <div class="metric"><div class="metric-num">$96K</div><div class="metric-label">Pipeline Value</div></div>
-            <div class="metric"><div class="metric-num">120</div><div class="metric-label">Hours Saved</div></div>
-          </div>
-          <div class="flow" style="margin-top: 12px;">
-            <div class="flow-card">
-              <div class="flow-top"><div class="flow-title">AI Insight</div><span class="badge ready">Action</span></div>
-              <div class="flow-text">The system noticed that after hours leads convert 31% higher when contacted within 5 minutes.</div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <aside class="coach-panel">
-        <div class="panel-head"><div class="panel-title">What This Means For Your Business</div></div>
-        <div class="coach-section"><h4>Where Money Gets Lost</h4><p class="coach-quote">This is the part most owners have never had. One place to see what is happening across the whole business.</p></div>
-        <div class="coach-section"><h4>Visibility Check</h4><p>You get one dashboard showing where time is being lost, where money is being missed, and what needs attention first.</p></div>
-        <div class="coach-section"><h4>What Breakout AI Adds</h4><p>This is where Breakout AI becomes sticky. It becomes the central nervous system of the business.</p></div>
+        <div class="panel-head"><div class="panel-title" id="sideTitle">What This Means</div></div>
+        <div id="sideBody"></div>
       </aside>
     </section>
 
     <section class="close-screen">
       <div>
-        <h2>We Do Not Just Install AI. We Operate It With You.</h2>
-        <p>Breakout AI Solutions comes in as your fractional AI officer. We identify the highest value opportunities, install the systems, train your team, and keep improving the operating layer every month.</p>
+        <h2 id="closeTitle"></h2>
+        <p id="closeCopy"></p>
       </div>
       <div class="close-price">
-        <strong>$3K to $8K</strong>
-        <span>Typical monthly starting range depending on scope</span>
+        <strong id="closePrice"></strong>
+        <span id="closePriceNote"></span>
       </div>
     </section>
+
+    <div class="footer-note">Use the buttons in the upper right to switch between industry presentations.</div>
   </main>
 </div>
 
 <script>
-const tiles = document.querySelectorAll(".engine-tile");
-const views = document.querySelectorAll(".engine-view");
-
-function showEngine(id) {
-  tiles.forEach(tile => tile.classList.toggle("active", tile.dataset.engine === id));
-  views.forEach(view => view.classList.toggle("active", view.id === id));
-  const activeView = document.getElementById(id);
-  if (activeView) {
-    activeView.scrollIntoView({ behavior: "smooth", block: "start" });
+const industryConfigs = {
+  attorney: {
+    pill: "Attorney Demo",
+    kicker: "Breakout AI Solutions",
+    heroTitle: 'Your Law Firm. <span>Running on AI.</span>',
+    heroCopy: 'We install and manage AI systems that help law firms capture inquiries, qualify potential clients, schedule consultations, streamline onboarding, improve communication, and see the whole pipeline more clearly.',
+    close: {
+      title: 'We Do Not Just Install AI. We Help Your Firm Operate Smarter.',
+      copy: 'Breakout AI Solutions comes in as your fractional AI officer. We identify the highest value opportunities, install the systems, train the team, and keep improving the operating layer every month.',
+      price: '$3K to $8K',
+      note: 'Typical monthly starting range depending on scope'
+    },
+    sections: [
+      {
+        key: 'growth',
+        tileTitle: 'Growth Engine',
+        tileDesc: 'Attract and capture more qualified client opportunities from web, referrals, calls, and campaigns.',
+        panelLabel: 'Demo System One',
+        panelTitle: 'AI Client Acquisition and Intake',
+        panelBadge: 'Lead Flow',
+        type: 'flow',
+        cards: [
+          { title: 'New Case Inquiry Received', badge: 'New', badgeClass: 'hot', text: 'Potential personal injury client reaches out through the website after a car accident and requests a consultation.' },
+          { title: 'AI Intake and Qualification', badge: 'Screened', badgeClass: 'warm', text: 'The system captures practice area, incident date, location, urgency, and core case details, then organizes the intake instantly.' },
+          { title: 'Next Action Triggered', badge: 'Booked', badgeClass: 'ready', text: 'Consultation request is routed to the right team member. Intake form is sent. CRM is updated. Follow up is ready to go.' }
+        ],
+        sideSections: [
+          { title: 'Why It Matters', className: 'coach-quote', text: 'Potential clients often reach out when the issue feels urgent. If response time is slow or intake is inconsistent, strong matters go somewhere else.' },
+          { title: 'What It Solves', text: 'One system captures every inquiry, organizes intake, screens for fit, and keeps nothing buried in voicemail, email, or manual notes.' },
+          { title: 'The Result', text: 'The firm responds faster, staff spends less time chasing details, and more qualified consultations move toward signed representation.' }
+        ]
+      },
+      {
+        key: 'sales',
+        tileTitle: 'Sales Engine',
+        tileDesc: 'Move qualified prospects from consultation to engagement letter, retainer, and payment.',
+        panelLabel: 'Demo System Two',
+        panelTitle: 'AI Consultation to Retainer Flow',
+        panelBadge: 'Revenue Flow',
+        type: 'flow',
+        cards: [
+          { title: 'Consultation Scheduled', badge: 'Active', badgeClass: 'info', text: 'The system coordinates calendars, confirms the appointment, and sends reminders so more consultations actually happen.' },
+          { title: 'Retainer Packet Prepared', badge: 'Ready', badgeClass: 'warm', text: 'Once the consultation qualifies, engagement documents and next step instructions are prepared automatically.' },
+          { title: 'Payment and Matter Opened', badge: 'Signed', badgeClass: 'ready', text: 'When the client moves forward, payment request, file setup, and onboarding tasks are triggered without extra admin work.' }
+        ],
+        sideSections: [
+          { title: 'Why It Matters', className: 'coach-quote', text: 'A good consultation can still stall if documents, reminders, and payment steps take too long.' },
+          { title: 'What It Solves', text: 'This flow keeps momentum moving from scheduled consultation to signed client instead of relying on scattered manual follow up.' },
+          { title: 'The Result', text: 'The firm closes more efficiently, reduces admin lag, and creates a smoother first experience for new clients.' }
+        ]
+      },
+      {
+        key: 'operations',
+        tileTitle: 'Operations Engine',
+        tileDesc: 'Automate client updates, internal handoffs, document requests, and day to day workflow.',
+        panelLabel: 'Demo System Three',
+        panelTitle: 'AI Client Communication and Operations',
+        panelBadge: 'Matter Flow',
+        type: 'flow',
+        cards: [
+          { title: 'Client Update Sent', badge: 'Sent', badgeClass: 'ready', text: 'Status updates, appointment reminders, and document requests are delivered consistently and on time.' },
+          { title: 'Internal Tasks Created', badge: 'Queued', badgeClass: 'warm', text: 'Case tasks, reminders, and handoffs are assigned automatically so the next step is always visible.' },
+          { title: 'Document Collection Tracked', badge: 'Tracked', badgeClass: 'info', text: 'Requested items are monitored in one place so staff can see what has been received and what still needs attention.' }
+        ],
+        sideSections: [
+          { title: 'Why It Matters', className: 'coach-quote', text: 'Even strong firms lose time to repetitive communication, document chasing, and handoff confusion.' },
+          { title: 'What It Solves', text: 'This engine brings consistency to the back office so important client communication and internal tasks do not depend on memory.' },
+          { title: 'The Result', text: 'Teams work with less friction, clients feel informed, and staff can focus more on legal work than on routine coordination.' }
+        ]
+      },
+      {
+        key: 'marketing',
+        tileTitle: 'Marketing Engine',
+        tileDesc: 'Create content, improve visibility, strengthen local search, and support steady client acquisition.',
+        panelLabel: 'Demo System Four',
+        panelTitle: 'AI Marketing and Digital Presence',
+        panelBadge: 'Content Flow',
+        type: 'flow',
+        cards: [
+          { title: 'Website Content Updated', badge: 'Live', badgeClass: 'ready', text: 'Practice area pages and intake focused landing pages are refreshed to match services, location, and audience.' },
+          { title: 'Campaign Content Created', badge: 'Drafted', badgeClass: 'info', text: 'Blog posts, email sequences, newsletters, and social content are produced from a single strategy brief.' },
+          { title: 'SEO and Review Strategy Aligned', badge: 'Optimized', badgeClass: 'warm', text: 'The system supports local visibility, review follow up, and AI search readiness so the firm is easier to find and easier to trust.' }
+        ],
+        sideSections: [
+          { title: 'Why It Matters', className: 'coach-quote', text: 'A strong reputation online is often the first conversation a firm has with a potential client.' },
+          { title: 'What It Solves', text: 'This engine keeps the website, search presence, and client facing content active instead of outdated or inconsistent.' },
+          { title: 'The Result', text: 'The firm becomes more visible, more credible, and better positioned to attract the right cases.' }
+        ]
+      },
+      {
+        key: 'intelligence',
+        tileTitle: 'Intelligence Engine',
+        tileDesc: 'Turn intake, consultations, matters, and team activity into clear decision making.',
+        panelLabel: 'Demo System Five',
+        panelTitle: 'AI Business Intelligence Dashboard',
+        panelBadge: 'Command Center',
+        type: 'dashboard',
+        metrics: [
+          { value: '48', label: 'Inquiries Captured' },
+          { value: '19', label: 'Consultations Booked' },
+          { value: '84', label: 'Hours Saved' }
+        ],
+        cards: [
+          { title: 'AI Insight', badge: 'Action', badgeClass: 'ready', text: 'The system shows that inquiries contacted within 10 minutes are far more likely to convert into consultations.' }
+        ],
+        sideSections: [
+          { title: 'Why It Matters', className: 'coach-quote', text: 'Most firms have pieces of data scattered everywhere but do not have one clear operating view.' },
+          { title: 'What It Solves', text: 'This dashboard turns intake, scheduling, and workflow activity into decision support that leadership can actually use.' },
+          { title: 'The Result', text: 'The firm can see where time is being lost, what is converting, and where the next operational improvement should happen.' }
+        ]
+      }
+    ]
+  },
+  hvac: {
+    pill: 'HVAC Demo',
+    kicker: 'Breakout AI Solutions',
+    heroTitle: 'Your HVAC Business. <span>Running on AI.</span>',
+    heroCopy: 'We install and manage AI systems that help HVAC businesses get found locally, capture every customer inquiry, convert more opportunities into booked work, streamline operations, and see where revenue is leaking.',
+    close: {
+      title: 'We Do Not Just Install AI. We Help You Book More Revenue and Run Leaner.',
+      copy: 'Breakout AI Solutions comes in as your fractional AI officer. We identify the highest value opportunities, install the systems, train the team, and keep improving the operating layer every month.',
+      price: '$3K to $8K',
+      note: 'Typical monthly starting range depending on scope'
+    },
+    sections: [
+      {
+        key: 'marketing',
+        tileTitle: 'Marketing Engine',
+        tileDesc: 'Get found in Google, maps, ads, reviews, and local search when customers need help now.',
+        panelLabel: 'Demo System One',
+        panelTitle: 'AI Marketing and Local Visibility',
+        panelBadge: 'Demand Flow',
+        type: 'flow',
+        cards: [
+          { title: 'Local Visibility Improved', badge: 'Live', badgeClass: 'ready', text: 'Google Business Profile, service pages, and local SEO are aligned so the business shows up where nearby customers are searching.' },
+          { title: 'Campaigns Activated', badge: 'Running', badgeClass: 'warm', text: 'Google ads, seasonal offers, and email campaigns are launched from one strategy brief with clearer targeting.' },
+          { title: 'Reviews and Reputation Boosted', badge: 'Growing', badgeClass: 'info', text: 'The system prompts happy customers for reviews and turns reputation into a stronger source of inbound calls.' }
+        ],
+        sideSections: [
+          { title: 'Why It Matters', className: 'coach-quote', text: 'When people need HVAC help, they usually search right now. Visibility is what creates the opportunity.' },
+          { title: 'What It Solves', text: 'This engine improves local presence across search, maps, ads, and reviews so the business is easier to find and easier to trust.' },
+          { title: 'The Result', text: 'The company generates more qualified inbound demand without guessing where marketing dollars are actually working.' }
+        ]
+      },
+      {
+        key: 'intake',
+        tileTitle: 'Lead Intake Engine',
+        tileDesc: 'Capture calls, form fills, quote requests, and missed calls before they go cold.',
+        panelLabel: 'Demo System Two',
+        panelTitle: 'AI Lead Intake and Qualification',
+        panelBadge: 'Lead Flow',
+        type: 'flow',
+        cards: [
+          { title: 'New Customer Inquiry Received', badge: 'Hot', badgeClass: 'hot', text: 'AC repair request comes in from Google. Customer is in Palm Desert and needs service today.' },
+          { title: 'AI Qualification', badge: 'Qualified', badgeClass: 'warm', text: 'The system confirms service area, urgency, property type, issue summary, and scheduling preference in real time.' },
+          { title: 'Next Action Triggered', badge: 'Booked', badgeClass: 'ready', text: 'Appointment request is routed instantly. CRM is updated. Owner is notified. Follow up is already prepared.' }
+        ],
+        sideSections: [
+          { title: 'Why It Matters', className: 'coach-quote', text: 'Many HVAC businesses do not need random leads. They need to stop losing the opportunities they are already paying for.' },
+          { title: 'What It Solves', text: 'This engine captures inbound demand, responds fast, qualifies it, and keeps no call, form, or missed inquiry from slipping through the cracks.' },
+          { title: 'The Result', text: 'The team books more jobs, responds faster after hours, and creates a better customer experience from the first touch.' }
+        ]
+      },
+      {
+        key: 'sales',
+        tileTitle: 'Sales Engine',
+        tileDesc: 'Turn service requests and estimates into booked jobs, approvals, invoices, and payments.',
+        panelLabel: 'Demo System Three',
+        panelTitle: 'AI Sales and Estimate Flow',
+        panelBadge: 'Revenue Flow',
+        type: 'flow',
+        cards: [
+          { title: 'Estimate Generated', badge: '$6,800', badgeClass: 'info', text: 'The system assembles a clean estimate with scope, timeline, and next step for a new installation opportunity.' },
+          { title: 'Follow Up Sequence', badge: 'Active', badgeClass: 'warm', text: 'Email and text reminders are scheduled automatically until the customer responds or books.' },
+          { title: 'Invoice Created', badge: 'Ready', badgeClass: 'ready', text: 'Once approved, the invoice is generated, sent, and tracked without extra administrative back and forth.' }
+        ],
+        sideSections: [
+          { title: 'Why It Matters', className: 'coach-quote', text: 'Good opportunities still stall when estimates, reminders, and paperwork take too long.' },
+          { title: 'What It Solves', text: 'This engine creates momentum from inquiry to estimate to approved job instead of leaving that process to scattered manual follow up.' },
+          { title: 'The Result', text: 'The business closes more work, shortens response time, and turns interested customers into booked revenue faster.' }
+        ]
+      },
+      {
+        key: 'operations',
+        tileTitle: 'Operations Engine',
+        tileDesc: 'Automate scheduling, dispatch, customer updates, and internal handoffs.',
+        panelLabel: 'Demo System Four',
+        panelTitle: 'AI Operations and Scheduling',
+        panelBadge: 'Admin Flow',
+        type: 'flow',
+        cards: [
+          { title: 'Job Scheduled', badge: 'Confirmed', badgeClass: 'ready', text: 'The system checks availability, assigns the job, and updates the calendar without back and forth calls.' },
+          { title: 'Customer Updated', badge: 'Sent', badgeClass: 'info', text: 'Arrival windows, reminders, and prep instructions are sent automatically so customers stay informed.' },
+          { title: 'Internal Tasks Created', badge: 'Queued', badgeClass: 'warm', text: 'Parts, technician notes, reminders, and completion steps are pushed into the workflow before the team arrives.' }
+        ],
+        sideSections: [
+          { title: 'Why It Matters', className: 'coach-quote', text: 'After the job is booked, scheduling and communication are where a lot of operational friction starts.' },
+          { title: 'What It Solves', text: 'This engine keeps the calendar, customer communication, and internal task flow connected so the team is not chasing details.' },
+          { title: 'The Result', text: 'Dispatch runs smoother, customers feel taken care of, and staff spends less time doing repetitive coordination work.' }
+        ]
+      },
+      {
+        key: 'intelligence',
+        tileTitle: 'Intelligence Engine',
+        tileDesc: 'See booking speed, response gaps, pipeline value, and hidden revenue leaks in one place.',
+        panelLabel: 'Demo System Five',
+        panelTitle: 'AI Business Intelligence Dashboard',
+        panelBadge: 'Command Center',
+        type: 'dashboard',
+        metrics: [
+          { value: '42', label: 'Leads Handled' },
+          { value: '$96K', label: 'Pipeline Value' },
+          { value: '120', label: 'Hours Saved' }
+        ],
+        cards: [
+          { title: 'AI Insight', badge: 'Action', badgeClass: 'ready', text: 'The system shows that after hours leads convert higher when contacted within 5 minutes.' }
+        ],
+        sideSections: [
+          { title: 'Why It Matters', className: 'coach-quote', text: 'Owners often know they are busy, but they still cannot clearly see where money and time are being lost.' },
+          { title: 'What It Solves', text: 'This dashboard turns lead flow, booking activity, and team performance into a clear operating view.' },
+          { title: 'The Result', text: 'The business can see what is working, what is leaking, and where the next improvement should happen first.' }
+        ]
+      }
+    ]
   }
+};
+
+let currentIndustry = 'attorney';
+let activeSection = 0;
+
+const heroKicker = document.getElementById('heroKicker');
+const heroTitle = document.getElementById('heroTitle');
+const heroCopy = document.getElementById('heroCopy');
+const industryPill = document.getElementById('industryPill');
+const engineGrid = document.getElementById('engineGrid');
+const panelLabel = document.getElementById('panelLabel');
+const panelTitle = document.getElementById('panelTitle');
+const panelBadge = document.getElementById('panelBadge');
+const panelBody = document.getElementById('panelBody');
+const sideBody = document.getElementById('sideBody');
+const closeTitle = document.getElementById('closeTitle');
+const closeCopy = document.getElementById('closeCopy');
+const closePrice = document.getElementById('closePrice');
+const closePriceNote = document.getElementById('closePriceNote');
+const switchButtons = document.querySelectorAll('.industry-btn');
+
+function renderTiles() {
+  const config = industryConfigs[currentIndustry];
+  engineGrid.innerHTML = config.sections.map((section, index) => `
+    <div class="engine-tile ${index === activeSection ? 'active' : ''}" data-index="${index}">
+      <div class="tile-step">${index + 1}</div>
+      <h3>${section.tileTitle}</h3>
+      <p>${section.tileDesc}</p>
+    </div>
+  `).join('');
+
+  engineGrid.querySelectorAll('.engine-tile').forEach(tile => {
+    tile.addEventListener('click', () => {
+      activeSection = Number(tile.dataset.index);
+      renderTiles();
+      renderSection();
+      document.getElementById('engineView').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
 }
 
-tiles.forEach(tile => {
-  tile.addEventListener("click", () => showEngine(tile.dataset.engine));
+function renderFlowCards(cards) {
+  return `
+    <div class="flow">
+      ${cards.map(card => `
+        <div class="flow-card">
+          <div class="flow-top">
+            <div class="flow-title">${card.title}</div>
+            <span class="badge ${card.badgeClass}">${card.badge}</span>
+          </div>
+          <div class="flow-text">${card.text}</div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+function renderDashboard(section) {
+  return `
+    <div class="mini-dashboard">
+      ${section.metrics.map(metric => `
+        <div class="metric">
+          <div class="metric-num">${metric.value}</div>
+          <div class="metric-label">${metric.label}</div>
+        </div>
+      `).join('')}
+    </div>
+    <div style="margin-top: 12px;">
+      ${renderFlowCards(section.cards)}
+    </div>
+  `;
+}
+
+function renderSection() {
+  const config = industryConfigs[currentIndustry];
+  const section = config.sections[activeSection];
+
+  panelLabel.textContent = section.panelLabel;
+  panelTitle.textContent = section.panelTitle;
+  panelBadge.textContent = section.panelBadge;
+  panelBody.innerHTML = section.type === 'dashboard' ? renderDashboard(section) : renderFlowCards(section.cards);
+
+  sideBody.innerHTML = section.sideSections.map((item, index) => `
+    <div class="coach-section">
+      <h4>${item.title}</h4>
+      <p class="${item.className || ''}">${item.text}</p>
+    </div>
+  `).join('');
+}
+
+function renderIndustry() {
+  const config = industryConfigs[currentIndustry];
+  heroKicker.textContent = config.kicker;
+  heroTitle.innerHTML = config.heroTitle;
+  heroCopy.textContent = config.heroCopy;
+  industryPill.textContent = config.pill;
+  closeTitle.textContent = config.close.title;
+  closeCopy.textContent = config.close.copy;
+  closePrice.textContent = config.close.price;
+  closePriceNote.textContent = config.close.note;
+
+  switchButtons.forEach(button => {
+    button.classList.toggle('active', button.dataset.industry === currentIndustry);
+  });
+
+  renderTiles();
+  renderSection();
+}
+
+function setIndustry(industry) {
+  if (!industryConfigs[industry]) return;
+  currentIndustry = industry;
+  activeSection = 0;
+  renderIndustry();
+}
+
+switchButtons.forEach(button => {
+  button.addEventListener('click', () => {
+    const industry = button.dataset.industry;
+    setIndustry(industry);
+    window.location.hash = industry;
+  });
 });
+
+window.addEventListener('hashchange', () => {
+  const industryFromHash = window.location.hash.replace('#', '');
+  if (industryConfigs[industryFromHash]) {
+    setIndustry(industryFromHash);
+  }
+});
+
+const industryFromHash = window.location.hash.replace('#', '');
+if (industryConfigs[industryFromHash]) {
+  currentIndustry = industryFromHash;
+}
+renderIndustry();
 </script>
 </body>
 </html>
