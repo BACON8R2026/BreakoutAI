@@ -176,6 +176,8 @@ body:before {
   transition: all 0.22s ease;
   position: relative;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .engine-tile:before {
@@ -197,8 +199,19 @@ body:before {
   opacity: 1;
 }
 
-.tile-icon {
-  font-size: 26px;
+.tile-number {
+  width: 34px;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(39,216,255,0.28);
+  background: rgba(39,216,255,0.08);
+  border-radius: 999px;
+  color: var(--cyan2);
+  font-family: "Syne", sans-serif;
+  font-size: 12px;
+  font-weight: 800;
   margin-bottom: 16px;
   position: relative;
 }
@@ -247,10 +260,17 @@ body:before {
   gap: 12px;
 }
 
+.panel-head .badge {
+  min-width: 118px;
+  height: 30px;
+  flex: 0 0 auto;
+}
+
 .panel-title {
   font-family: "Syne", sans-serif;
   font-size: 20px;
   font-weight: 800;
+  line-height: 1.2;
 }
 
 .panel-label {
@@ -301,11 +321,15 @@ body:before {
   align-items: center;
   justify-content: center;
   min-width: 64px;
-  padding: 5px 9px;
+  height: 28px;
+  padding: 5px 11px;
   border-radius: 999px;
   font-size: 11px;
   font-weight: 800;
   letter-spacing: 0.3px;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
 }
 
 .hot {
@@ -484,27 +508,27 @@ body:before {
 
     <section class="engine-grid" id="engineGrid">
       <div class="engine-tile active" data-engine="growth">
-        <div class="tile-icon">ð</div>
+        <div class="tile-number">01</div>
         <h3>Growth Engine</h3>
         <p>Find, enrich, qualify, and route new leads automatically.</p>
       </div>
       <div class="engine-tile" data-engine="sales">
-        <div class="tile-icon">ð¼</div>
+        <div class="tile-number">02</div>
         <h3>Sales Engine</h3>
         <p>Move prospects from conversation to proposal to payment.</p>
       </div>
       <div class="engine-tile" data-engine="operations">
-        <div class="tile-icon">âï¸</div>
+        <div class="tile-number">03</div>
         <h3>Operations Engine</h3>
         <p>Automate scheduling, customer updates, tasks, and handoffs.</p>
       </div>
       <div class="engine-tile" data-engine="marketing">
-        <div class="tile-icon">ð£</div>
+        <div class="tile-number">04</div>
         <h3>Marketing Engine</h3>
         <p>Create campaigns, content, website updates, SEO, and GEO.</p>
       </div>
       <div class="engine-tile" data-engine="intelligence">
-        <div class="tile-icon">ð§ </div>
+        <div class="tile-number">05</div>
         <h3>Intelligence Engine</h3>
         <p>Turn disconnected business activity into clear decisions.</p>
       </div>
@@ -537,10 +561,10 @@ body:before {
         </div>
       </div>
       <aside class="coach-panel">
-        <div class="panel-head"><div class="panel-title">What You Say, Dave</div></div>
-        <div class="coach-section"><h4>Open With This</h4><p class="coach-quote">Most businesses lose money before the sale ever starts. Leads come in, but nobody responds fast enough or qualifies them properly.</p></div>
-        <div class="coach-section"><h4>Ask This</h4><p>Do you currently know how many leads come in, how fast they get handled, and how many fall through the cracks?</p></div>
-        <div class="coach-section"><h4>Pitch This</h4><p>This engine gives you speed. It finds leads, qualifies them, and moves them into action before a competitor gets there.</p></div>
+        <div class="panel-head"><div class="panel-title">What This Means For Your Business</div></div>
+        <div class="coach-section"><h4>Where Money Gets Lost</h4><p class="coach-quote">Most businesses lose money before the sale ever starts. Leads come in, but nobody responds fast enough or qualifies them properly.</p></div>
+        <div class="coach-section"><h4>Visibility Check</h4><p>You get clear visibility into how many leads come in, how fast they are handled, and how many opportunities are falling through the cracks.</p></div>
+        <div class="coach-section"><h4>What Breakout AI Adds</h4><p>This engine gives you speed. It finds leads, qualifies them, and moves them into action before a competitor gets there.</p></div>
       </aside>
     </section>
 
@@ -571,10 +595,10 @@ body:before {
         </div>
       </div>
       <aside class="coach-panel">
-        <div class="panel-head"><div class="panel-title">What You Say, Dave</div></div>
-        <div class="coach-section"><h4>Open With This</h4><p class="coach-quote">This is where a lot of companies slow down. The lead is good, but the proposal, follow up, and paperwork take too long.</p></div>
-        <div class="coach-section"><h4>Ask This</h4><p>How much time do you or your team spend creating proposals and chasing follow ups every week?</p></div>
-        <div class="coach-section"><h4>Pitch This</h4><p>This does not just create documents. It creates momentum from interest to signed proposal to payment.</p></div>
+        <div class="panel-head"><div class="panel-title">What This Means For Your Business</div></div>
+        <div class="coach-section"><h4>Where Money Gets Lost</h4><p class="coach-quote">This is where a lot of companies slow down. The lead is good, but the proposal, follow up, and paperwork take too long.</p></div>
+        <div class="coach-section"><h4>Visibility Check</h4><p>Your team gets a faster path from first conversation to proposal, follow up, approval, and payment.</p></div>
+        <div class="coach-section"><h4>What Breakout AI Adds</h4><p>This does not just create documents. It creates momentum from interest to signed proposal to payment.</p></div>
       </aside>
     </section>
 
@@ -605,10 +629,10 @@ body:before {
         </div>
       </div>
       <aside class="coach-panel">
-        <div class="panel-head"><div class="panel-title">What You Say, Dave</div></div>
-        <div class="coach-section"><h4>Open With This</h4><p class="coach-quote">After the sale is where things usually get messy. Scheduling, updates, tasks, reminders, and handoffs all compete for attention.</p></div>
-        <div class="coach-section"><h4>Ask This</h4><p>Where do most mistakes happen after a customer says yes?</p></div>
-        <div class="coach-section"><h4>Pitch This</h4><p>This engine removes friction from the back office so the team can focus on delivery instead of chasing details.</p></div>
+        <div class="panel-head"><div class="panel-title">What This Means For Your Business</div></div>
+        <div class="coach-section"><h4>Where Money Gets Lost</h4><p class="coach-quote">After the sale is where things usually get messy. Scheduling, updates, tasks, reminders, and handoffs all compete for attention.</p></div>
+        <div class="coach-section"><h4>Visibility Check</h4><p>The system shows where mistakes usually happen after a customer says yes, then helps remove those gaps from the workflow.</p></div>
+        <div class="coach-section"><h4>What Breakout AI Adds</h4><p>This engine removes friction from the back office so the team can focus on delivery instead of chasing details.</p></div>
       </aside>
     </section>
 
@@ -639,10 +663,10 @@ body:before {
         </div>
       </div>
       <aside class="coach-panel">
-        <div class="panel-head"><div class="panel-title">What You Say, Dave</div></div>
-        <div class="coach-section"><h4>Open With This</h4><p class="coach-quote">A lot of businesses have outdated websites and inconsistent marketing. AI can fix both if it is guided correctly.</p></div>
-        <div class="coach-section"><h4>Ask This</h4><p>Do you feel like your website and marketing actually bring in business, or do they just exist?</p></div>
-        <div class="coach-section"><h4>Pitch This</h4><p>This engine turns your digital presence into an active sales asset, not just an online brochure.</p></div>
+        <div class="panel-head"><div class="panel-title">What This Means For Your Business</div></div>
+        <div class="coach-section"><h4>Where Money Gets Lost</h4><p class="coach-quote">A lot of businesses have outdated websites and inconsistent marketing. AI can fix both if it is guided correctly.</p></div>
+        <div class="coach-section"><h4>Visibility Check</h4><p>Your website and marketing become active business drivers instead of static assets that simply exist online.</p></div>
+        <div class="coach-section"><h4>What Breakout AI Adds</h4><p>This engine turns your digital presence into an active sales asset, not just an online brochure.</p></div>
       </aside>
     </section>
 
@@ -670,10 +694,10 @@ body:before {
         </div>
       </div>
       <aside class="coach-panel">
-        <div class="panel-head"><div class="panel-title">What You Say, Dave</div></div>
-        <div class="coach-section"><h4>Open With This</h4><p class="coach-quote">This is the part most owners have never had. One place to see what is happening across the whole business.</p></div>
-        <div class="coach-section"><h4>Ask This</h4><p>If you had one dashboard telling you where time and money were being lost, what would you want to see first?</p></div>
-        <div class="coach-section"><h4>Pitch This</h4><p>This is where Breakout AI becomes sticky. It becomes the central nervous system of the business.</p></div>
+        <div class="panel-head"><div class="panel-title">What This Means For Your Business</div></div>
+        <div class="coach-section"><h4>Where Money Gets Lost</h4><p class="coach-quote">This is the part most owners have never had. One place to see what is happening across the whole business.</p></div>
+        <div class="coach-section"><h4>Visibility Check</h4><p>You get one dashboard showing where time is being lost, where money is being missed, and what needs attention first.</p></div>
+        <div class="coach-section"><h4>What Breakout AI Adds</h4><p>This is where Breakout AI becomes sticky. It becomes the central nervous system of the business.</p></div>
       </aside>
     </section>
 
